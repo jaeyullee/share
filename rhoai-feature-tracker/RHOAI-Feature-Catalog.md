@@ -90,7 +90,7 @@
 
 | 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|
-| ▸ 컴포넌트 | — | — | — | GA | GA* | — | — |
+| ▸ 컴포넌트 | — | — | — | GA* | GA* | — | — |
 | Feature Store includes a web-based UI | — | GA | — | — | — | ⚠️2.x 문서에만 언급 — 3.x deprecated 여부 직접 확인 필요. The Feature Store component now includes a web-based user interface (UI). | [2.25](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.25/html/release_notes/new-features-and-enhancements_relnotes) |
 | Feature Store integration with workbenches | — | — | GA | GA | GA | Capabilities such as centrally managed role-based access control (RBAC), and feature lifecycle and lineage visibility, are now production-ready and fully supported. | [3.2](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.2/html/release_notes/new-features-and-enhancements_relnotes) |
 | Feature Store integration with Workbenches and new user access capabilities | — | — | — | TP | TP | This feature is available as a Technology Preview. | [3.3](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.3/html/release_notes/technology-preview-features_relnotes) [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/technology-preview-features_relnotes) |
@@ -102,7 +102,7 @@
 
 | 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|
-| ▸ 컴포넌트 | — | — | — | — | — | — | — |
+| ▸ 컴포넌트 | — | — | — | GA | GA | — | — |
 | IBM Spyre AI Accelerator model serving support on x86 platforms | — | TP | — | TP | TP | Model serving with the IBM Spyre AI Accelerator is now available as a Technology Preview feature for x86 platforms. | [2.25](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.25/html/release_notes/technology-preview-features_relnotes) [3.3](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.3/html/release_notes/technology-preview-features_relnotes) [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/technology-preview-features_relnotes) |
 | Model serving support for IBM Spyre AI accelerators on IBM Power | — | — | — | GA | GA | Model serving with IBM Spyre AI accelerators is now Generally Available (GA) on the IBM Power platform. | [3.3](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.3/html/release_notes/new-features-and-enhancements_relnotes) |
 
