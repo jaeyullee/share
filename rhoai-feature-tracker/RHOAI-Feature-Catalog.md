@@ -6,6 +6,7 @@
 기능을 **제공 컴포넌트별로 묶음**. 열=버전, 칸=그 버전 상태(carry-forward, `—`=데이터상 없음). 컴포넌트 행(`▸`)은 x86_64 기준이며 `*`=아키텍처별 상이(부록 참조). `근거`=상태 증명 문장.
 
 ## AI Hub
+> 🔗 원천 오픈소스: [Open Data Hub](https://opendatahub.io)
 
 | 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|
@@ -15,6 +16,7 @@
 | MCP Catalog for enterprise management of MCP servers | — | — | — | — | DP | The MCP Catalog provides a centralized experience for discovering, deploying, and experimenting with Model Context Protocol (MCP) servers in Red Hat OpenShift AI. | [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/developer-preview-features_relnotes) |
 
 ## Dashboard
+> 🔗 원천 오픈소스: [Open Data Hub Dashboard](https://github.com/opendatahub-io/odh-dashboard)
 
 | 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|
@@ -43,6 +45,7 @@
 | vLLM runtime support for Models-as-a-Service | — | — | — | — | TP | This Technology Preview feature enables you to serve large language models with vLLM’s high- performance inference capabilities while benefiting from MaaS governance and subscripti | [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/technology-preview-features_relnotes) |
 
 ## Data science pipelines
+> 🔗 원천 오픈소스: [Kubeflow Pipelines](https://www.kubeflow.org/docs/components/pipelines/)
 
 | 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|
@@ -59,6 +62,7 @@
 | Validated sdg-hub notebooks for Red Hat AI Platform | — | — | — | TP | TP | Validated sdg_hub example notebooks are now available to provide a notebook-driven user experience in OpenShift AI 3.0. | [3.3](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.3/html/release_notes/technology-preview-features_relnotes) [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/technology-preview-features_relnotes) |
 
 ## Distributed Inference with llm-d
+> 🔗 원천 오픈소스: [llm-d](https://llm-d.ai)
 
 | 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|
@@ -82,6 +86,7 @@
 | YAML viewer for Distributed Inference with llm-d model deployments | — | — | — | — | TP | This Technology Preview feature introduces the following capabilities: | [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/technology-preview-features_relnotes) |
 
 ## Feature Store
+> 🔗 원천 오픈소스: [Feast](https://feast.dev)
 
 | 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|
@@ -93,6 +98,7 @@
 | New Feature Store component | — | TP | — | TP | TP | This Technology Preview release introduces the following capabilities: | [2.25](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.25/html/release_notes/technology-preview-features_relnotes) [3.3](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.3/html/release_notes/technology-preview-features_relnotes) [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/technology-preview-features_relnotes) |
 
 ## IBM Spyre Operator
+> 🔗 원천 오픈소스: [vLLM Spyre](https://github.com/vllm-project/vllm-spyre)
 
 | 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|
@@ -101,6 +107,7 @@
 | Model serving support for IBM Spyre AI accelerators on IBM Power | — | — | — | GA | GA | Model serving with IBM Spyre AI accelerators is now Generally Available (GA) on the IBM Power platform. | [3.3](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.3/html/release_notes/new-features-and-enhancements_relnotes) |
 
 ## KServe
+> 🔗 원천 오픈소스: [KServe](https://kserve.github.io/website/)
 
 | 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|
@@ -131,6 +138,7 @@
 | vLLM-Gaudi 1.23 support | — | — | — | GA | GA | Red Hat OpenShift AI 3.3 now supports vllm-gaudi version 1.23, enhancing, enhancing performance and stability of vLLM applications. | [3.3](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.3/html/release_notes/new-features-and-enhancements_relnotes) |
 
 ## Kubeflow Trainer v2
+> 🔗 원천 오픈소스: [Kubeflow Trainer](https://www.kubeflow.org/docs/components/trainer/)
 
 | 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|
@@ -148,6 +156,7 @@
 | Training images and ClusterTrainingRuntimes for Kubeflow Training Operator v1 | — | — | — | Deprecated | Deprecated | The Kubeflow Training Operator (v1) is deprecated starting OpenShift AI 2.25 and is scheduled to be removed. | [3.3](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.3/html/release_notes/support-removals_relnotes) [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/support-removals_relnotes) |
 
 ## Kuberay
+> 🔗 원천 오픈소스: [KubeRay (Ray)](https://github.com/ray-project/kuberay)
 
 | 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|
@@ -159,6 +168,7 @@
 | Support for Llama Stack and KubeRay on IBM Power | — | — | — | — | GA | Red Hat OpenShift AI 3.4 GA introduces official support for both Llama Stack and KubeRay on the IBM Power architecture. | [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/new-features-and-enhancements_relnotes) |
 
 ## Llama Stack Operator
+> 🔗 원천 오픈소스: [Llama Stack](https://github.com/meta-llama/llama-stack)
 
 | 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|
@@ -195,6 +205,7 @@
 | TLS and proxy configuration for all Llama Stack remote inference providers | — | — | — | — | TP | Red Hat OpenShift AI 3.4 EA2 introduces a standardized network configuration block for all Llama Stack remote inference providers. | [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/technology-preview-features_relnotes) |
 
 ## LMEval
+> 🔗 원천 오픈소스: [LM Evaluation Harness](https://github.com/EleutherAI/lm-evaluation-harness)
 
 | 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|
@@ -203,6 +214,7 @@
 | Language Model Evaluation as a Service | GA | GA | — | — | — | ⚠️2.x 문서에만 언급 — 3.x deprecated 여부 직접 확인 필요. The new orchestrator enables the deployment of a secure, scalable Language Model Evaluation as a Service (LM-Eval-aaS). | [2.16](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/release_notes/new-features-and-enhancements_relnotes) |
 
 ## MaaS
+> 🔗 원천 오픈소스: Red Hat OpenShift AI (KServe/llm-d 기반)
 
 | 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|
@@ -216,6 +228,7 @@
 | The Models-as-a-Service subscription model redesign | — | — | — | — | GA | The Models-as-a-Service (MaaS) subscription model has been redesigned to replace the tier-based model introduced in version 3.3. | [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/new-features-and-enhancements_relnotes) |
 
 ## MLflow
+> 🔗 원천 오픈소스: [MLflow](https://mlflow.org)
 
 | 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|
@@ -249,6 +262,7 @@
 | Model registry ML Metadata (MLMD) server removal | — | Removed | — | — | — | Starting with OpenShift AI 2.23, the ML Metadata (MLMD) server has been removed from the model registry component. | [2.25](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.25/html/release_notes/support-removals_relnotes) [3.2](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.2/html/release_notes/support-removals_relnotes) [3.3](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.3/html/release_notes/support-removals_relnotes) [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/support-removals_relnotes) |
 
 ## TrustyAI
+> 🔗 원천 오픈소스: [TrustyAI](https://trustyai.org)
 
 | 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|
@@ -266,6 +280,7 @@
 | Use Guardrails Orchestrator with LlamaStack | — | TP | — | — | — | ⚠️2.x 문서에만 언급 — 3.x deprecated 여부 직접 확인 필요. You can now run detections using the Guardrails Orchestrator tool from TrustyAI with Llama Stack as a Technology Preview feature, using  | [2.25](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.25/html/release_notes/technology-preview-features_relnotes) |
 
 ## Workbenches
+> 🔗 원천 오픈소스: [Kubeflow Notebooks](https://www.kubeflow.org/docs/components/notebooks/)
 
 | 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|
