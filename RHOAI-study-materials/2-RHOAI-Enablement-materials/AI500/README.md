@@ -3,7 +3,7 @@
 > 출처: [rhoai-mlops lab-instructions — The Reference Track](https://rhoai-mlops.github.io/lab-instructions/#/9-the-reference-track/references)
 > 워크숍 Reference Track의 링크들을 직접 타고 들어가 각 자료를 개별 노트로 정리한 모음. 정리 작성일: 2026-06-12.
 
-워크숍 용어 정의는 [[용어집-Glossary]] 참고.
+워크숍 용어 정의는 통합 용어집 [[01-RHOAI-기초-용어정리]] §5 참고 (구 `용어집-Glossary.md` 통합, 2026-06-16).
 
 ---
 

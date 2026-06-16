@@ -146,6 +146,8 @@ OCP에 설치하면 AI 관련 컴포넌트를 한번에 관리해주는 Operator
 | **TTFT** | Time To First Token. 질문 후 첫 글자 나올 때까지 시간 |
 | **TPOT** | Time Per Output Token. 글자 하나 생성하는 데 걸리는 시간 |
 | **TPS** | Tokens Per Second. 초당 생성 토큰 수 |
+| **Latency** | 추론 요청부터 응답까지의 지연 시간. TTFT·TPOT로 측정 |
+| **Throughput** | 단위 시간당 처리 가능한 추론 요청/토큰 수. 동시 사용자 많은 환경의 핵심 지표 |
 
 ### 모델 관리
 
@@ -153,6 +155,77 @@ OCP에 설치하면 AI 관련 컴포넌트를 한번에 관리해주는 Operator
 |------|------|
 | **Fine-tuning** | 기존 모델을 특정 업무에 맞게 추가 학습시키는 것 |
 | **RAG** | 외부 문서를 검색해서 LLM에 같이 넣어주는 기법 |
+
+### LLM 입출력·추론 단계
+
+| 용어 | 설명 |
+|------|------|
+| **Token** | LLM이 텍스트를 처리하는 최소 단위(단어/서브워드/문자). 비용·길이 산정 기본 단위 (영어 1단어 ≈ 1.3토큰, 한국어는 더 많음) |
+| **Parameter** | 모델이 학습으로 조정한 가중치 값. 모델 크기 척도 (7B = 70억 개). 클수록 성능↑ 비용↑ |
+| **Context Window** | 모델이 한 번에 처리 가능한 최대 토큰 수 (4K/8K/128K 등). 긴 문서 처리의 제약 |
+| **prefix** | 모델 입력으로 주어지는 앞부분 텍스트(프롬프트·시스템 지시문·이전 대화). 토큰 배열 자체 |
+| **prefill** | 입력 프롬프트를 한꺼번에 읽어 KV-cache를 채우는 추론 첫 단계 |
+| **decode** | prefill 이후 답변을 토큰 하나씩 순차 생성하는 단계 |
+
+> §4 llm-d의 "Prefill/Decode 분리"는 이 두 단계를 서로 다른 GPU에서 처리하는 것.
+
+### 추론 유형
+
+| 용어 | 설명 |
+|------|------|
+| **Real-time Inference** | 요청 즉시 응답하는 추론 방식. 챗봇·실시간 추천 등, Latency 최적화 필요 |
+| **Batch Inference** | 대량 데이터를 일괄 처리하는 추론. 실시간 불필요 시 비용 효율적 (야간 리포트·대량 분류) |
+
+### 학습·튜닝 기법
+
+| 용어 | 설명 |
+|------|------|
+| **Transfer Learning** | 한 도메인에서 학습한 지식을 다른 도메인으로 전이. Fine-tuning이 대표 사례 |
+| **RLHF** | Reinforcement Learning from Human Feedback. 인간 피드백을 강화학습에 활용해 모델 정렬. ChatGPT 등이 사용 |
+| **PEFT** | Parameter-Efficient Fine-Tuning. 전체 대신 극히 일부 파라미터만 학습하는 기법 총칭 |
+| **LoRA** | Low-Rank Adaptation. 전체 가중치 대신 소규모 행렬만 학습. PEFT 대표 기법, 10~100배 적은 컴퓨팅 |
+| **QLoRA** | LoRA + 양자화 결합. 단일 GPU로도 대규모 모델 파인튜닝 가능 |
+| **SDG** | Synthetic Data Generation. AI가 학습용 데이터를 인공 생성. InstructLab 핵심 기술 |
+| **LAB** | Large-scale Alignment for chatBots. InstructLab의 파인튜닝 방법론(SDG + 다단계 학습). Red Hat/IBM 차별화 |
+
+### RAG·검색 구성요소
+
+| 용어 | 설명 |
+|------|------|
+| **Embedding** | 텍스트/이미지를 고차원 수치 벡터로 변환. 의미 유사도 계산의 기반, RAG 핵심 구성요소 |
+| **Vector Database** | 임베딩 벡터를 저장하고 유사도 검색하는 특화 DB (Milvus, pgvector, Pinecone 등) |
+| **Semantic Search** | 키워드 매칭이 아닌 의미 기반 검색. 임베딩 + 벡터DB 기반 |
+| **Chunking** | 문서를 RAG에 적합한 크기의 조각으로 분할. 청크 전략이 RAG 성능에 큰 영향 |
+| **Reranking** | 1차 검색 결과를 관련성 기준으로 재정렬 (주로 Cross-Encoder). RAG 정확도 향상 |
+
+### 품질·안전
+
+| 용어 | 설명 |
+|------|------|
+| **Hallucination** | 모델이 사실과 다른 내용을 확신 있게 생성하는 현상. RAG로 완화 |
+| **Guardrails** | 모델 출력을 제어·필터링하는 안전장치(유해 콘텐츠 차단 등). RHOAI는 TrustyAI Guardrails·Llama Guard로 구현 |
+
+### MLOps 기초 (AI500 워크숍 용어집 통합)
+
+| 용어 | 설명 |
+|------|------|
+| **MLOps** | AI 모델을 안정적·효율적으로 구축·배포·운영하기 위한 실천 방식·문화·도구 |
+| **ETL** | Extract/Transform/Load. 데이터 수집·정제·저장 프로세스 |
+| **EDA** | Exploratory Data Analysis. 데이터 패턴·문제를 이해하기 위한 탐색적 분석 |
+| **Data Feature** | 모델에 쓰이는 개별·측정 가능한 데이터 속성 (나이·온도·거래금액 등) |
+| **Feature Engineering** | 모델 성능 향상을 위해 피처를 생성·수정하는 작업 |
+| **Feature Store** | 데이터 피처를 중앙에서 관리·제공하는 시스템 (RHOAI는 Feast) |
+| **Neural Network** | 뉴런 다층 구조의 ML 모델. 높은 복잡도 처리 가능 |
+| **Hyperparameter Tuning** | 레이어 수·학습률 등 모델 일반 설정을 조정해 성능 개선 |
+| **Pipeline** | 데이터 처리·학습·배포의 자동화된 일련의 단계 |
+| **Kubeflow** | Kubernetes에서 ML 워크플로를 관리하는 도구 모음 |
+| **Argo CD** | 배포 자동화를 위한 GitOps 도구 |
+| **Canary Deployment** | 전체 롤아웃 전 소규모 그룹에 새 모델을 먼저 배포 |
+| **Shadow Deployment** | 사용자 영향 없이 새 모델을 병렬 실행해 검증 |
+| **Data Drift** | 실제 데이터 분포가 학습 데이터와 크게 달라지는 현상 |
+| **Bias Detection** | 모델의 불공정·의도치 않은 편향을 식별 (RHOAI는 TrustyAI) |
+| **SHAP** | Shapley Additive Explanations. 각 피처가 예측에 기여한 정도로 모델을 설명 |
+| **Counterfactuals** | 입력에 "what-if" 변화를 줘서 출력을 원하는 방향으로 바꿀 수 있는지 검증 |
 
 ### Red Hat 제품 상태
 
