@@ -1,7 +1,7 @@
 # RAG — 데모 관점 정리 (enabler)
 
 > `generative-ai-rag`(#9) + `rag-llm-gitops`(#6) + `genai-rhoai-poc-template`(#11) + Llama Stack RAG(#4,#5)에서 추출.
-> RAG **이론**은 [[10-RAG-아키텍처-핵심정리]]에 깊게 있음. 이 노트는 **데모들이 RAG를 어떻게 보여주고 구현하는가**(실전·셀링)에 집중.
+> RAG **이론**은 [[01-RAG-아키텍처-핵심정리]]에 깊게 있음. 이 노트는 **데모들이 RAG를 어떻게 보여주고 구현하는가**(실전·셀링)에 집중.
 
 ---
 

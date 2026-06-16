@@ -3,7 +3,7 @@
 > Red Hat OpenShift AI(RHOAI)를 중심으로 한 MLOps · 쿠버네티스 기반 ML/AI 인프라 지식 정리.
 > 딜리버리 관점에서 "조립품으로서의 RHOAI"와 각 구성요소의 업스트림 동작을 이해하는 데 초점.
 
-> **폴더 3 RHOAI 노트 계층** (이 문서가 종합 SSOT): 입문·용어·GPS 로드맵은 [[RHOAI-기초-용어정리]], KServe 배포모드·KPA/KEDA 오토스케일링·ModelCar 빌드 심화는 [[OpenShift-AI-플랫폼-아키텍처]]. 개념 중복 시 본 문서를 단일 출처로 둔다.
+> **폴더 3 RHOAI 노트 계층** (이 문서가 종합 SSOT): 입문·용어·GPS 로드맵은 [[01-RHOAI-기초-용어정리]], KServe 배포모드·KPA/KEDA 오토스케일링·ModelCar 빌드 심화는 [[02-OpenShift-AI-플랫폼-아키텍처]]. 개념 중복 시 본 문서를 단일 출처로 둔다.
 
 ---
 
@@ -488,7 +488,7 @@ KServe는 여러 서빙 런타임을 지원한다. 모델 종류·요구사항�
 | **Seldon MLServer** | 전통 ML 모델(V2 프로토콜) | scikit-learn, XGBoost 등 |
 
 - vLLM 핵심 성능 지표: **TTFT**(첫 토큰까지), **TPOT**(토큰당 생성), **ITL**(연속 토큰 간 지연), **E2E Latency**(전체), **GPU KV Cache Usage**(캐시 사용률).
-- 추론엔진 자체 비교(vLLM vs llama.cpp vs Ollama)·vLLM 튜닝 심화는 일반 AI 자료의 [[06-추론엔진-비교-가이드]] / [[07-vLLM-추론엔진-핵심정리]] 참조(폴더 4).
+- 추론엔진 자체 비교(vLLM vs llama.cpp vs Ollama)·vLLM 튜닝 심화는 일반 AI 자료의 [[04-추론엔진-비교-가이드]] / [[05-vLLM-추론엔진-핵심정리]] 참조(폴더 4).
 
 ## A.2 NVIDIA NIM 통합
 
@@ -539,7 +539,7 @@ QLoRA              : LoRA + 4-bit 양자화. 메모리 최소, 저사양 GPU로�
 
 ## A.4 성능 검증: GuideLLM 부하 패턴
 
-배포 전·플랫폼 업그레이드 후 성능 검증 필수. (도구 심화·에어갭·과포화는 [[09-LLM-벤치마킹-GuideLLM-가이드]] 폴더 4 참조)
+배포 전·플랫폼 업그레이드 후 성능 검증 필수. (도구 심화·에어갭·과포화는 [[06-LLM-벤치마킹-GuideLLM-가이드]] 폴더 4 참조)
 
 | 패턴 | 입력 토큰 | 출력 토큰 | 특징 |
 |------|-----------|-----------|------|

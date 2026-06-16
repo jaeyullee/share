@@ -73,4 +73,4 @@ source: Before you build_ A look at AI agentic systems with Red Hat AI.PDF
 ## 메모
 
 - 12는 **에이전트 기술 아키텍처**(MCP·Llama Stack 깊이)가 핵심. 13은 같은 주제 경영진 버전.
-- 관련 vault: [[11-AI-에이전트-도구호출-프롬프트패턴]], [[AI-에이전트-환경-구축기]].
+- 관련 vault: [[02-AI-에이전트-도구호출-프롬프트패턴]], [[AI-에이전트-환경-구축기]].

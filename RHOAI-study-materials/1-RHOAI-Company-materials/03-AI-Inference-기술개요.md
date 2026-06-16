@@ -79,4 +79,4 @@ KV cache, PagedAttention, continuous batching, speculative decoding(draft/verifi
 
 - 03은 **vLLM 내부 동작**과 **병렬화/엣지 아키텍처**가 강점. 04(PPTX)는 같은 추론 주제를 영업 수치 중심으로.
 - 데모: red.ht/llm_d_vLLm_demo_OpenShiftAI.
-- 관련 vault 노트: [[13-GPU-인프라-MIG-슬라이싱-Kueue]], [[OpenShift-AI-플랫폼-아키텍처]].
+- 관련 vault 노트: [[04-GPU-인프라-MIG-슬라이싱-Kueue]], [[02-OpenShift-AI-플랫폼-아키텍처]].

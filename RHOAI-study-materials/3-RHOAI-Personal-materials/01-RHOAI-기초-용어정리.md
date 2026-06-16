@@ -12,7 +12,7 @@ tags:
 
 > OCP를 아는 사람이 RHOAI/AI 플랫폼을 이해하기 위한 기반 지식 정리
 
-> **이 문서는 입문·용어·GPS 로드맵 레이어다.** 컴포넌트 동작·MLOps 라이프사이클·GPU 통신 등 심화는 종합 SSOT [[rhoai-mlops-knowledge]], KServe 배포모드·오토스케일링 심화는 [[OpenShift-AI-플랫폼-아키텍처]] 참조.
+> **이 문서는 입문·용어·GPS 로드맵 레이어다.** 컴포넌트 동작·MLOps 라이프사이클·GPU 통신 등 심화는 종합 SSOT [[03-rhoai-mlops-knowledge]], KServe 배포모드·오토스케일링 심화는 [[02-OpenShift-AI-플랫폼-아키텍처]] 참조.
 
 ---
 

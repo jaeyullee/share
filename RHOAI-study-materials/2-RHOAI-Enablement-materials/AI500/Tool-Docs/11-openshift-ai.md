@@ -24,4 +24,4 @@ RHOAI(self-managed)는 데이터 사이언티스트·ML 엔지니어가 예측·
 
 ## 관련 vault 자료
 
-- [[OpenShift-AI-플랫폼-아키텍처]], [[rhoai-mlops-knowledge]], [[RHOAI-기초-용어정리]]
+- [[02-OpenShift-AI-플랫폼-아키텍처]], [[03-rhoai-mlops-knowledge]], [[01-RHOAI-기초-용어정리]]

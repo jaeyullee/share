@@ -70,4 +70,4 @@ source: Get started with AI Inference.PDF
 ## 메모
 
 - 추론 입문에 최적. "왜 압축하나/정확도 괜찮나"가 명확. 09([[09-프로덕션환경-구축-고려사항]])의 추론 섹션과 보완.
-- 관련 vault: [[RHOAI-기초-용어정리]].
+- 관련 vault: [[01-RHOAI-기초-용어정리]].
