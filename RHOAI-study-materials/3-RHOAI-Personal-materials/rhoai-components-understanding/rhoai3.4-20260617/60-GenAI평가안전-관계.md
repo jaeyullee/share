@@ -25,7 +25,42 @@
 
 ---
 
-## CRD 소유권 맵 (★평가·안전은 단일 오퍼레이터)
+## CRD 엔티티 ERD (Mermaid)
+
+```mermaid
+erDiagram
+    TrustyAIOperator {
+        string group "trustyai.opendatahub.io"
+        string note "단일 오퍼레이터 = 5 CRD"
+    }
+    LlamaStackDistribution {
+        string api "llamastack.io/v1alpha1"
+        string hub "OpenAI호환 :8321"
+    }
+    TrustyAIOperator ||--o{ TrustyAIService : "owns(bias/drift)"
+    TrustyAIOperator ||--o{ GuardrailsOrchestrator : "owns(FMS legacy)"
+    TrustyAIOperator ||--o{ NemoGuardrails : "owns(주력)"
+    TrustyAIOperator ||--o{ LMEvalJob : "owns(평가)"
+    TrustyAIOperator ||--o{ EvalHub : "owns(DP)"
+    LlamaStackDistribution }o--|| InferenceService : "remote::vllm 추론"
+    LlamaStackDistribution }o--|| GuardrailsOrchestrator : "remote::trustyai_fms safety"
+    LlamaStackDistribution }o--o{ LMEvalJob : "remote::lmeval eval"
+    LlamaStackDistribution }o--o{ MCPServer : "remote::mcp tool"
+    GuardrailsOrchestrator }o--|| InferenceService : "chat_generation predictor"
+    LMEvalJob }o--|| InferenceService : "평가 대상 호출"
+```
+
+### 오가는 데이터
+
+| 관계 | 주고받는 데이터/신호 |
+|---|---|
+| TrustyAIOperator → 5 CRD | 단일 오퍼레이터가 reconcile |
+| LlamaStack → InferenceService | OpenAI 추론 요청(`remote::vllm`) |
+| LlamaStack → Guardrails | safety shield 호출(입출력 필터) |
+| Guardrails → InferenceService | `chat_generation` predictor로 생성 위임 |
+| LMEvalJob → InferenceService | 벤치마크 프롬프트 → results.json |
+
+## CRD 소유권 맵 (ASCII)
 ```
 llama-stack-k8s-operator
 └── LlamaStackDistribution (llamastack.io/v1alpha1)
