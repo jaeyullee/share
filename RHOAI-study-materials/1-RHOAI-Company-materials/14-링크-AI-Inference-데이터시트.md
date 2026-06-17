@@ -13,7 +13,7 @@ source: https://www.redhat.com/en/resources/optimize-ai-inference-datasheet
 
 > 원본 링크: https://www.redhat.com/en/resources/optimize-ai-inference-datasheet
 > (reference_link.md 1번째 링크. WebFetch로 요약 — 본문은 게이트형 데이터시트일 수 있어 핵심만.)
-> 상위 맥락: [[00-인덱스]] / 기술 심화 [[03-AI-Inference-기술개요]]
+> 상위 맥락: [00-인덱스](00-인덱스.md) / 기술 심화 [03-AI-Inference-기술개요](03-AI-Inference-기술개요.md)
 
 ---
 
@@ -50,5 +50,5 @@ source: https://www.redhat.com/en/resources/optimize-ai-inference-datasheet
 
 ## 메모
 
-- 데이터시트는 [[04-Inference-at-Scale-세일즈]]·[[03-AI-Inference-기술개요]] 내용의 1페이지 요약본 성격.
+- 데이터시트는 [04-Inference-at-Scale-세일즈](04-Inference-at-Scale-세일즈.md)·[03-AI-Inference-기술개요](03-AI-Inference-기술개요.md) 내용의 1페이지 요약본 성격.
 - 링크 본문이 폼 게이트일 경우 위 요약은 공개 메타데이터 기준 — 정확한 수치는 원본 PDF 확인 권장.

@@ -2,7 +2,7 @@
 
 > `redhat-openshift-ai-3-showroom`(데모 #3) + `llm-d-showroom`(#1)에서 추출.
 > RHOAI 2.x를 알던 사람이 3.0에서 **무엇이 바뀌었나**를 빠르게 잡는 노트. 일부는 데모 기준 "alpha/WIP"이므로 GA 시점에 재확인 필요.
-> 기반: [[02-OpenShift-AI-플랫폼-아키텍처]], [[01-RHOAI-기초-용어정리]]
+> 기반: [02-OpenShift-AI-플랫폼-아키텍처](../../3-RHOAI-Personal-materials/02-OpenShift-AI-플랫폼-아키텍처.md), [01-RHOAI-기초-용어정리](../../3-RHOAI-Personal-materials/01-RHOAI-기초-용어정리.md)
 
 ---
 
@@ -41,7 +41,7 @@ RHOAI 3는 **"GenAI/추론 플랫폼"으로 무게중심 이동**이다. 전통 
 - 핵심 인사이트: **GPU 추가(throughput↑) ≠ tail latency 개선**. 반복 prefix(시스템 프롬프트·공유 문서·멀티턴) 워크로드일수록 캐시 인식 라우팅 이득이 큼.
 - 측정 도구: GuideLLM(KV 캐시 인식 벤치마크), Grafana 지표 `vllm:num_requests_running`, `vllm:kv_cache_usage_perc`, TTFT/ITL.
 
-→ 깊은 내용은 [[01-분산추론과-llm-d]], 벤치마킹은 [[06-LLM-벤치마킹-GuideLLM-가이드]].
+→ 깊은 내용은 [01-분산추론과-llm-d](../../3-RHOAI-Personal-materials/read/01-분산추론과-llm-d.md), 벤치마킹은 [06-LLM-벤치마킹-GuideLLM-가이드](../../4-etc-AI-materials/read/06-LLM-벤치마킹-GuideLLM-가이드.md).
 
 ---
 
@@ -59,14 +59,14 @@ RHOAI 3는 **"GenAI/추론 플랫폼"으로 무게중심 이동**이다. 전통 
 
 - 모델을 **구독형 서비스**로: 토큰 단위 과금, 사용자/팀별 비용 추적, 게이트웨이를 통한 접근.
 - 5번 게이트웨이(Authorino/Limitador) + 관찰성(토큰 소비 메트릭)과 결합.
-- 데모 기준 일부 WIP. 상세는 [[07-LLMaaS-MaaS-멀티테넌시]].
+- 데모 기준 일부 WIP. 상세는 [07-LLMaaS-MaaS-멀티테넌시](07-LLMaaS-MaaS-멀티테넌시.md).
 
 ---
 
 ## 7. GenAI Playground + LlamaStack 자동화
 
 - 모델을 "Add to Playground" 하면 **LlamaStackDistribution 인스턴스 + ConfigMap(run.yaml) + Pod이 자동 생성** → 원클릭 대화형 테스트 환경.
-- LlamaStack Operator가 DSC 관리 컴포넌트로 포함. → [[02-Llama-Stack-핵심]]
+- LlamaStack Operator가 DSC 관리 컴포넌트로 포함. → [02-Llama-Stack-핵심](02-Llama-Stack-핵심.md)
 - ODH Dashboard에 GenAI 스튜디오·모델 카탈로그·MaaS·KServe 메트릭이 **단일 UI로 통합**.
 
 ---
@@ -74,7 +74,7 @@ RHOAI 3는 **"GenAI/추론 플랫폼"으로 무게중심 이동**이다. 전통 
 ## 8. Model Registry 네임스페이스 격리
 
 - Model Registry가 `rhoai-model-registries` 네임스페이스에서 중앙 관리. OCI 모델 저장소 통합.
-- 멀티테넌트에서 모델 검색·공유·버전관리의 보안/거버넌스 강화. → [[03-rhoai-mlops-knowledge]]
+- 멀티테넌트에서 모델 검색·공유·버전관리의 보안/거버넌스 강화. → [03-rhoai-mlops-knowledge](../../3-RHOAI-Personal-materials/03-rhoai-mlops-knowledge.md)
 
 ---
 
@@ -88,7 +88,7 @@ RHOAI 3는 **"GenAI/추론 플랫폼"으로 무게중심 이동**이다. 전통 
 ## 10. 분산 학습 스택 확장
 
 - **Training Operator + Ray**로 단일노드 학습→클러스터 분산학습 수평확장. PyTorch/TF 분산 작업 통합.
-- (Kueue 워크로드 큐는 버전별 포함/제외 상태 변동 — 실제 DSC에서 확인) → [[04-GPU-인프라-MIG-슬라이싱-Kueue]]
+- (Kueue 워크로드 큐는 버전별 포함/제외 상태 변동 — 실제 DSC에서 확인) → [04-GPU-인프라-MIG-슬라이싱-Kueue](../../3-RHOAI-Personal-materials/04-GPU-인프라-MIG-슬라이싱-Kueue.md)
 
 ---
 

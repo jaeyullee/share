@@ -13,7 +13,7 @@ source: Get started with AI Inference.PDF
 # Get started with AI Inference (e-book) 정리
 
 > 원본: `Get started with AI Inference.PDF` — 추론 성능 엔지니어링·모델 최적화 입문서. 양자화·sparsity·vLLM 기초.
-> 상위 맥락: [[00-인덱스]] / 심화는 [[03-AI-Inference-기술개요]]
+> 상위 맥락: [00-인덱스](00-인덱스.md) / 심화는 [03-AI-Inference-기술개요](03-AI-Inference-기술개요.md)
 
 ---
 
@@ -69,5 +69,5 @@ source: Get started with AI Inference.PDF
 
 ## 메모
 
-- 추론 입문에 최적. "왜 압축하나/정확도 괜찮나"가 명확. 09([[09-프로덕션환경-구축-고려사항]])의 추론 섹션과 보완.
-- 관련 vault: [[01-RHOAI-기초-용어정리]].
+- 추론 입문에 최적. "왜 압축하나/정확도 괜찮나"가 명확. 09([09-프로덕션환경-구축-고려사항](09-프로덕션환경-구축-고려사항.md))의 추론 섹션과 보완.
+- 관련 vault: [01-RHOAI-기초-용어정리](../3-RHOAI-Personal-materials/01-RHOAI-기초-용어정리.md).

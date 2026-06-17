@@ -2,7 +2,7 @@
 
 > `llmaas-showroom`(#2) + RHOAI 3 MaaS(#3) + 게이트웨이(RHCL)에서 추출.
 > "LLM을 조직의 공용 서비스로 운영"하는 Platform Engineering 관점.
-> 연결: [[01-RHOAI3-신규기능-핵심]], [[06-Models-as-a-Service-가이드]]
+> 연결: [01-RHOAI3-신규기능-핵심](01-RHOAI3-신규기능-핵심.md), [06-Models-as-a-Service-가이드](../../1-RHOAI-Company-materials/06-Models-as-a-Service-가이드.md)
 
 ---
 
@@ -26,7 +26,7 @@
 ## 3. 멀티테넌시 설계
 
 - **네임스페이스 격리**: Platform 팀이 모델 관리, 개별 팀은 토큰으로 접근. 모델은 **클러스터 내부에만 노출**(보안 우선).
-- **토큰 기반 인증/인가**: Authorino(인증) + Limitador(rate limit)로 게이트웨이에서 제어 → [[01-RHOAI3-신규기능-핵심]] §5.
+- **토큰 기반 인증/인가**: Authorino(인증) + Limitador(rate limit)로 게이트웨이에서 제어 → [01-RHOAI3-신규기능-핵심](01-RHOAI3-신규기능-핵심.md) §5.
 - **엔드포인트 추상화**: OpenAI 호환 인터페이스 → 뒤의 모델 교체 자유(provider 독립).
 - **GitOps 배포**: ArgoCD로 모델 라이프사이클을 선언적으로 관리.
 
@@ -44,7 +44,7 @@
 
 - **Continue**(VS Code 확장) + **Dev Spaces**(클라우드 IDE)로 모델에 네이티브 접근 — 외부 노출 최소화.
 - `apiBase` + 토큰만 넣으면 코드 작성/리팩토링/테스트 생성에 LLM 활용.
-- 운영 자동화: Llama Stack 에이전트 + Kubernetes/Slack MCP로 자연어 클러스터 진단·알림. → [[03-MCP-핵심]]
+- 운영 자동화: Llama Stack 에이전트 + Kubernetes/Slack MCP로 자연어 클러스터 진단·알림. → [03-MCP-핵심](03-MCP-핵심.md)
 
 ---
 
@@ -65,4 +65,4 @@ Platform 팀(배포·GitOps)
 - LLMaaS의 셀링포인트: "GPU·모델 중복 투자 제거 + 보안(내부 노출) + 비용 가시성(과금)".
 - RHOAI 3의 MaaS 기능(게이트웨이/과금)은 데모 기준 일부 WIP → 고객 환경 GA 버전 기능 확인.
 - 고객 질문 대비: 테넌트 격리 수준, rate limit 정책, 토큰 발급/회수, 비용 배분 모델, 모델 카탈로그 거버넌스.
-- 더 상위 비즈니스 자료: [[06-Models-as-a-Service-가이드]], [[02-Red-Hat-AI-플랫폼-고객덱]].
+- 더 상위 비즈니스 자료: [06-Models-as-a-Service-가이드](../../1-RHOAI-Company-materials/06-Models-as-a-Service-가이드.md), [02-Red-Hat-AI-플랫폼-고객덱](../../1-RHOAI-Company-materials/02-Red-Hat-AI-플랫폼-고객덱.md).

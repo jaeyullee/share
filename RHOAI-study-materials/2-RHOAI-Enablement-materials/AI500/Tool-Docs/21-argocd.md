@@ -22,4 +22,4 @@
 
 ## 워크숍 맥락
 
-[[../References/02-ai-on-openshift-gitops]]에서 RHOAI 리소스를 GitOps로 배포하는 엔진. RHOAI 호환 커스텀 health check 필요.
+[../References/02-ai-on-openshift-gitops](../References/02-ai-on-openshift-gitops.md)에서 RHOAI 리소스를 GitOps로 배포하는 엔진. RHOAI 호환 커스텀 health check 필요.

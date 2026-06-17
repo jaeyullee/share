@@ -21,4 +21,4 @@
 
 ## 워크숍 맥락
 
-MLOps 재현성(reproducibility) 축의 핵심 도구. [[../References/07-google-mlops]]의 데이터/모델 버전 관리, [[../References/06-made-with-ml]]의 "Reproducibility" 섹션과 직결.
+MLOps 재현성(reproducibility) 축의 핵심 도구. [../References/07-google-mlops](../References/07-google-mlops.md)의 데이터/모델 버전 관리, [../References/06-made-with-ml](../References/06-made-with-ml.md)의 "Reproducibility" 섹션과 직결.

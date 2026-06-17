@@ -13,7 +13,7 @@ source: Generative AI in Action.PDF
 # Gen AI in Action 정리
 
 > 원본: `Generative AI in Action.PDF` — Gen AI 전략 선택(클라우드 vs 자체호스팅 vs MaaS)과 실전 유스케이스 e-book.
-> 상위 맥락: [[00-인덱스]]
+> 상위 맥락: [00-인덱스](00-인덱스.md)
 
 ---
 
@@ -64,5 +64,5 @@ source: Generative AI in Action.PDF
 
 ## 메모
 
-- Gen AI **전략 의사결정**(3경로 비교표)이 강점. 입문 로드맵은 [[11-기업AI-입문-beginners-guide]].
+- Gen AI **전략 의사결정**(3경로 비교표)이 강점. 입문 로드맵은 [11-기업AI-입문-beginners-guide](11-기업AI-입문-beginners-guide.md).
 - Forrester TEI 수치는 commissioned study(composite org) — 마케팅 출처 주의.

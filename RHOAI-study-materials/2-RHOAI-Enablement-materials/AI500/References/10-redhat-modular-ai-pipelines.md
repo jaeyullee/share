@@ -33,4 +33,4 @@
 
 ## 워크숍 맥락
 
-[[../Tool-Docs/12-kubeflow-pipelines]]·[[../Tool-Docs/13-kfp-sdk]]의 실전 적용. RHOAI MLOps 파이프라인을 재사용 컴포넌트로 설계할 때 핵심 참고.
+[../Tool-Docs/12-kubeflow-pipelines](../Tool-Docs/12-kubeflow-pipelines.md)·[../Tool-Docs/13-kfp-sdk](../Tool-Docs/13-kfp-sdk.md)의 실전 적용. RHOAI MLOps 파이프라인을 재사용 컴포넌트로 설계할 때 핵심 참고.

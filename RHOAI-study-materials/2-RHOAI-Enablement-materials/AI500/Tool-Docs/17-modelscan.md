@@ -30,4 +30,4 @@ CLI·Python 통합·커스텀 리포트(console/JSON) 지원.
 
 ## 워크숍 맥락
 
-AI 보안 축. 외부에서 받은 모델(예: Hugging Face)을 RHOAI에 서빙하기 전 검증하는 supply chain 보안 게이트. [[04-AI-보안-관찰성-기초]]와 연계.
+AI 보안 축. 외부에서 받은 모델(예: Hugging Face)을 RHOAI에 서빙하기 전 검증하는 supply chain 보안 게이트. [04-AI-보안-관찰성-기초](../../../4-etc-AI-materials/04-AI-보안-관찰성-기초.md)와 연계.

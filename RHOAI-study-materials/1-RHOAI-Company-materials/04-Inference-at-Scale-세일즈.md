@@ -13,7 +13,7 @@ source: Customer facing deck Inference at Scale Sales Tactic CY26.PPTX
 # Inference at Scale — Sales Tactic CY26 (PPTX) 정리
 
 > 원본: `Customer facing deck Inference at Scale Sales Tactic CY26.PPTX` (18 슬라이드). 고객용 추론 영업 덱.
-> 상위 맥락: [[00-인덱스]] / 기술 심화는 [[03-AI-Inference-기술개요]]
+> 상위 맥락: [00-인덱스](00-인덱스.md) / 기술 심화는 [03-AI-Inference-기술개요](03-AI-Inference-기술개요.md)
 
 ---
 
@@ -67,4 +67,4 @@ source: Customer facing deck Inference at Scale Sales Tactic CY26.PPTX
 
 ## 메모
 
-- 04는 **수치·증거 중심 영업 덱**. 03(기술 심화)과 짝. 토킹포인트는 [[00-인덱스]] §수치에도 집계.
+- 04는 **수치·증거 중심 영업 덱**. 03(기술 심화)과 짝. 토킹포인트는 [00-인덱스](00-인덱스.md) §수치에도 집계.

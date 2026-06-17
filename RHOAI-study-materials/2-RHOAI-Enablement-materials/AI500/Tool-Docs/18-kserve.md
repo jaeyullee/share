@@ -32,4 +32,4 @@
 
 ## 워크숍 맥락
 
-RHOAI 모델 서빙의 단일 모델 경로. [[11-openshift-ai]]에서 `InferenceService`+`ServingRuntime`으로 배포. [[../References/02-ai-on-openshift-gitops]] 참고. (control_plane 하위 페이지는 404 — README 기반 정리)
+RHOAI 모델 서빙의 단일 모델 경로. [11-openshift-ai](11-openshift-ai.md)에서 `InferenceService`+`ServingRuntime`으로 배포. [../References/02-ai-on-openshift-gitops](../References/02-ai-on-openshift-gitops.md) 참고. (control_plane 하위 페이지는 404 — README 기반 정리)

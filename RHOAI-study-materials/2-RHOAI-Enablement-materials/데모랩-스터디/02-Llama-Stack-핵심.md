@@ -2,7 +2,7 @@
 
 > `llamastack-on-ocp`(#4) + `agentic-ai-llamastack`(#5) + `llmaas`(#2)에서 추출.
 > "Llama Stack이 대체 뭐고 RHOAI에서 왜 쓰나"를 입문자가 잡는 노트.
-> 연결: [[01-RHOAI3-신규기능-핵심]], [[04-에이전트-AI-패턴]], [[03-MCP-핵심]]
+> 연결: [01-RHOAI3-신규기능-핵심](01-RHOAI3-신규기능-핵심.md), [04-에이전트-AI-패턴](04-에이전트-AI-패턴.md), [03-MCP-핵심](03-MCP-핵심.md)
 
 ---
 
@@ -60,14 +60,14 @@
 2. **도구 에이전트**: 웹검색 등 도구를 LLM이 호출 (Level 2)
 3. **ReAct**: Reason→Act→Observe 반복으로 다단계 추론 (Level 3)
 4. **Agentic RAG**: 에이전트가 "RAG를 쓸지" 자율 판단 (Level 4)
-5. **MCP 에이전트**: 실제 시스템(OpenShift/Slack) 조작 (Level 5) → [[03-MCP-핵심]]
+5. **MCP 에이전트**: 실제 시스템(OpenShift/Slack) 조작 (Level 5) → [03-MCP-핵심](03-MCP-핵심.md)
 6. **통합 자동화**: 인시던트 분석→문서검색(RAG)→인프라조작(MCP)→Slack 보고 (Level 6)
 
 ---
 
 ## 7. 프로덕션 3대 축 (agentic 데모의 메시지)
 
-- **안전(Shields)**: 입력/도구/출력 3단 방어. Llama Guard 3(1B 경량)로 오버헤드 최소. S1(폭력)~S7(프라이버시) 분류. → [[04-에이전트-AI-패턴]]
+- **안전(Shields)**: 입력/도구/출력 3단 방어. Llama Guard 3(1B 경량)로 오버헤드 최소. S1(폭력)~S7(프라이버시) 분류. → [04-에이전트-AI-패턴](04-에이전트-AI-패턴.md)
 - **평가(Evals)**: 데이터셋 기반 + 결정론적 스코링 + LLM-as-Judge. **CI/CD 게이트**로 회귀 감지(모델 업그레이드 검증).
 - **관찰성(Langfuse)**: traces(LLM·도구 호출 사슬) + evals + 사용자 feedback 루프.
 

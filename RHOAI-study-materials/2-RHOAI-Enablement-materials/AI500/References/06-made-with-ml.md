@@ -25,4 +25,4 @@
 
 ## 워크숍 맥락
 
-[[07-google-mlops]]가 MLOps 개념/성숙도라면, Made With ML은 코드로 직접 구현하는 실전 커리큘럼. RHOAI MLOps 파이프라인 학습의 코드 레벨 보강 자료.
+[07-google-mlops](07-google-mlops.md)가 MLOps 개념/성숙도라면, Made With ML은 코드로 직접 구현하는 실전 커리큘럼. RHOAI MLOps 파이프라인 학습의 코드 레벨 보강 자료.

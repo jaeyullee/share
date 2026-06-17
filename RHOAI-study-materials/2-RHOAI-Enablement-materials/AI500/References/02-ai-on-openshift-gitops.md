@@ -37,4 +37,4 @@
 
 ## 워크숍 맥락
 
-[[01-ai-on-openshift]]의 GitOps 심화편. RHOAI를 선언적으로 운영할 때 어떤 CR을 어떻게 다루는지 매핑해 줌.
+[01-ai-on-openshift](01-ai-on-openshift.md)의 GitOps 심화편. RHOAI를 선언적으로 운영할 때 어떤 CR을 어떻게 다루는지 매핑해 줌.

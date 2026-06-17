@@ -22,4 +22,4 @@ Georgia Tech Polo Club의 인터랙티브 시각화 시스템. CNN이 레이어�
 
 ## 워크숍 맥락
 
-추상적 수학 연산을 관찰 가능한 현상으로 바꿔 신경망 직관을 길러줌. 영상([[04-3blue1brown-neural-networks]])·실험도구([[05-tensorflow-playground]])와 함께 쓰는 시각 학습 자료. (사이트가 JS라 본문 fetch 불가, GitHub README 기반 정리)
+추상적 수학 연산을 관찰 가능한 현상으로 바꿔 신경망 직관을 길러줌. 영상([04-3blue1brown-neural-networks](04-3blue1brown-neural-networks.md))·실험도구([05-tensorflow-playground](05-tensorflow-playground.md))와 함께 쓰는 시각 학습 자료. (사이트가 JS라 본문 fetch 불가, GitHub README 기반 정리)

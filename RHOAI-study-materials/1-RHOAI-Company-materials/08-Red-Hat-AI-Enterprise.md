@@ -12,7 +12,7 @@ source: Build on an integrated AI platform with Red Hat AI Enterprise.PDF
 # Build on an integrated AI platform with Red Hat AI Enterprise 정리
 
 > 원본: `Build on an integrated AI platform with Red Hat AI Enterprise.PDF` — RHAIE를 선택하는 6가지 이유 중심 개요.
-> 상위 맥락: [[00-인덱스]] / 포트폴리오 맥락은 [[07-프로덕션-운영-엔터프라이즈플랫폼]]
+> 상위 맥락: [00-인덱스](00-인덱스.md) / 포트폴리오 맥락은 [07-프로덕션-운영-엔터프라이즈플랫폼](07-프로덕션-운영-엔터프라이즈플랫폼.md)
 
 ---
 
@@ -55,5 +55,5 @@ source: Build on an integrated AI platform with Red Hat AI Enterprise.PDF
 
 ## 메모
 
-- "6가지 이유"가 RHAIE 영업 골격. 더 깊은 아키텍처 고려는 [[09-프로덕션환경-구축-고려사항]], 데이터시트는 [[15-링크-OpenShift-AI-데이터시트]].
+- "6가지 이유"가 RHAIE 영업 골격. 더 깊은 아키텍처 고려는 [09-프로덕션환경-구축-고려사항](09-프로덕션환경-구축-고려사항.md), 데이터시트는 [15-링크-OpenShift-AI-데이터시트](15-링크-OpenShift-AI-데이터시트.md).
 - 근거 수치는 IDC 보고서(2025) — 구매 필요 자료라 본문 외 검증 불가.

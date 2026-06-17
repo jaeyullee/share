@@ -2,7 +2,7 @@
 
 > 응용 시나리오 두 개: `sp-edge-to-cloud-data-pipelines`(#7) + `ai-assisted-development`(#10).
 > "RHOAI/LLM을 실제 워크플로우 어디에 붙이나"의 두 사례.
-> 연결: [[03-rhoai-mlops-knowledge]], [[03-MCP-핵심]]
+> 연결: [03-rhoai-mlops-knowledge](../../3-RHOAI-Personal-materials/03-rhoai-mlops-knowledge.md), [03-MCP-핵심](03-MCP-핵심.md)
 
 ---
 

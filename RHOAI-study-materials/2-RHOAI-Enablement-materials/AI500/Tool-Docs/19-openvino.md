@@ -20,4 +20,4 @@
 
 ## 워크숍 맥락
 
-[[18-kserve]]의 ServingRuntime 백엔드 중 하나(OpenVINO Model Server). GPU 없이 Intel CPU에서 효율 추론할 때의 최적화 경로.
+[18-kserve](18-kserve.md)의 ServingRuntime 백엔드 중 하나(OpenVINO Model Server). GPU 없이 Intel CPU에서 효율 추론할 때의 최적화 경로.

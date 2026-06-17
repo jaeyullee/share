@@ -16,4 +16,4 @@
 
 ## 워크숍 맥락
 
-[[../References/06-made-with-ml]]의 "Utilities/styling", pre-commit 워크플로의 자동 포매팅. [[25-flake8]](린팅)과 함께 코드 품질 게이트 구성. [[22-tekton]] CI에서 실행.
+[../References/06-made-with-ml](../References/06-made-with-ml.md)의 "Utilities/styling", pre-commit 워크플로의 자동 포매팅. [25-flake8](25-flake8.md)(린팅)과 함께 코드 품질 게이트 구성. [22-tekton](22-tekton.md) CI에서 실행.

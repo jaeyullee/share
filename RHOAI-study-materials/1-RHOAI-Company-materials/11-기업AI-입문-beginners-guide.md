@@ -13,7 +13,7 @@ source: Get started with AI for enterprise organizations_ A beginner's guide.PDF
 # Get started with AI for enterprise organizations — A beginner's guide 정리
 
 > 원본: `Get started with AI for enterprise organizations_ A beginner's guide.PDF` — 기업 AI 도입 입문서. 용어·모델선택·9단계 로드맵.
-> 상위 맥락: [[00-인덱스]]
+> 상위 맥락: [00-인덱스](00-인덱스.md)
 
 ---
 
@@ -76,4 +76,4 @@ source: Get started with AI for enterprise organizations_ A beginner's guide.PDF
 ## 메모
 
 - **AI 도입 입문 + 소버린 AI** 설명이 명확. SLM·RAFT·멀티모델 라우팅 등 실무 개념 정리에 유용.
-- 관련 vault: [[01-RHOAI-기초-용어정리]], [[01-RAG-아키텍처-핵심정리]], [[02-AI-에이전트-도구호출-프롬프트패턴]].
+- 관련 vault: [01-RHOAI-기초-용어정리](../3-RHOAI-Personal-materials/01-RHOAI-기초-용어정리.md), [01-RAG-아키텍처-핵심정리](../4-etc-AI-materials/01-RAG-아키텍처-핵심정리.md), [02-AI-에이전트-도구호출-프롬프트패턴](../4-etc-AI-materials/02-AI-에이전트-도구호출-프롬프트패턴.md).

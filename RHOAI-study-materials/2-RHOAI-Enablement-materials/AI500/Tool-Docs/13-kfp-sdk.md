@@ -21,4 +21,4 @@
 
 ## 워크숍 맥락
 
-[[12-kubeflow-pipelines]]를 실제 코드로 다루는 도구. K8s 리소스 제어는 [[14-kfp-kubernetes]] 애드온 필요.
+[12-kubeflow-pipelines](12-kubeflow-pipelines.md)를 실제 코드로 다루는 도구. K8s 리소스 제어는 [14-kfp-kubernetes](14-kfp-kubernetes.md) 애드온 필요.

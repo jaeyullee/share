@@ -157,7 +157,7 @@ Granite 코드 모델은 116개 프로그래밍 언어로 학습됐고, Docker H
 - **품질**: 둘 다 FP16과 사실상 동일(비교 포인트 아님).
 - ⚠️ 위 수치는 **80GB GPU + 3B 모델 + 256토큰**이라 메모리가 넉넉해 TurboQuant에 불리한 조건이다. TurboQuant의 진가는 **VRAM 제한 + 장문맥**에서 나온다. 압축/해제 연산은 공짜가 아니므로 용도에 맞게 선택한다.
 
-> 원본: [[98-Wiki-Raws/etc/TurboQuant_vs_vLLM_Benchmark_Report.pdf]] · Wiki [[turboquant-vs-vllm-benchmark]] (2026-04-09). GQA·PagedAttention·RoPE·SwiGLU 등 기반 개념은 [[05-vLLM-추론엔진-핵심정리]] 참조.
+> 원본: [[98-Wiki-Raws/etc/TurboQuant_vs_vLLM_Benchmark_Report.pdf]] · Wiki [[turboquant-vs-vllm-benchmark]] (2026-04-09). GQA·PagedAttention·RoPE·SwiGLU 등 기반 개념은 [05-vLLM-추론엔진-핵심정리](05-vLLM-추론엔진-핵심정리.md) 참조.
 
 ---
 

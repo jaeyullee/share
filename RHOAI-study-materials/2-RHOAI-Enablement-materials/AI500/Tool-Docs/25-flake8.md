@@ -24,4 +24,4 @@ flake8 path/to/code/to/check.py
 
 ## 워크숍 맥락
 
-[[24-black]](포맷)이 모양을 잡고, Flake8은 잠재 버그·복잡도·스타일 위반을 잡음. [[../References/06-made-with-ml]] "Utilities" + [[22-tekton]] CI 린팅 스텝.
+[24-black](24-black.md)(포맷)이 모양을 잡고, Flake8은 잠재 버그·복잡도·스타일 위반을 잡음. [../References/06-made-with-ml](../References/06-made-with-ml.md) "Utilities" + [22-tekton](22-tekton.md) CI 린팅 스텝.

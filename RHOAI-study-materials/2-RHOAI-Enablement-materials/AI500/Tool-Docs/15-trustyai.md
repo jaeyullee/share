@@ -22,4 +22,4 @@
 
 ## 워크숍 맥락
 
-RHOAI의 모델 모니터링·신뢰성 레이어. [[11-openshift-ai]]에 기본 통합. 용어집의 Bias Detection·SHAP·Counterfactuals와 직결.
+RHOAI의 모델 모니터링·신뢰성 레이어. [11-openshift-ai](11-openshift-ai.md)에 기본 통합. 용어집의 Bias Detection·SHAP·Counterfactuals와 직결.

@@ -2,7 +2,7 @@
 
 > 출처: [rhoai-genaiops lab-instructions](https://rhoai-genaiops.github.io/lab-instructions/#/) — Red Hat **AI501 = GenAIOps** 핸즈온 워크숍.
 > **이 문서의 성격**: lab을 직접 돌리지 않아도 **읽기만 하면 각 장에서 가르치는 내용을 배울 수 있는 학습노트.** 실습 명령/클릭 절차가 아니라 **개념 자체**를 풀어 씀.
-> 작성일 2026-06-16. AI500(MLOps, `rhoai-mlops`)의 자매 과정. 인덱스: [[00-데모랩-인덱스-및-주제정리]].
+> 작성일 2026-06-16. AI500(MLOps, `rhoai-mlops`)의 자매 과정. 인덱스: [00-데모랩-인덱스-및-주제정리](00-데모랩-인덱스-및-주제정리.md).
 
 ---
 
@@ -12,7 +12,7 @@
 
 **Canopy** = 워크숍 내내 만들어가는 가상의 **교육용 소크라테스식 튜터 챗봇**. "학생에게 정답을 바로 주지 않고 질문으로 유도"하는 앱을, 1장(기초)부터 12장(파인튜닝)까지 한 학기 따라 GenAIOps 방식으로 완성한다.
 
-**AI500 vs AI501**: AI500은 전통 ML 개발자 워크플로(데이터·피처·모델 학습 파이프라인). AI501은 **LLM/생성형 전용 운영** — 프롬프트·RAG·가드레일·에이전트·MaaS·압축·파인튜닝. 딜리버리에서 GenAI 고객 요건과 더 직결. → [[03-rhoai-mlops-knowledge]]
+**AI500 vs AI501**: AI500은 전통 ML 개발자 워크플로(데이터·피처·모델 학습 파이프라인). AI501은 **LLM/생성형 전용 운영** — 프롬프트·RAG·가드레일·에이전트·MaaS·압축·파인튜닝. 딜리버리에서 GenAI 고객 요건과 더 직결. → [03-rhoai-mlops-knowledge](../../3-RHOAI-Personal-materials/03-rhoai-mlops-knowledge.md)
 
 **플랫폼**: OCP 4.19+ / RHOAI / GitOps(ArgoCD) / Pipelines(Tekton) / NVIDIA GPU. 대부분 GPU 필요(9장 TinyLlama만 CPU 가능).
 
@@ -87,7 +87,7 @@ GenAIOps 배포의 토대. 세 원칙:
 1. **선언적 desired state**: "어떻게"가 아니라 "무엇이 되어야 하는가"를 YAML로 선언.
 2. **Git = 단일 진실 원천**: 모든 설정·배포 정의·모델/프롬프트 버전이 Git에. 모든 변경이 커밋 이력으로 감사 가능.
 3. **지속적 reconciliation**: **ArgoCD**가 Git의 desired state와 클러스터 실제 상태를 계속 비교, 어긋나면 자동 적용.
-- GenAIOps 의미: **모델·프롬프트를 test→prod로 안전·재현가능하게 승격.** 수동·실수 잦은 배포를 자동·추적가능하게. → [[06-GitOps-ValidatedPatterns-PoC배포]]
+- GenAIOps 의미: **모델·프롬프트를 test→prod로 안전·재현가능하게 승격.** 수동·실수 잦은 배포를 자동·추적가능하게. → [06-GitOps-ValidatedPatterns-PoC배포](06-GitOps-ValidatedPatterns-PoC배포.md)
 - 모델 호출은 **OpenAI 호환 API**(OpenAI Python SDK)로 — 생태계 도구 즉시 연동.
 
 ---
@@ -107,7 +107,7 @@ GenAIOps 배포의 토대. 세 원칙:
 - **평가 데이터셋 만들기**: 프로덕션 trace 중 대표 샘플 선별 → 기대값 주석 → 데이터셋으로 묶어 → 시스템에 돌려 점수 수집. (도구: MLflow 평가)
 
 ### 성능 메트릭(속도)
-- **TTFT**(Time To First Token, 첫 응답 지연), **TPOT**(토큰당 생성 속도), **Throughput**(동시 처리량). 복잡도가 커질수록 use-case 적합성 판단에 필수. (도구: GuideLLM) → [[06-LLM-벤치마킹-GuideLLM-가이드]]
+- **TTFT**(Time To First Token, 첫 응답 지연), **TPOT**(토큰당 생성 속도), **Throughput**(동시 처리량). 복잡도가 커질수록 use-case 적합성 판단에 필수. (도구: GuideLLM) → [06-LLM-벤치마킹-GuideLLM-가이드](../../4-etc-AI-materials/read/06-LLM-벤치마킹-GuideLLM-가이드.md)
 - **LLM-as-Judge**: 정답이 정형화 안 되는 생성물은 또 다른 LLM이 채점(질문에 충실한가, 기대 답과 모순 없는가).
 
 ---
@@ -144,7 +144,7 @@ GenAIOps 배포의 토대. 세 원칙:
 3. **Retrieval Groundedness**: LLM이 **실제로 검색 청크를 근거로** 답했는가(아니면 무시하고 지어냈는가).
 - ⚠️ RAG 평가는 **RAG 전용 judge 프롬프트** 필요 — 일반 기준으로 채점하면 "검색 문서에서 가져온 정당한 답"을 부당하게 깎음.
 
-> 💡 1장(할루시네이션 = 맥락 부족) → 5장(RAG = 맥락 주입)이 한 줄로 이어짐. → [[01-RAG-아키텍처-핵심정리]], [[05-RAG-데모관점-정리]]
+> 💡 1장(할루시네이션 = 맥락 부족) → 5장(RAG = 맥락 주입)이 한 줄로 이어짐. → [01-RAG-아키텍처-핵심정리](../../4-etc-AI-materials/01-RAG-아키텍처-핵심정리.md), [05-RAG-데모관점-정리](05-RAG-데모관점-정리.md)
 
 ---
 
@@ -153,7 +153,7 @@ GenAIOps 배포의 토대. 세 원칙:
 전통 관찰성(메트릭/로그/트레이스)은 **시스템 건강**을 보여주지만, AI 앱에서 진짜 중요한 건 **출력 품질** — 그건 사용자 피드백만이 알려준다.
 
 ### 관찰성 스택
-- **Prometheus**(메트릭·알림) + **Grafana**(대시보드) + **OpenTelemetry Collector**(벤더중립 텔레메트리 수집) + **LokiStack**(로그 집계) + **Tempo**(트레이싱) + OpenShift User Workload Monitoring. → [[04-AI-보안-관찰성-기초]]
+- **Prometheus**(메트릭·알림) + **Grafana**(대시보드) + **OpenTelemetry Collector**(벤더중립 텔레메트리 수집) + **LokiStack**(로그 집계) + **Tempo**(트레이싱) + OpenShift User Workload Monitoring. → [04-AI-보안-관찰성-기초](../../4-etc-AI-materials/04-AI-보안-관찰성-기초.md)
 
 ### 피드백 루프 = GenAIOps의 빠진 고리
 1. **수집**: 응답마다 👍/👎 이진 신호("이 요약 도움됐나요?").
@@ -188,7 +188,7 @@ GenAIOps 배포의 토대. 세 원칙:
   4. **언어 검증**(영어 강제) — **Lingua**
   5. **민감정보(PII)** 탐지(금융·개인 식별자)
   6. **LLM-as-Judge**가 애매한 엣지케이스 최종 판정(특화 탐지기가 놓친 것).
-- **자동화 테스트**: **Spikee**로 프롬프트 인젝션을 자동 시도해 가드레일이 뚫리는지 벤치마크. → [[04-에이전트-AI-패턴]]
+- **자동화 테스트**: **Spikee**로 프롬프트 인젝션을 자동 시도해 가드레일이 뚫리는지 벤치마크. → [04-에이전트-AI-패턴](04-에이전트-AI-패턴.md)
 
 ---
 
@@ -210,7 +210,7 @@ GenAIOps 배포의 토대. 세 원칙:
 - **도구** = JSON 인터페이스로 감싼 서비스(API·DB·계산기). 모델은 추측 대신 도구를 호출해 실데이터를 받음.
 - 흐름: 사용자 요청 → 모델이 어떤 도구·어떤 파라미터인지 결정(JSON 생성) → **백엔드가 실제 실행** → 결과를 모델에 반환 → 모델이 해석해 응답.
 - **도구 스키마(JSON)**: 도구가 뭘 하고, 어떤 파라미터를 받고, 어떤 형식을 반환하는지 정의 → 모델이 도구별 커스텀 지시 없이 올바르게 호출.
-- **MCP(Model Context Protocol)**: 여러 관련 도구를 한 서버로 묶음("도구 하나"가 아니라 "도구상자"). 로컬/원격 실행 가능, 도구 모음을 조직·배포하기 쉽게. → [[03-MCP-핵심]]
+- **MCP(Model Context Protocol)**: 여러 관련 도구를 한 서버로 묶음("도구 하나"가 아니라 "도구상자"). 로컬/원격 실행 가능, 도구 모음을 조직·배포하기 쉽게. → [03-MCP-핵심](03-MCP-핵심.md)
 
 ### Agentic 워크플로
 - 도구 경로를 하드코딩("A 다음 B")하지 않고 **LLM에 순서 결정 자율권**을 줌. **LangGraph** = 그래프 기반으로 복잡 워크플로(상태·분기·반복)를 오케스트레이션하는 프로덕션 프레임워크. ReAct 외에도 plan-then-execute, 병렬 탐색, self-critique 등 패턴 존재.
@@ -218,7 +218,7 @@ GenAIOps 배포의 토대. 세 원칙:
 ### 에이전트 평가 (3계층)
 1. **도구 단위 테스트**: 각 도구(캘린더 API·검색 등)를 통합 전 개별 검증.
 2. **Text→JSON 검증**: LLM이 **도구 호출 JSON을 올바르게 포맷**하고 **맞는 도구를 고르는가**(잘못된 JSON·도구 오선택이 주요 실패점).
-3. **End-to-End**: 전체 워크플로가 사용자를 돕는가. **Tool-use correctness**(예상 도구를 실제로 호출했나 — trace로 "어떤 도구를 어떤 순서로" 추적) + **Task completion** + **LLM-as-Judge**(생성답이 질문에 충실·기대답 대비 정확한가). → [[02-Llama-Stack-핵심]], [[04-에이전트-AI-패턴]]
+3. **End-to-End**: 전체 워크플로가 사용자를 돕는가. **Tool-use correctness**(예상 도구를 실제로 호출했나 — trace로 "어떤 도구를 어떤 순서로" 추적) + **Task completion** + **LLM-as-Judge**(생성답이 질문에 충실·기대답 대비 정확한가). → [02-Llama-Stack-핵심](02-Llama-Stack-핵심.md), [04-에이전트-AI-패턴](04-에이전트-AI-패턴.md)
 
 ---
 
@@ -241,7 +241,7 @@ GenAIOps 배포의 토대. 세 원칙:
 - **CPU 서빙**: 느리지만 **개발·데모·저트래픽엔 충분**. 기밀 제약 시 합리적.
 - **서빙 = 모델을 앱과 분리된 API 엔드포인트로 노출.** RHOAI에선 **KServe가 배포 오케스트레이션**, **vLLM 런타임이 추론**(continuous batching, PagedAttention으로 효율). 결과는 클러스터 내부 OpenAI 호환 엔드포인트(`http://<model>-predictor.<ns>.svc...:8080/v1`).
 - 예: 개발은 Llama 3.2 3B로 하다 온프렘 제약 때문에 **TinyLlama 1.1B(CPU)**로 다운스케일 — 능력 일부를 포기하고 기밀·인프라 제약에 맞추는 실전 판단.
-- ⚠️ **이 장이 우리 non-GPU 학습플랜과 직결** — CPU 서빙 흐름 재현 가능. → [[RHOAI-학습플랜-non-GPU]], [[05-vLLM-추론엔진-핵심정리]]
+- ⚠️ **이 장이 우리 non-GPU 학습플랜과 직결** — CPU 서빙 흐름 재현 가능. → [[RHOAI-학습플랜-non-GPU]], [05-vLLM-추론엔진-핵심정리](../../4-etc-AI-materials/read/05-vLLM-추론엔진-핵심정리.md)
 
 ---
 
@@ -275,7 +275,7 @@ GenAIOps 배포의 토대. 세 원칙:
 
 ### 도구
 - **llm-compressor** = "양자화 맥가이버칼"(여러 알고리즘, HF 호환, vLLM 서빙용 출력). oneshot API + `GPTQModifier`(scheme/targets/ignore)로 소량 코드.
-- 압축 후 **반드시 평가**: **lm-evaluation-harness**(업계표준 벤치로 "안 망가졌나" 검증) + **GuideLLM**(지연/처리량/TTFT). vLLM/KServe 서빙 + ArgoCD로 test→prod 승격. → [[03-LLM-모델-양자화-압축-핵심정리]]
+- 압축 후 **반드시 평가**: **lm-evaluation-harness**(업계표준 벤치로 "안 망가졌나" 검증) + **GuideLLM**(지연/처리량/TTFT). vLLM/KServe 서빙 + ArgoCD로 test→prod 승격. → [03-LLM-모델-양자화-압축-핵심정리](../../4-etc-AI-materials/read/03-LLM-모델-양자화-압축-핵심정리.md)
 
 ---
 
@@ -293,7 +293,7 @@ GenAIOps 배포의 토대. 세 원칙:
 
 ### LiteMaaS의 위치 (⚠️ 중요 구분)
 - 이 lab의 **LiteMaaS = 경량 오픈소스 PoC**(LiteLLM + PostgreSQL + React/PatternFly + Fastify + OpenShift OAuth/JWT). 학습·시연용.
-- **정식 제품 MaaS**의 rate/token limit·HA는 **Kuadrant/Limitador + Redis** 방향(카운터 공유·영속화). LiteMaaS의 PostgreSQL 사용량 저장과 혼동 금지. → [[07-LLMaaS-MaaS-멀티테넌시]], [[홈랩-RHOAI-딜리버리랩-리소스-설계]]
+- **정식 제품 MaaS**의 rate/token limit·HA는 **Kuadrant/Limitador + Redis** 방향(카운터 공유·영속화). LiteMaaS의 PostgreSQL 사용량 저장과 혼동 금지. → [07-LLMaaS-MaaS-멀티테넌시](07-LLMaaS-MaaS-멀티테넌시.md), [[홈랩-RHOAI-딜리버리랩-리소스-설계]]
 
 ---
 
@@ -314,7 +314,7 @@ GenAIOps 배포의 토대. 세 원칙:
 - 파인튜닝은 보통 **500~1000+ 예시** 필요한데 좋은 데이터는 구하기 어렵다 → **SDG Hub**가 LLM으로 합성 학습데이터 생성(수작업 라벨링 없이 가능).
 
 ### 워크플로
-합성데이터 생성(+Docling으로 문서→마크다운) → **Training Hub(Unsloth 백엔드)로 LoRA 학습** → 오프라인 평가(lm-evaluation-harness, 베이스라인 대비) → 레지스트리 저장·배포(ArgoCD로 Canopy 반영). → [[02-모델-학습-파인튜닝-기초]]
+합성데이터 생성(+Docling으로 문서→마크다운) → **Training Hub(Unsloth 백엔드)로 LoRA 학습** → 오프라인 평가(lm-evaluation-harness, 베이스라인 대비) → 레지스트리 저장·배포(ArgoCD로 Canopy 반영). → [02-모델-학습-파인튜닝-기초](../../4-etc-AI-materials/read/02-모델-학습-파인튜닝-기초.md)
 
 ### 15장. Campus Setup (사전구성, 참고)
 OCP 4.19+ / 오퍼레이터 4종(RHOAI·GitOps·Pipelines·NVIDIA GPU) / GPU 노드 3개(Docling용 g4dn T4, 모델 2개용 g5 A10G, taint 분리) / MinIO(S3) / 관찰성(Prometheus·Grafana·Tempo) / HTPasswd / ArgoCD 멀티테넌시 / Tekton.
@@ -332,14 +332,14 @@ OCP 4.19+ / 오퍼레이터 4종(RHOAI·GitOps·Pipelines·NVIDIA GPU) / GPU 노
 ### 위키링크 매핑
 | 주제 | 장 | 심화노트 |
 |---|---|---|
-| LLM 동작/할루시네이션 | 1 | [[01-RHOAI-기초-용어정리]] |
-| 프롬프트/평가 | 2,3,4 | [[06-LLM-벤치마킹-GuideLLM-가이드]] |
-| RAG/임베딩/Docling | 5 | [[01-RAG-아키텍처-핵심정리]], [[05-RAG-데모관점-정리]] |
-| 관찰성/피드백 | 6 | [[04-AI-보안-관찰성-기초]] |
-| 가드레일 | 7 | [[04-에이전트-AI-패턴]] |
-| 에이전트/MCP/도구 | 8 | [[03-MCP-핵심]], [[02-Llama-Stack-핵심]], [[04-에이전트-AI-패턴]] |
-| 서빙(CPU/GPU, vLLM) | 9 | [[05-vLLM-추론엔진-핵심정리]], [[RHOAI-학습플랜-non-GPU]] |
-| 압축/양자화 | 10 | [[03-LLM-모델-양자화-압축-핵심정리]] |
-| MaaS | 11 | [[07-LLMaaS-MaaS-멀티테넌시]] |
-| 파인튜닝/LoRA/SDG | 12 | [[02-모델-학습-파인튜닝-기초]] |
-| GitOps/배포 | 3 | [[06-GitOps-ValidatedPatterns-PoC배포]] |
+| LLM 동작/할루시네이션 | 1 | [01-RHOAI-기초-용어정리](../../3-RHOAI-Personal-materials/01-RHOAI-기초-용어정리.md) |
+| 프롬프트/평가 | 2,3,4 | [06-LLM-벤치마킹-GuideLLM-가이드](../../4-etc-AI-materials/read/06-LLM-벤치마킹-GuideLLM-가이드.md) |
+| RAG/임베딩/Docling | 5 | [01-RAG-아키텍처-핵심정리](../../4-etc-AI-materials/01-RAG-아키텍처-핵심정리.md), [05-RAG-데모관점-정리](05-RAG-데모관점-정리.md) |
+| 관찰성/피드백 | 6 | [04-AI-보안-관찰성-기초](../../4-etc-AI-materials/04-AI-보안-관찰성-기초.md) |
+| 가드레일 | 7 | [04-에이전트-AI-패턴](04-에이전트-AI-패턴.md) |
+| 에이전트/MCP/도구 | 8 | [03-MCP-핵심](03-MCP-핵심.md), [02-Llama-Stack-핵심](02-Llama-Stack-핵심.md), [04-에이전트-AI-패턴](04-에이전트-AI-패턴.md) |
+| 서빙(CPU/GPU, vLLM) | 9 | [05-vLLM-추론엔진-핵심정리](../../4-etc-AI-materials/read/05-vLLM-추론엔진-핵심정리.md), [[RHOAI-학습플랜-non-GPU]] |
+| 압축/양자화 | 10 | [03-LLM-모델-양자화-압축-핵심정리](../../4-etc-AI-materials/read/03-LLM-모델-양자화-압축-핵심정리.md) |
+| MaaS | 11 | [07-LLMaaS-MaaS-멀티테넌시](07-LLMaaS-MaaS-멀티테넌시.md) |
+| 파인튜닝/LoRA/SDG | 12 | [02-모델-학습-파인튜닝-기초](../../4-etc-AI-materials/read/02-모델-학습-파인튜닝-기초.md) |
+| GitOps/배포 | 3 | [06-GitOps-ValidatedPatterns-PoC배포](06-GitOps-ValidatedPatterns-PoC배포.md) |

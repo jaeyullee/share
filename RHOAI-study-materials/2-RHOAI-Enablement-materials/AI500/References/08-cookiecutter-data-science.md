@@ -25,4 +25,4 @@ Python 3.9+ 필요. pipx(권장) 또는 pip로 설치 후 `ccds` 명령으로 �
 
 ## 워크숍 맥락
 
-ML 프로젝트를 처음부터 정돈된 구조로 시작하게 해줌. [[06-made-with-ml]]의 "Design/프로젝트 구조" 실천 도구.
+ML 프로젝트를 처음부터 정돈된 구조로 시작하게 해줌. [06-made-with-ml](06-made-with-ml.md)의 "Design/프로젝트 구조" 실천 도구.

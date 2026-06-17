@@ -1,7 +1,7 @@
 # 요약 ② MLOps 방법론·실전
 
 > References 중 **MLOps 개념·성숙도·실전 구현·프로젝트 구조** 자료 3종 요약. 상세는 각 개별 노트 참조.
-> 묶음: [[References/07-google-mlops]] · [[References/06-made-with-ml]] · [[References/08-cookiecutter-data-science]]
+> 묶음: [References/07-google-mlops](References/07-google-mlops.md) · [References/06-made-with-ml](References/06-made-with-ml.md) · [References/08-cookiecutter-data-science](References/08-cookiecutter-data-science.md)
 
 ## 개념(왜·무엇) → 실전(어떻게) → 구조(어디에) 순으로 본다.
 

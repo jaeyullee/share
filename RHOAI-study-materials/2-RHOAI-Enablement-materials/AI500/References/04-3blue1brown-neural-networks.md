@@ -19,4 +19,4 @@
 
 ## 워크숍 맥락
 
-[[09-cnn-explainer]], [[05-tensorflow-playground]]와 함께 신경망 직관을 쌓는 데 쓰는 시각 자료. 영상이라 fetch로 본문 추출 불가 — 링크로 직접 시청.
+[09-cnn-explainer](09-cnn-explainer.md), [05-tensorflow-playground](05-tensorflow-playground.md)와 함께 신경망 직관을 쌓는 데 쓰는 시각 자료. 영상이라 fetch로 본문 추출 불가 — 링크로 직접 시청.

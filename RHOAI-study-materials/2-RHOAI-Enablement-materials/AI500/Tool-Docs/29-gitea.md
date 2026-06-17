@@ -23,4 +23,4 @@
 
 ## 워크숍 맥락
 
-워크숍 환경의 셀프호스팅 Git 서버. [[../References/02-ai-on-openshift-gitops]]의 GitOps 레포·[[21-argocd]] 소스, [[22-tekton]]/Gitea Actions CI 트리거 역할.
+워크숍 환경의 셀프호스팅 Git 서버. [../References/02-ai-on-openshift-gitops](../References/02-ai-on-openshift-gitops.md)의 GitOps 레포·[21-argocd](21-argocd.md) 소스, [22-tekton](22-tekton.md)/Gitea Actions CI 트리거 역할.

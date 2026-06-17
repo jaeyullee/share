@@ -20,4 +20,4 @@ K8s 매니페스트·Helm 차트를 보안 표준·프로덕션 준비도 베스
 
 ## 워크숍 맥락
 
-[[27-helm-lint]]가 차트 문법을, KubeLinter는 보안·운영 정책을 검사. [[22-tekton]] CI 또는 [[21-argocd]] 배포 전 게이트. [[../References/02-ai-on-openshift-gitops]]의 RHOAI CR 매니페스트 검증에 활용.
+[27-helm-lint](27-helm-lint.md)가 차트 문법을, KubeLinter는 보안·운영 정책을 검사. [22-tekton](22-tekton.md) CI 또는 [21-argocd](21-argocd.md) 배포 전 게이트. [../References/02-ai-on-openshift-gitops](../References/02-ai-on-openshift-gitops.md)의 RHOAI CR 매니페스트 검증에 활용.

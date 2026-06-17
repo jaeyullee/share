@@ -23,4 +23,4 @@
 
 ## 워크숍 맥락
 
-Helm 차트 개발의 1차 검증. [[26-kubelinter]](보안·운영 정책)와 상보적. [[21-argocd]]가 Helm 차트를 배포하므로 사전 린트로 안정성 확보.
+Helm 차트 개발의 1차 검증. [26-kubelinter](26-kubelinter.md)(보안·운영 정책)와 상보적. [21-argocd](21-argocd.md)가 Helm 차트를 배포하므로 사전 린트로 안정성 확보.

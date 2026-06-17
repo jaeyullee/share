@@ -25,4 +25,4 @@ quickstart, 개념·아키텍처, 튜토리얼, 플랫폼별 가이드(Snowflake
 
 ## 워크숍 맥락
 
-[[../References/07-google-mlops]] Level 1의 "Feature Store"를 구현하는 도구. 용어집의 Feature Store·Feature Engineering과 직결.
+[../References/07-google-mlops](../References/07-google-mlops.md) Level 1의 "Feature Store"를 구현하는 도구. 용어집의 Feature Store·Feature Engineering과 직결.

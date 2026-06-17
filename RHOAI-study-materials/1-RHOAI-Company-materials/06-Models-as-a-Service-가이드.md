@@ -12,7 +12,7 @@ source: A guide to Models-as-a-Service.PDF
 # A guide to Models-as-a-Service (MaaS) 정리
 
 > 원본: `A guide to Models-as-a-Service.PDF` — MaaS 개념·운영 모델·Red Hat 내부 구현 가이드.
-> 상위 맥락: [[00-인덱스]]
+> 상위 맥락: [00-인덱스](00-인덱스.md)
 
 ---
 
@@ -55,5 +55,5 @@ source: A guide to Models-as-a-Service.PDF
 
 ## 메모
 
-- MaaS는 거의 모든 자료에 등장하는 핵심 패턴. 기술 구현은 [[01-Red-Hat-AI-기술개요]] §llm-d/MaaS, 영업 수치는 [[04-Inference-at-Scale-세일즈]].
+- MaaS는 거의 모든 자료에 등장하는 핵심 패턴. 기술 구현은 [01-Red-Hat-AI-기술개요](01-Red-Hat-AI-기술개요.md) §llm-d/MaaS, 영업 수치는 [04-Inference-at-Scale-세일즈](04-Inference-at-Scale-세일즈.md).
 - 인터랙티브 데모: red.ht/maas-pattern.

@@ -2,7 +2,7 @@
 
 > OCP 엔지니어 관점 공부자료 | 예상 읽기 시간: 10분
 
-> **이 문서는 KServe 배포모드·KPA/KEDA 오토스케일링·ModelCar 빌드 심화 레이어다.** RHOAI 전반·MLOps 라이프사이클·GPU 통신 등 종합은 SSOT [[03-rhoai-mlops-knowledge]], 입문·용어는 [[01-RHOAI-기초-용어정리]] 참조.
+> **이 문서는 KServe 배포모드·KPA/KEDA 오토스케일링·ModelCar 빌드 심화 레이어다.** RHOAI 전반·MLOps 라이프사이클·GPU 통신 등 종합은 SSOT [03-rhoai-mlops-knowledge](03-rhoai-mlops-knowledge.md), 입문·용어는 [01-RHOAI-기초-용어정리](01-RHOAI-기초-용어정리.md) 참조.
 
 ---
 
@@ -12,7 +12,7 @@ OpenShift AI(RHOAI)는 OCP 위에 올라가는 **AI 운영 레이어**다. 쉽�
 
 데이터 과학자는 Jupyter 노트북에서 모델을 만들고, 엔지니어는 KServe로 그 모델을 서비스로 배포한다. 둘 다 같은 OCP 클러스터 위에서 돌아간다.
 
-**업스트림 관계**(ODH → RHODS → RHOAI 계보)와 "조립품으로서의 RHOAI" 설계 철학은 [[03-rhoai-mlops-knowledge]] §1 참조.
+**업스트림 관계**(ODH → RHODS → RHOAI 계보)와 "조립품으로서의 RHOAI" 설계 철학은 [03-rhoai-mlops-knowledge](03-rhoai-mlops-knowledge.md) §1 참조.
 
 ---
 

@@ -19,4 +19,4 @@
 
 ## 워크숍 맥락
 
-[[../References/06-made-with-ml]]의 "Testing"(코드·데이터·모델 검증), [[../References/07-google-mlops]] Level 2 CI의 단위 테스트를 구현. [[22-tekton]] 파이프라인의 테스트 스텝.
+[../References/06-made-with-ml](../References/06-made-with-ml.md)의 "Testing"(코드·데이터·모델 검증), [../References/07-google-mlops](../References/07-google-mlops.md) Level 2 CI의 단위 테스트를 구현. [22-tekton](22-tekton.md) 파이프라인의 테스트 스텝.

@@ -22,4 +22,4 @@ Kubernetes-네이티브 리소스 사용. operator 가이드(인스턴스 배포
 
 ## 워크숍 맥락
 
-RHOAI Data Science Pipelines의 기반. [[13-kfp-sdk]]로 파이프라인을 작성하고 [[14-kfp-kubernetes]]로 K8s 기능을 붙임. [[../References/10-redhat-modular-ai-pipelines]]의 재사용 컴포넌트가 여기에 얹힘.
+RHOAI Data Science Pipelines의 기반. [13-kfp-sdk](13-kfp-sdk.md)로 파이프라인을 작성하고 [14-kfp-kubernetes](14-kfp-kubernetes.md)로 K8s 기능을 붙임. [../References/10-redhat-modular-ai-pipelines](../References/10-redhat-modular-ai-pipelines.md)의 재사용 컴포넌트가 여기에 얹힘.

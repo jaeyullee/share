@@ -22,4 +22,4 @@
 
 ## 워크숍 맥락
 
-[[../References/07-google-mlops]] Level 2의 "Monitoring"을 구현하는 시각화 레이어. RHOAI/모델 서빙([[18-kserve]])·[[15-trustyai]] 지표를 대시보드로 관찰. [[04-AI-보안-관찰성-기초]]와 연계.
+[../References/07-google-mlops](../References/07-google-mlops.md) Level 2의 "Monitoring"을 구현하는 시각화 레이어. RHOAI/모델 서빙([18-kserve](18-kserve.md))·[15-trustyai](15-trustyai.md) 지표를 대시보드로 관찰. [04-AI-보안-관찰성-기초](../../../4-etc-AI-materials/04-AI-보안-관찰성-기초.md)와 연계.

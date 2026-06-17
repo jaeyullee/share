@@ -13,7 +13,7 @@ source: Red Hat AI Technical Overview.PDF
 # Red Hat AI Technical Overview 정리
 
 > 원본: `Red Hat AI Technical Overview.PDF` — Red Hat AI 전반을 가장 폭넓게 다루는 기술 덱.
-> 상위 맥락: [[00-인덱스]]
+> 상위 맥락: [00-인덱스](00-인덱스.md)
 
 ---
 

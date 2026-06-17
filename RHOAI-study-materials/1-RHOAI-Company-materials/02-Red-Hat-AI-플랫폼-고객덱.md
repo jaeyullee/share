@@ -12,7 +12,7 @@ source: Red Hat AI Platform _ Customer Deck.PDF
 # Red Hat AI Platform — Customer Deck 정리
 
 > 원본: `Red Hat AI Platform _ Customer Deck.PDF` (최신 업데이트 2026-02). 고객/영업 발표용 덱 + 제품 슬라이드 + 고객사례.
-> 상위 맥락: [[00-인덱스]] / 기술 상세는 [[01-Red-Hat-AI-기술개요]]
+> 상위 맥락: [00-인덱스](00-인덱스.md) / 기술 상세는 [01-Red-Hat-AI-기술개요](01-Red-Hat-AI-기술개요.md)
 
 ---
 
@@ -26,7 +26,7 @@ source: Red Hat AI Platform _ Customer Deck.PDF
 
 빠르고 유연·효율적 추론 / 모델-데이터 연결의 단순·일관 경험 / 에이전트 AI 가속 / 하이브리드 클라우드 스케일.
 - Trusted·Consistent·Comprehensive 기반 + 하드웨어 가속(Physical/Virtual/Private/Sovereign/Public/Edge).
-- **제품 4종**: Red Hat AI Enterprise / Inference Server / OpenShift AI / RHEL AI ([[00-인덱스]] 표 참고).
+- **제품 4종**: Red Hat AI Enterprise / Inference Server / OpenShift AI / RHEL AI ([00-인덱스](00-인덱스.md) 표 참고).
 
 ### 3.4 제품 업데이트 (덱 기재)
 - **Inference**: AI 게이트웨이 MaaS, vLLM 모델·HW 확대, llm-d 요청 우선순위·배치추론, speculative decoding.
@@ -83,5 +83,5 @@ source: Red Hat AI Platform _ Customer Deck.PDF
 
 ## 메모
 
-- 영업 토킹포인트·고객사례 중심. 기술 깊이는 [[01-Red-Hat-AI-기술개요]], [[03-AI-Inference-기술개요]] 참고.
+- 영업 토킹포인트·고객사례 중심. 기술 깊이는 [01-Red-Hat-AI-기술개요](01-Red-Hat-AI-기술개요.md), [03-AI-Inference-기술개요](03-AI-Inference-기술개요.md) 참고.
 - "ogx" = Llama Stack 신규 명칭으로 표기됨 (자료 시점 2026-02).

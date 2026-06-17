@@ -1,7 +1,7 @@
 # MCP (Model Context Protocol) 핵심 (enabler 관점)
 
 > `lb1726-mcp-showroom`(#8) + `llamastack-on-ocp`(#4) + `agentic-ai-llamastack`(#5) + `llmaas`(#2)에서 추출.
-> 연결: [[02-Llama-Stack-핵심]], [[04-에이전트-AI-패턴]], [[02-AI-에이전트-도구호출-프롬프트패턴]]
+> 연결: [02-Llama-Stack-핵심](02-Llama-Stack-핵심.md), [04-에이전트-AI-패턴](04-에이전트-AI-패턴.md), [02-AI-에이전트-도구호출-프롬프트패턴](../../4-etc-AI-materials/02-AI-에이전트-도구호출-프롬프트패턴.md)
 
 ---
 

@@ -1,7 +1,7 @@
 # 요약 ③ OpenShift AI(RHOAI) 실무
 
 > References 중 **OpenShift AI 플랫폼 실무·GitOps·파이프라인 구축** 자료 3종 요약. 상세는 각 개별 노트 참조.
-> 묶음: [[References/01-ai-on-openshift]] · [[References/02-ai-on-openshift-gitops]] · [[References/10-redhat-modular-ai-pipelines]]
+> 묶음: [References/01-ai-on-openshift](References/01-ai-on-openshift.md) · [References/02-ai-on-openshift-gitops](References/02-ai-on-openshift-gitops.md) · [References/10-redhat-modular-ai-pipelines](References/10-redhat-modular-ai-pipelines.md)
 
 ## 플랫폼 지식 허브 → 선언적 운영(GitOps) → 파이프라인 모듈화 순으로 실무에 접근한다.
 
@@ -29,4 +29,4 @@ RHOAI를 **Kubernetes 커스텀 리소스(YAML)**로 GitOps 관리:
 
 ## 한 줄 정리
 
-**무엇으로 배우고(ai-on-openshift) → 어떻게 운영하고(GitOps CR) → 어떻게 파이프라인을 짜는가(재사용 컴포넌트)**. RHOAI 워크숍 실무의 뼈대. 도구 상세는 [[Tool-Docs/11-openshift-ai]]·[[Tool-Docs/18-kserve]]·[[Tool-Docs/12-kubeflow-pipelines]] 참조.
+**무엇으로 배우고(ai-on-openshift) → 어떻게 운영하고(GitOps CR) → 어떻게 파이프라인을 짜는가(재사용 컴포넌트)**. RHOAI 워크숍 실무의 뼈대. 도구 상세는 [Tool-Docs/11-openshift-ai](Tool-Docs/11-openshift-ai.md)·[Tool-Docs/18-kserve](Tool-Docs/18-kserve.md)·[Tool-Docs/12-kubeflow-pipelines](Tool-Docs/12-kubeflow-pipelines.md) 참조.

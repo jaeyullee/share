@@ -1,7 +1,7 @@
 # RAG — 데모 관점 정리 (enabler)
 
 > `generative-ai-rag`(#9) + `rag-llm-gitops`(#6) + `genai-rhoai-poc-template`(#11) + Llama Stack RAG(#4,#5)에서 추출.
-> RAG **이론**은 [[01-RAG-아키텍처-핵심정리]]에 깊게 있음. 이 노트는 **데모들이 RAG를 어떻게 보여주고 구현하는가**(실전·셀링)에 집중.
+> RAG **이론**은 [01-RAG-아키텍처-핵심정리](../../4-etc-AI-materials/01-RAG-아키텍처-핵심정리.md)에 깊게 있음. 이 노트는 **데모들이 RAG를 어떻게 보여주고 구현하는가**(실전·셀링)에 집중.
 
 ---
 
@@ -66,6 +66,6 @@
 ## 7. enabler 핵심 메시지
 
 - 발표용: generative-ai-rag(#9)는 **비즈니스 가치(ROI) → 데모** 흐름이라 임원 대상에 적합. "재학습 vs RAG" 비교가 핵심 슬라이드.
-- 구현용: rag-llm-gitops(#6, GitOps 정석) 또는 genai-poc-template(#11, 가벼운 PoC) 중 선택 → [[06-GitOps-ValidatedPatterns-PoC배포]]
+- 구현용: rag-llm-gitops(#6, GitOps 정석) 또는 genai-poc-template(#11, 가벼운 PoC) 중 선택 → [06-GitOps-ValidatedPatterns-PoC배포](06-GitOps-ValidatedPatterns-PoC배포.md)
 - 자주 받는 질문 대비: 청킹 전략, 벡터 DB 선택 근거, 임베딩 모델, 할루시네이션 억제(인용·검색품질), 데이터 보안(온프레 배포).
-- RAG는 만능 아님 → 실시간/연산형 질의는 도구호출(에이전트)·Agentic RAG와 결합 필요 → [[04-에이전트-AI-패턴]]
+- RAG는 만능 아님 → 실시간/연산형 질의는 도구호출(에이전트)·Agentic RAG와 결합 필요 → [04-에이전트-AI-패턴](04-에이전트-AI-패턴.md)

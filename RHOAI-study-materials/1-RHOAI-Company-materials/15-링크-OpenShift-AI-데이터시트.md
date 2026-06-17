@@ -14,7 +14,7 @@ source: https://www.redhat.com/en/resources/production-ai-for-cloud-environments
 
 > 원본 링크: https://www.redhat.com/en/resources/production-ai-for-cloud-environments-datasheet
 > (reference_link.md 2번째 링크. WebFetch 요약 — 게이트형 데이터시트일 수 있어 핵심만.)
-> 상위 맥락: [[00-인덱스]] / 포트폴리오 맥락 [[07-프로덕션-운영-엔터프라이즈플랫폼]]
+> 상위 맥락: [00-인덱스](00-인덱스.md) / 포트폴리오 맥락 [07-프로덕션-운영-엔터프라이즈플랫폼](07-프로덕션-운영-엔터프라이즈플랫폼.md)
 
 ---
 
@@ -49,6 +49,6 @@ source: https://www.redhat.com/en/resources/production-ai-for-cloud-environments
 
 ## 메모
 
-- RHOAI 제품 상세는 [[07-프로덕션-운영-엔터프라이즈플랫폼]] §OpenShift AI, [[02-Red-Hat-AI-플랫폼-고객덱]] 제품 슬라이드 참고.
-- 관련 vault: [[02-OpenShift-AI-플랫폼-아키텍처]], [[03-rhoai-mlops-knowledge]], [[project_rhoai_tracker]] (기능 라이프사이클 추적).
+- RHOAI 제품 상세는 [07-프로덕션-운영-엔터프라이즈플랫폼](07-프로덕션-운영-엔터프라이즈플랫폼.md) §OpenShift AI, [02-Red-Hat-AI-플랫폼-고객덱](02-Red-Hat-AI-플랫폼-고객덱.md) 제품 슬라이드 참고.
+- 관련 vault: [02-OpenShift-AI-플랫폼-아키텍처](../3-RHOAI-Personal-materials/02-OpenShift-AI-플랫폼-아키텍처.md), [03-rhoai-mlops-knowledge](../3-RHOAI-Personal-materials/03-rhoai-mlops-knowledge.md). (RHOAI 기능 라이프사이클은 별도 추적.)
 - 링크 본문이 폼 게이트일 경우 위 요약은 공개 메타데이터 기준.

@@ -20,4 +20,4 @@ Task(작업 단위), Pipeline(Task 조합), TaskRun/PipelineRun(실행 인스턴
 
 ## 워크숍 맥락
 
-OpenShift Pipelines의 기반. [[../References/02-ai-on-openshift-gitops]]에서 GitOps 미지원인 Data Science Pipelines를 우회 구동하는 데 사용. CI 파이프라인에서 [[23-pytest]]·[[24-black]]·[[26-kubelinter]] 실행.
+OpenShift Pipelines의 기반. [../References/02-ai-on-openshift-gitops](../References/02-ai-on-openshift-gitops.md)에서 GitOps 미지원인 Data Science Pipelines를 우회 구동하는 데 사용. CI 파이프라인에서 [23-pytest](23-pytest.md)·[24-black](24-black.md)·[26-kubelinter](26-kubelinter.md) 실행.

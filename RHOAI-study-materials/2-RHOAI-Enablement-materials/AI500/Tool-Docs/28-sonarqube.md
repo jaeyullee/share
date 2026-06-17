@@ -26,4 +26,4 @@ Java, Python, JavaScript/TypeScript, C/C++, C#, Go 등 다수 언어 지원.
 
 ## 워크숍 맥락
 
-[[23-pytest]]·[[24-black]]·[[25-flake8]]이 로컬/파일 단위라면, SonarQube는 프로젝트 전역 품질·보안 게이트. [[22-tekton]] CI에 통합. *(공식 문서 봇 차단 — 확립된 사실 기반 정리)*
+[23-pytest](23-pytest.md)·[24-black](24-black.md)·[25-flake8](25-flake8.md)이 로컬/파일 단위라면, SonarQube는 프로젝트 전역 품질·보안 게이트. [22-tekton](22-tekton.md) CI에 통합. *(공식 문서 봇 차단 — 확립된 사실 기반 정리)*

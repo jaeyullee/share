@@ -20,4 +20,4 @@
 
 ## 워크숍 맥락
 
-하이퍼파라미터(레이어 수, 학습률, 활성화 함수)가 학습에 미치는 영향을 손으로 실험해보는 용도. [[04-3blue1brown-neural-networks]] 이론과 짝.
+하이퍼파라미터(레이어 수, 학습률, 활성화 함수)가 학습에 미치는 영향을 손으로 실험해보는 용도. [04-3blue1brown-neural-networks](04-3blue1brown-neural-networks.md) 이론과 짝.
