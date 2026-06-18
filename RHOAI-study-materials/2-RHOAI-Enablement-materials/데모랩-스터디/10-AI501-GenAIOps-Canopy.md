@@ -293,7 +293,7 @@ GenAIOps 배포의 토대. 세 원칙:
 
 ### LiteMaaS의 위치 (⚠️ 중요 구분)
 - 이 lab의 **LiteMaaS = 경량 오픈소스 PoC**(LiteLLM + PostgreSQL + React/PatternFly + Fastify + OpenShift OAuth/JWT). 학습·시연용.
-- **정식 제품 MaaS**의 rate/token limit·HA는 **Kuadrant/Limitador + Redis** 방향(카운터 공유·영속화). LiteMaaS의 PostgreSQL 사용량 저장과 혼동 금지. → [07-LLMaaS-MaaS-멀티테넌시](07-LLMaaS-MaaS-멀티테넌시.md), [[홈랩-RHOAI-딜리버리랩-리소스-설계]]
+- **정식 제품 MaaS**의 rate/token limit·HA는 **Kuadrant/Limitador + Redis** 방향(카운터 공유·영속화). LiteMaaS의 PostgreSQL 사용량 저장과 혼동 금지. → [07-LLMaaS-MaaS-멀티테넌시](07-LLMaaS-MaaS-멀티테넌시.md)
 
 ---
 
