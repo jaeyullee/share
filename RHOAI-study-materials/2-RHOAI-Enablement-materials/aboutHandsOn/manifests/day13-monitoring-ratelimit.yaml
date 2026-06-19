@@ -1,0 +1,69 @@
+# =============================================================================
+# Day 13 — Prometheus/Grafana 모니터링 + Rate Limiting
+# 확인: oc get servicemonitor -n ai-enablement
+#       PromQL(콘솔 Observe): rate(request_count[5m]),
+#       histogram_quantile(0.95, sum(rate(request_latency_bucket[5m])) by (le))
+#       GPU: DCGM_FI_DEV_GPU_UTIL, DCGM_FI_DEV_FB_USED
+# =============================================================================
+---
+# UWM 활성화
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cluster-monitoring-config
+  namespace: openshift-monitoring
+data:
+  config.yaml: |
+    enableUserWorkload: true
+---
+# InferenceService 메트릭 수집
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: kserve-metrics
+  namespace: ai-enablement
+  labels: {app: kserve}
+spec:
+  selector:
+    matchLabels: {component: predictor}
+  endpoints:
+    - {port: metrics, interval: 15s, path: /metrics}
+---
+# 알림 규칙 — GPU 사용률 90% 초과 / 추론 지연 급증
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: ai-alerts
+  namespace: ai-enablement
+spec:
+  groups:
+    - name: ai.rules
+      rules:
+        - alert: HighGpuUtil
+          expr: DCGM_FI_DEV_GPU_UTIL > 90
+          for: 5m
+          labels: {severity: warning}
+          annotations: {summary: "GPU 사용률 90% 초과"}
+        - alert: HighInferenceLatencyP95
+          expr: histogram_quantile(0.95, sum(rate(request_latency_bucket[5m])) by (le)) > 1
+          for: 5m
+          labels: {severity: warning}
+          annotations: {summary: "P95 추론 지연 1s 초과"}
+---
+# --- Rate Limiting (Day13 후반) ---
+# OpenShift는 Gateway API + Kuadrant(Limitador)로 토큰/요청 한도를 건다.
+# 전제: Kuadrant Operator + Gateway API. (간단 데모는 Envoy/Ingress rate-limit로도 가능)
+apiVersion: kuadrant.io/v1
+kind: RateLimitPolicy
+metadata: {name: api-ratelimit, namespace: ai-enablement}
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: model-route          # 서빙 엔드포인트를 노출하는 HTTPRoute
+  limits:
+    per-team:
+      rates:
+        - {limit: 100, window: 1s}     # 초당 100요청 초과 시 429 Too Many Requests
+      counters:
+        - expression: request.headers["x-team"]

@@ -1,0 +1,68 @@
+# =============================================================================
+# Day 11 — GPU 노드 확인 + Kueue 스케줄링 + 우선순위 (Environment B - GPU)
+# 전제: GPU 노드가 있는 클러스터(AI500 GPU 환경). NFD/GPU Operator는 설치돼 있다고 가정.
+# 확인: oc get nodes -l nvidia.com/gpu.present=true
+#       oc get clusterqueue ; oc get localqueue -n ai-enablement
+# =============================================================================
+---
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: ResourceFlavor
+metadata: {name: gpu-flavor}
+spec:
+  nodeLabels:
+    nvidia.com/gpu.present: "true"
+---
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: ClusterQueue
+metadata: {name: gpu-cq}
+spec:
+  namespaceSelector: {}
+  queueingStrategy: BestEffortFIFO
+  preemption:
+    withinClusterQueue: LowerPriority
+  resourceGroups:
+    - coveredResources: ["cpu", "memory", "nvidia.com/gpu"]
+      flavors:
+        - name: gpu-flavor
+          resources:
+            - {name: cpu, nominalQuota: "16"}
+            - {name: memory, nominalQuota: 64Gi}
+            - {name: "nvidia.com/gpu", nominalQuota: "1"}
+---
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: LocalQueue
+metadata: {name: gpu-lq, namespace: ai-enablement}
+spec: {clusterQueue: gpu-cq}
+---
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: WorkloadPriorityClass
+metadata: {name: high-priority}
+value: 1000
+description: "중요 학습/추론 잡"
+---
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: WorkloadPriorityClass
+metadata: {name: low-priority}
+value: 100
+description: "배치/실험 잡"
+---
+# GPU 테스트 Job — 우선순위 스케줄 확인용(high 먼저 admit)
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: gpu-smoke-high
+  namespace: ai-enablement
+  labels:
+    kueue.x-k8s.io/queue-name: gpu-lq
+    kueue.x-k8s.io/priority-class: high-priority
+spec:
+  suspend: true
+  template:
+    spec:
+      containers:
+        - name: cuda
+          image: nvidia/cuda:12.4.1-base-ubi9
+          command: ["sh", "-c", "nvidia-smi && sleep 60"]
+          resources:
+            limits: {nvidia.com/gpu: "1"}
+      restartPolicy: Never
