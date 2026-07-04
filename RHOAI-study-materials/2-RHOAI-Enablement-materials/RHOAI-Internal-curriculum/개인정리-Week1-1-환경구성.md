@@ -117,9 +117,13 @@ operators:
 
 ### Red Hat OpenShift AI 오퍼레이터 설치
 1. cert-manager 오퍼레이터 설치
+
 2. Job Set Operator > JobSetOperator 인스턴스 생성
+
 3. image.config.openshift.io/cluster.spec.additionalTrustedCA에 registry CA ConfigMap을 연결
+
 4. StorageClass 구성 및 default storageclass 지정
+
 5. (Servicemesh3 오퍼레이터 미러 시 3.3.1 제외한 경우만)RHOAI의 DSCInitialization 인스턴스가 생성하는 gateway pod에 필요한 이미지 pull. RHOAI 버전에 따라 확인 필요
 ```yaml
 kind: ImageSetConfiguration
@@ -129,6 +133,7 @@ mirror:
   - name: registry.redhat.io/openshift-service-mesh/istio-pilot-rhel9@sha256:4813bf7ae960860d28b5ab7b493ce10f1879e3276b1b64732299a9750737bcfd
   - name: registry.redhat.io/openshift-service-mesh/istio-proxyv2-rhel9@sha256:bc34f81266d8b0d2f5a8e71e966098d4edef70ac8dbb077a014a27fe1b71ec0a
 ```
+
 6. red hat openshift ai 오퍼레이터 설치 > DataScienceCluster 인스턴스 생성
 ```yaml
 spec:
@@ -181,6 +186,7 @@ spec:
     trainingoperator:
       managementState: Removed              # Kubeflow Trainer 계열 기능 사용 여부
 ```
+
 7. (rh-ai 콘솔 접속 실패하는 경우에만. 403 status) 네트워크 폴리시 추가
 ```bash
 oc apply -f - <<'EOF'
@@ -208,7 +214,65 @@ oc get networkpolicy -n openshift-ingress kube-auth-proxy-allow-egress
 oc logs -n openshift-ingress deploy/kube-auth-proxy --tail=50
 curl -k -I https://rh-ai.apps.sno.ocp422.com/
 ```
-8. 9020 포트로 서비스하는 minio 준비 및 5010 포트로 서비스하는 model image registry 준비
+
+### 9020 포트로 서비스하는 minio 준비 및 5010 포트로 서비스하는 model image registry 준비
+
+### node tuning operator(기본 오퍼레이터) 이용해서 ip forwarding 설정 노드튜닝 하기
+```bash
+oc apply -f <<'EOF'
+apiVersion: tuned.openshift.io/v1
+kind: Tuned
+metadata:
+  name: s3-egressip-forwarding
+  namespace: openshift-cluster-node-tuning-operator
+spec:
+  profile:
+    - name: s3-egressip-forwarding
+      data: |
+        [main]
+        summary=Enable IPv4 forwarding on the storage NIC for S3 EgressIP
+        include=openshift-node
+
+        [sysctl]
+        net.ipv4.conf.enp6s19.forwarding=1
+  recommend:
+    - match:
+        - label: k8s.ovn.org/egress-assignable
+          value: !!str true
+      priority: 20
+      profile: s3-egressip-forwarding
+EOF
+
+oc label node ocp-w01-gpu k8s.ovn.org/egress-assignable=true --overwrite
+oc label node ocp-w02-cpu k8s.ovn.org/egress-assignable=true --overwrite
+
+oc label ns jukebox network-zone=s3 --overwrite
+
+oc apply -f <<'EOF'
+apiVersion: k8s.ovn.org/v1
+kind: EgressIP
+metadata:
+  name: s3-storage-egress
+spec:
+  egressIPs:
+    - 192.168.20.55
+  namespaceSelector:
+    matchLabels:
+      network-zone: s3
+EOF
+
+## 검증
+oc get egressip s3-storage-egress -oyaml
+oc get ns jukebox --show-labels
+oc get nodes -l k8s.ovn.org/egress-assignable --show-labels
+```
+
+
+### mc cli 설치
+```bash
+curl -L https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc
+chmod +x /usr/local/bin/mc
+```
 
 
 **이 아래쪽은 미리 정리만 했을 뿐 아직 검증되지 않았습니다.**

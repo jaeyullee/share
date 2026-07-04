@@ -51,55 +51,6 @@ metadata:
 secrets:
   - name: aws-connection-models
 EOF
-
-
-## node tuning operator(기본 오퍼레이터) 이용해서 ip forwarding 설정 노드튜닝 하기
-oc apply -f <<'EOF'
-apiVersion: tuned.openshift.io/v1
-kind: Tuned
-metadata:
-  name: s3-egressip-forwarding
-  namespace: openshift-cluster-node-tuning-operator
-spec:
-  profile:
-    - name: s3-egressip-forwarding
-      data: |
-        [main]
-        summary=Enable IPv4 forwarding on the storage NIC for S3 EgressIP
-        include=openshift-node
-
-        [sysctl]
-        net.ipv4.conf.enp6s19.forwarding=1
-  recommend:
-    - match:
-        - label: k8s.ovn.org/egress-assignable
-          value: !!str true
-      priority: 20
-      profile: s3-egressip-forwarding
-EOF
-
-oc label node ocp-w01-gpu k8s.ovn.org/egress-assignable=true --overwrite
-oc label node ocp-w02-cpu k8s.ovn.org/egress-assignable=true --overwrite
-
-oc label ns jukebox network-zone=s3 --overwrite
-
-oc apply -f <<'EOF'
-apiVersion: k8s.ovn.org/v1
-kind: EgressIP
-metadata:
-  name: s3-storage-egress
-spec:
-  egressIPs:
-    - 192.168.20.55
-  namespaceSelector:
-    matchLabels:
-      network-zone: s3
-EOF
-
-## 검증
-oc get egressip s3-storage-egress -oyaml
-oc get ns jukebox --show-labels
-oc get nodes -l k8s.ovn.org/egress-assignable --show-labels
 ```
 
 ### 이미지 준비
@@ -109,9 +60,6 @@ skopeo copy --dest-creds '<nexus_id>:<nexus_pw>' --dest-tls-verify=false docker:
 
 ### 모델 준비
 ```bash
-curl -L https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc
-chmod +x /usr/local/bin/mc
-
 mkdir -p /tmp/python3/models
 cd /tmp/python3
 
@@ -151,9 +99,45 @@ if __name__ == "__main__":
     main()
 EOF
 
+## 필요 라이브러리를 내부 넥서스에 업로드
+cd /tmp
+rm -rf /tmp/wheelhouse
+mkdir -p /tmp/wheelhouse
+cat >/tmp/day3-iris-requirements.txt <<'EOF'
+scikit-learn==1.6.1
+numpy==1.26.4
+scipy==1.13.1
+joblib==1.4.2
+threadpoolctl==3.5.0
+EOF
+
+python3 -m venv /tmp/pypi-upload-venv
+source /tmp/pypi-upload-venv/bin/activate
+python3 -m pip install --upgrade pip
+
+python3 -m pip download --only-binary=:all: -r /tmp/day3-iris-requirements.txt -d /tmp/wheelhouse
+
+python3 -m pip install \
+  'twine==5.0.0' \
+  'pkginfo==1.12.1.2'
+python -m pip show twine pkginfo
+
+twine upload \
+  --repository-url http://192.168.10.50:8081/repository/pypi-hosted/ \
+  -u <nexus_id> -p '<nexus_pw>' \
+  /tmp/wheelhouse/*
+
+## 내부 nexus 이용해서 모델 생성
+cd /tmp/python3
 python3 -m venv .venv
 source .venv/bin/activate
-pip install scikit-learn joblib
+
+python3 -m pip --isolated install \
+  --index-url http://192.168.10.50:8081/repository/pypi-hosted/simple \
+  --trusted-host 192.168.10.50 \
+  -r /tmp/day3-iris-requirements.txt
+
+python3 -m pip check
 python3 models/train_iris_sklearn.py
 ls iris/
 
