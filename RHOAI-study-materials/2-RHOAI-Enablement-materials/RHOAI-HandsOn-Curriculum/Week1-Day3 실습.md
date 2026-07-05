@@ -151,7 +151,7 @@ mc ls truenas/rhoai-models/iris/
 ```bash
 oc get template mlserver-runtime-template -n redhat-ods-applications -o jsonpath='{.objects[0].spec.containers[0].image}{"\n"}'
 
-oc apply -f <<'EOF'
+oc apply -f - <<'EOF'
 apiVersion: serving.kserve.io/v1alpha1
 kind: ServingRuntime
 metadata:
@@ -234,7 +234,7 @@ EOF
 
 ### inferenceService 생성
 ```bash
-oc apply -f <<'EOF'
+oc apply -f - <<'EOF'
 apiVersion: serving.kserve.io/v1beta1
 kind: InferenceService
 metadata:
