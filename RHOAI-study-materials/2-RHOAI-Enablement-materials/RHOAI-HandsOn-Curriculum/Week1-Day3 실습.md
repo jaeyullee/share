@@ -3,7 +3,7 @@
 
 ### 네임스페이스 생성
 ```bash
-oc apply -f <<'EOF'
+oc apply -f -<<'EOF'
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -11,13 +11,14 @@ metadata:
   labels:
     opendatahub.io/dashboard: "true"
     modelmesh-enabled: "false"
+    network-zone: s3
 EOF
 
 ```
 
 ### object storage 연결 준비
 ```bash
-oc apply -f <<'EOF'
+oc apply -f -<<'EOF'
 apiVersion: v1
 kind: Secret
 metadata:
@@ -42,7 +43,7 @@ stringData:
   AWS_S3_BUCKET: rhoai-models
 EOF
 
-oc apply -f <<'EOF'
+oc apply -f -<<'EOF'
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -58,47 +59,14 @@ EOF
 skopeo copy --dest-creds '<nexus_id>:<nexus_pw>' --dest-tls-verify=false docker://docker.io/seldonio/mlserver:1.6.1 docker://192.168.10.50:5010/seldonio/mlserver:1.6.1
 ```
 
-### 모델 준비
+### 훈련 준비
 ```bash
-mkdir -p /tmp/python3/models
-cd /tmp/python3
+ls /tmp/python3/models/train_iris_sklearn.py
+ls /tmp/python3/datasets/iris
+```
 
-cat <<'EOF' > models/train_iris_skleanr.py
-#!/usr/bin/env python3
-import json
-import os
-import joblib
-
-OUTDIR = os.path.join(os.path.dirname(__file__), "iris")
-
-
-def main():
-    from sklearn.datasets import load_iris
-    from sklearn.ensemble import RandomForestClassifier
-    from sklearn.model_selection import train_test_split
-    from sklearn.metrics import accuracy_score
-
-    X, y = load_iris(return_X_y=True)
-    Xtr, Xte, ytr, yte = train_test_split(X, y, test_size=0.2, random_state=42)
-    clf = RandomForestClassifier(n_estimators=100, random_state=42)
-    clf.fit(Xtr, ytr)
-    acc = accuracy_score(yte, clf.predict(Xte))
-    print(f"accuracy = {acc:.3f}")
-
-    os.makedirs(OUTDIR, exist_ok=True)
-    joblib.dump(clf, os.path.join(OUTDIR, "model.joblib"))
-
-    # MLServer v2 inference protocol 요청 예시
-    req = {"inputs": [{"name": "input-0", "shape": [1, 4], "datatype": "FP32",
-                       "data": Xte[0].tolist()}]}
-    json.dump(req, open(os.path.join(OUTDIR, "sample_request.json"), "w"), indent=2)
-    print(f"saved -> {OUTDIR}/model.joblib, sample_request.json")
-
-
-if __name__ == "__main__":
-    main()
-EOF
-
+### 모델 생성&배포
+```bash
 ## 필요 라이브러리를 내부 넥서스에 업로드
 cd /tmp
 rm -rf /tmp/wheelhouse
@@ -317,7 +285,6 @@ oc logs deploy/iris-sklearn-predictor -n jukebox -c kserve-container
 # 5. Optional metrics check.
 #    MLServer exposes inference API on 8080 and metrics on 8082. If 18088 is
 #    forwarded to 8080, /metrics returns 404. Forward 8082 separately:
-#    oc port-forward -n jukebox deploy/iris-sklearn-predictor 18082:8082
-#
+oc port-forward -n jukebox deploy/iris-sklearn-predictor 18082:8082
 curl -s http://127.0.0.1:18082/metrics | grep -Ei 'request|infer|iris|mlserver'
 ```

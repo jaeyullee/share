@@ -1,11 +1,13 @@
 # RHOAI-3.4-HandsOn-커리큘럼-v1.1.xlsx 실습
-## week 1 - Day5 - 
+## week 1 - Day5
 
 ### 훈련 준비
 ```bash
 ls /tmp/python3/models/train_fraud_sklearn.py
 ls /tmp/python3/models/train_fraud_sklearn_v2.py
-ls /tmp/python3/datasets/
+ls /tmp/python3/datasets/fraud-credit
+
+oc project jukebox
 ```
 
 
@@ -80,7 +82,7 @@ oc get servingruntime -n jukebox
 ## mlserver-sklearn 없으면 아래 진행
 # oc get template mlserver-runtime-template -n redhat-ods-applications -o jsonpath='{.objects[0].spec.containers[0].image}{"\n"}'
 
-# oc apply -f <<'EOF'
+# oc apply -f -<<'EOF'
 # apiVersion: serving.kserve.io/v1alpha1
 # kind: ServingRuntime
 # metadata:

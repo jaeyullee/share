@@ -48,13 +48,13 @@ oc process mlserver-runtime-template \
 
 ## metadata.namespace, metadata.name, image 수정
 ## 사용 이미지 반입 필요
-oc apply -f jukebox -f mlserver-runtime.yaml
+oc apply -n jukebox -f mlserver-runtime.yaml
 
 oc get servingruntime -n jukebox
 oc describe servingruntime -n jukebox <runtime-name>
 ```
 
-## inferenceservice 에서 survingruntime 참조 예시
+## inferenceservice 에서 servingruntime 참조 예시
 ```yaml
 spec:
   predictor:
