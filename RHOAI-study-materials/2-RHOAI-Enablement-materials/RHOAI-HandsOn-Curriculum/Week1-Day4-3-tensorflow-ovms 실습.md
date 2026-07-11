@@ -37,7 +37,7 @@ python -m pip show twine pkginfo
 
 twine upload \
   --repository-url http://192.168.10.50:8081/repository/pypi-hosted/ \
-  -u <nexus_id> -p '<nexus_pw>' \
+  -u <NEXUS_ID> -p '<NEXUS_PW>' \
   /tmp/wheelhouse/*
 
 ## 내부 nexus 이용해서 모델 생성
@@ -56,7 +56,7 @@ CUDA_VISIBLE_DEVICES=-1 python3 -c "import tensorflow as tf; print(tf.__version_
 CUDA_VISIBLE_DEVICES=-1 python3 models/train_tf_savedmodel.py
 ls tf-fraud/
 
-mc alias set truenas http://192.168.20.5:9000 <minio_id> <minio_pw>
+mc alias set truenas http://192.168.20.5:9000 <MINIO_ID> <MINIO_PW>
 mc mb --ignore-existing truenas/rhoai-models
 ## fingerprint.pb 를 업로드하면 ovmn가 모델로 오인해서 에러가 발생하므로 제외하고 업로드
 mc cp --recursive --exclude '*/fingerprint.pb' tf-fraud/ truenas/rhoai-models/tf-fraud/

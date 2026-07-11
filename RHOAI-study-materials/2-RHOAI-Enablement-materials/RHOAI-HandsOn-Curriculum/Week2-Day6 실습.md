@@ -65,7 +65,7 @@ python -m pip show twine pkginfo
 
 twine upload \
   --repository-url http://192.168.10.50:8081/repository/pypi-hosted/ \
-  -u <nexus_id> -p '<nexus_pw>' \
+  -u <NEXUS_ID> -p '<NEXUS_PW>' \
   /tmp/wheelhouse/*
 ```
 
@@ -101,7 +101,7 @@ metadata:
   namespace: jukebox
 type: Opaque
 stringData:
-  username: git-user
+  username: <GITEA_ID>
   password: <git_pat>
 EOF
 oc apply -f -<<'EOF'
@@ -172,7 +172,7 @@ python3 -m pip check
 python3 models/train_iris_sklearn.py
 ls iris/
 
-mc alias set truenas http://192.168.20.5:9000 <minio_id> <minio_pw>
+mc alias set truenas http://192.168.20.5:9000 <MINIO_ID> <MINIO_PW>
 mc mb --ignore-existing truenas/rhoai-models
 mc cp --recursive iris/ truenas/rhoai-models/iris-day6/
 mc ls truenas/rhoai-models/iris-day6/

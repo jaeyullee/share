@@ -36,8 +36,8 @@ metadata:
     serving.kserve.io/s3-region: us-east-1
 type: Opaque
 stringData:
-  AWS_ACCESS_KEY_ID: <minio_id>
-  AWS_SECRET_ACCESS_KEY: <minio_pw>
+  AWS_ACCESS_KEY_ID: <MINIO_ID>
+  AWS_SECRET_ACCESS_KEY: <MINIO_PW>
   AWS_S3_ENDPOINT: http://192.168.10.50:9000
   AWS_DEFAULT_REGION: us-east-1
   AWS_S3_BUCKET: rhoai-models
@@ -56,7 +56,7 @@ EOF
 
 ### 이미지 준비
 ```bash
-skopeo copy --dest-creds '<nexus_id>:<nexus_pw>' --dest-tls-verify=false docker://docker.io/seldonio/mlserver:1.6.1 docker://192.168.10.50:5010/seldonio/mlserver:1.6.1
+skopeo copy --dest-creds '<MODEL_REGISTRY_ID>:<MODEL_REGISTRY_PW>' --dest-tls-verify=false docker://docker.io/seldonio/mlserver:1.6.1 docker://192.168.10.50:5010/seldonio/mlserver:1.6.1
 ```
 
 ### 훈련 준비
@@ -92,7 +92,7 @@ python -m pip show twine pkginfo
 
 twine upload \
   --repository-url http://192.168.10.50:8081/repository/pypi-hosted/ \
-  -u <nexus_id> -p '<nexus_pw>' \
+  -u <NEXUS_ID> -p '<NEXUS_PW>' \
   /tmp/wheelhouse/*
 
 ## 내부 nexus 이용해서 모델 생성
@@ -109,7 +109,7 @@ python3 -m pip check
 python3 models/train_iris_sklearn.py
 ls iris/
 
-mc alias set truenas http://192.168.20.5:9000 <minio_id> <minio_pw>
+mc alias set truenas http://192.168.20.5:9000 <MINIO_ID> <MINIO_PW>
 mc mb --ignore-existing truenas/rhoai-models
 mc cp iris/model.joblib truenas/rhoai-models/iris/model.joblib
 mc ls truenas/rhoai-models/iris/

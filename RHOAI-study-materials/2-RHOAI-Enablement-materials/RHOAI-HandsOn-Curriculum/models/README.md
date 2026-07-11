@@ -38,7 +38,7 @@ s3://rhoai-models/
 
 업로드 예(mc):
 ```bash
-mc alias set m http://minio.jukebox.svc:9000 <minio_id> <minio_pw>
+mc alias set m http://minio.jukebox.svc:9000 <MINIO_ID> <MINIO_PW>
 mc mb m/rhoai-models
 mc cp --recursive jukebox/ m/rhoai-models/jukebox/
 ```
