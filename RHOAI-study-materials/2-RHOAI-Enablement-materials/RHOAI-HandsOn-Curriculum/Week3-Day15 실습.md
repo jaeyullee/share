@@ -1,6 +1,8 @@
 # RHOAI-3.4-HandsOn-커리큘럼-v1.1.xlsx 실습
 ## week 3 - Day15
 
+> 사전 활성화: [Week1 Day1&2 환경 구성](Week1-Day1%262-환경구성.md#목적별-선택표)의 목적별 선택표에서 Day6~14에 필요한 Workbench, Pipeline/Registry, KServe, Kueue, Monitoring/Guardrails, MaaS 절을 모두 확인한다.
+
 Day6~14의 훈련, Pipeline, Registry, KServe, RBAC, Kueue, monitoring, Guardrails, MaaS를 연결하고 장애 3종을 주입해서 복구한다.
 
 ### 전체 상태 확인

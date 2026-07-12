@@ -1,6 +1,8 @@
 # RHOAI-3.4-HandsOn-커리큘럼-v1.1.xlsx 실습
 ## week 2 - Day7
 
+> 사전 활성화: [Week1 Day1&2 - AI Pipelines와 Model Registry 구성](Week1-Day1%262-환경구성.md#ai-pipelines와-model-registry-구성)과 같은 문서의 MinIO/S3 Egress 구성을 먼저 확인한다.
+
 Data Science Pipeline을 이용해서 전처리 -> 훈련 -> 평가 단계를 재사용 가능한 파이프라인으로 실행한다.
 폐쇄망 실습이므로 Pipeline component에서 외부 PyPI나 GitHub에 접근하지 않는다.
 

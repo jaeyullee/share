@@ -1,6 +1,8 @@
 # RHOAI-3.4-HandsOn-커리큘럼-v1.1.xlsx 실습
 ## week 1 - Day4 - TensorFlow
 
+> 사전 활성화: [Week1 Day1&2 - KServe RawDeployment 구성](Week1-Day1%262-환경구성.md#kserve-rawdeployment-구성)을 먼저 확인한다.
+
 jukebox 네임스페이스가 미리 준비된 전제로 진행한다.
 
 ### 훈련 준비

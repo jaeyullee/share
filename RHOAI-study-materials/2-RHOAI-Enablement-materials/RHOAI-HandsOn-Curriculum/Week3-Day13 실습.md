@@ -1,6 +1,8 @@
 # RHOAI-3.4-HandsOn-커리큘럼-v1.1.xlsx 실습
 ## week 3 - Day13
 
+> 사전 활성화: [Week1 Day1&2 - Monitoring과 Guardrails 구성](Week1-Day1%262-환경구성.md#monitoring과-guardrails-구성)을 먼저 확인한다.
+
 User Workload Monitoring으로 KServe metric을 수집하고, RHOAI 3.4의 NeMo Guardrails로 LLM 없이 PII와 민감 키워드 검사를 수행한다.
 
 ### User Workload Monitoring 활성화

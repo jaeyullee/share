@@ -1,6 +1,8 @@
 # RHOAI-3.4-HandsOn-커리큘럼-v1.1.xlsx 실습
 ## week 2 - Day8
 
+> 사전 활성화: [Week1 Day1&2 - AI Pipelines와 Model Registry 구성](Week1-Day1%262-환경구성.md#ai-pipelines와-model-registry-구성)과 [KServe RawDeployment 구성](Week1-Day1%262-환경구성.md#kserve-rawdeployment-구성)을 먼저 확인한다.
+
 Model Registry에 모델과 버전을 등록하고, 메타데이터로 승격 상태를 관리한 뒤 KServe RawDeployment와 연결한다.
 
 > Model Registry는 모델 파일 자체가 아니라 모델 이름, 버전, 성능, 저장 위치 같은 메타데이터를 관리한다. 실제 모델 파일은 MinIO S3에 유지한다.

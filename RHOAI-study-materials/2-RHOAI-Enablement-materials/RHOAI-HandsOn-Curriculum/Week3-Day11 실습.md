@@ -1,6 +1,8 @@
 # RHOAI-3.4-HandsOn-커리큘럼-v1.1.xlsx 실습
 ## week 3 - Day11
 
+> 사전 활성화: [Week1 Day1&2 - GPU Workbench·서빙·학습 구성](Week1-Day1%262-환경구성.md#gpu-workbench서빙학습-구성)을 먼저 확인한다.
+
 NFD, KMM, NVIDIA GPU Operator를 설치해서 GPU worker의 GPU를 OpenShift 리소스로 노출하고 RHOAI HardwareProfile을 만든다.
 
 ### GPU worker 사전 확인

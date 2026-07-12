@@ -1,6 +1,8 @@
 # RHOAI-3.4-HandsOn-커리큘럼-v1.1.xlsx 실습
 ## week 3 - Day12
 
+> 사전 활성화: [Week1 Day1&2 - Queue 기반 Workbench 구성](Week1-Day1%262-환경구성.md#queue-기반-workbench-구성)을 먼저 확인한다. GPU Time-Slicing까지 수행하면 [GPU Workbench·서빙·학습 구성](Week1-Day1%262-환경구성.md#gpu-workbench서빙학습-구성)도 필요하다.
+
 Red Hat build of Kueue로 CPU/GPU 워크로드의 quota, admission, priority를 관리하고 NVIDIA Time-Slicing을 확인한다.
 
 > RHOAI 3.4에서는 embedded Kueue 대신 Red Hat build of Kueue Operator를 사용한다. shared cohort는 RHOAI 3.4 지원 범위에서 제외하므로 이 실습에서도 사용하지 않는다.
@@ -51,10 +53,20 @@ spec:
     integrations:
       frameworks:
         - BatchJob
+        - RayJob
+        - RayCluster
+        - JobSet
+        - PyTorchJob
+        - TrainJob
+        - Pod
+        - Deployment
+        - StatefulSet
 EOF
 
 oc get kueues.kueue.openshift.io cluster
 ```
+
+`BatchJob`만 등록하면 일반 Job은 처리할 수 있지만, 대시보드 Workbench가 만드는 StatefulSet과 Trainer/Ray workload는 admission되지 않는다. 위 목록은 Day12 Workbench, Trainer, Ray 검증에 사용한 RHBOK 1.3.1 구성이다.
 
 RHOAI가 별도 설치된 Kueue를 사용하도록 `Unmanaged`로 설정한다.
 

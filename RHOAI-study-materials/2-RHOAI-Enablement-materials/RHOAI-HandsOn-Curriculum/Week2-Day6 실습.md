@@ -1,5 +1,7 @@
 # RHOAI-3.4-HandsOn-커리큘럼-v1.1.xlsx 실습
-## week 1 - Day6
+## week 2 - Day6
+
+> 사전 활성화: [Week1 Day1&2 - 대시보드 Workbench의 Kueue 사용 여부](Week1-Day1%262-환경구성.md#대시보드-workbench의-kueue-사용-여부)를 먼저 확인한다. 이 Day의 기본 YAML 경로는 `disableKueue=true`, DSC `kueue: Removed` 모드로 실행할 수 있다.
 
 ### gitea 준비
 1. gitea 설치 (helm 이용)
@@ -122,7 +124,7 @@ spec:
       serviceAccountName: jukebox-workbench
       containers:
         - name: jukebox-workbench
-          image: image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/s2i-generic-data-science-notebook:3.4
+          image: registry.redhat.io/rhoai/odh-workbench-jupyter-datascience-cpu-py312-rhel9@sha256:d82680de0790b333892da2179c12225f5858f862b060964f2c62314cb23714fe
           resources:
             requests:
               cpu: "1"
@@ -132,7 +134,7 @@ spec:
               memory: 4Gi
           env:
             - name: JUPYTER_IMAGE
-              value: s2i-generic-data-science-notebook:3.4
+              value: odh-workbench-jupyter-datascience-cpu-py312-rhel9
             - name: GIT_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -155,6 +157,13 @@ spec:
           persistentVolumeClaim:
             claimName: jukebox-workbench-pvc
 EOF
+```
+
+Notebook의 `image`는 노드의 CRI가 직접 pull한다. 따라서 노드 DNS에서 해석할 수 없는 `image-registry.openshift-image-registry.svc:5000/...`를 쓰지 않고, RHOAI ImageStream의 원본 digest를 사용해 IDMS가 내부 mirror로 치환하도록 한다. RHOAI 버전이 바뀌면 다음 명령으로 현재 source image를 다시 확인한다.
+
+```bash
+oc get imagestream -n redhat-ods-applications -o yaml | \
+  grep -A8 odh-workbench-jupyter-datascience
 ```
 
 ### 모델 생성&배포

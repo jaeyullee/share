@@ -2,6 +2,8 @@
 
 ## 오퍼레이터 준비/미러링 (홈서버 RHOAI 기능 테스트 기준, 기능별 설치는 해당 Day에서 진행)
 
+공식 문서: [Deploy OpenShift AI in a disconnected environment](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html-single/installing_and_uninstalling_openshift_ai_self-managed_in_a_disconnected_environment/)
+
 ```yaml
 operators:
   # Red Hat catalog
@@ -207,6 +209,8 @@ oc get events -n openshift-operators --sort-by=.lastTimestamp | tail -50
 ## 오퍼레이터 설치 순서
 
 ### Red Hat OpenShift AI 오퍼레이터 설치
+
+공식 문서: [Installing and deploying OpenShift AI](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/installing_and_uninstalling_openshift_ai_self-managed/installing-and-deploying-openshift-ai_install)
 1. cert-manager 오퍼레이터 설치
 
 2. Job Set Operator > JobSetOperator 인스턴스 생성
@@ -401,6 +405,8 @@ MaaS 자체를 켜기 위해 Kueue가 필요한 것은 아니다. MaaS의 token 
 
 ### 대시보드 Workbench의 Kueue 사용 여부
 
+공식 문서: [Managing workloads with Kueue](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/managing_openshift_ai/managing-workloads-with-kueue)
+
 대시보드로 Workbench를 만든다는 이유만으로 Kueue가 필수인 것은 아니다. Dashboard 설정과 HardwareProfile의 workload allocation strategy에 따라 다음 두 모드 중 하나를 사용한다.
 
 | 모드 | Dashboard `disableKueue` | DSC `kueue` | HardwareProfile scheduling | Namespace |
@@ -425,6 +431,8 @@ oc label namespace jukebox kueue.openshift.io/managed-
 이 모드에서는 `default-profile`처럼 Queue 설정이 없는 HardwareProfile을 선택한다. 특정 노드로 직접 배치하려면 `spec.scheduling.type: Node`와 `nodeSelector`/`tolerations`를 가진 HardwareProfile을 사용한다.
 
 ### Queue 기반 Workbench 구성
+
+공식 문서: [Installing distributed workloads components](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/installing_and_uninstalling_openshift_ai_self-managed_in_a_disconnected_environment/installing-the-distributed-workloads-components_install), [Working with hardware profiles](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html-single/working_with_accelerators/index#working-with-hardware-profiles_accelerators)
 
 **목적**: 대시보드에서 생성한 Workbench를 `team-lq`로 admission하고, CPU·메모리·GPU quota와 우선순위를 적용한다.
 
@@ -498,6 +506,8 @@ YAML로 `Notebook`을 직접 생성하는 기본 Day6 경로와 대시보드의 
 
 ### GPU Workbench·서빙·학습 구성
 
+공식 문서: [Enabling accelerators](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/installing_and_uninstalling_openshift_ai_self-managed_in_a_disconnected_environment/enabling-accelerators_install), [Provision hardware configurations and resources](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html-single/working_with_accelerators/index)
+
 **목적**: VM/노드에 연결된 NVIDIA GPU를 `nvidia.com/gpu` 리소스로 노출하고 RHOAI에서 선택한다.
 
 **방법**:
@@ -524,6 +534,8 @@ PCI 장치가 보이지 않는 상태에서는 Operator 설치를 진행하지 �
 
 ### KServe RawDeployment 구성
 
+공식 문서: [Deploy models with KServe RawDeployment](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/deploying_models/index)
+
 **목적**: CPU 또는 단일 GPU 모델을 KServe `InferenceService`로 서빙한다.
 
 **방법**:
@@ -542,7 +554,11 @@ oc get inferenceservice -A
 
 기본 RawDeployment에는 RHCL, LWS, Kueue가 직접 필요하지 않다. GPU 모델인 경우에만 GPU Operator와 GPU HardwareProfile이 추가로 필요하다.
 
+`rawDeploymentServiceConfig: Headless`이면 predictor Service는 `clusterIP: None`이다. 같은 클러스터의 Pod에서 Service DNS를 직접 호출할 때는 Service의 `port: 80`이 아니라 predictor가 실제로 수신하는 `8080`을 사용한다. 예: `http://<isvc>-predictor.<namespace>.svc.cluster.local:8080`.
+
 ### AI Pipelines와 Model Registry 구성
+
+공식 문서: [Get started with projects, workbenches, and pipelines](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/getting_started_with_red_hat_openshift_ai_self-managed/index), [Managing and monitoring models](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/managing_and_monitoring_models/index)
 
 **목적**: KFP v2 pipeline을 실행하고 생성된 모델 버전을 Registry에 기록한다.
 
@@ -565,6 +581,8 @@ RHOAI AI Pipelines의 실행 엔진은 bundled Argo Workflows다. OpenShift Pipe
 
 ### Trainer와 Ray/CodeFlare 구성
 
+공식 문서: [Accelerate data processing and training with distributed workloads](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/working_with_distributed_workloads/index), [Installing distributed workloads components](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/installing_and_uninstalling_openshift_ai_self-managed_in_a_disconnected_environment/installing-the-distributed-workloads-components_install)
+
 **목적**: 단일 Pod를 넘는 학습·분산 workload를 JobSet과 Ray로 실행하고 Kueue admission을 적용한다.
 
 **방법**:
@@ -583,9 +601,41 @@ oc get dsc default-dsc \
   -o jsonpath='{.status.conditions[?(@.type=="RayReady")]}{"\n"}'
 ```
 
+Trainer는 controller 상태만 보지 말고 실제 `TrainJob`이 `JobSet`을 만들고 완료되는지 확인한다. Kueue를 사용하는 예시는 다음과 같다.
+
+```yaml
+apiVersion: trainer.kubeflow.org/v1alpha1
+kind: TrainJob
+metadata:
+  name: trainer-smoke
+  namespace: jukebox
+  labels:
+    kueue.x-k8s.io/queue-name: team-lq
+spec:
+  runtimeRef:
+    name: torch-distributed-cpu-torch210-py312
+  suspend: true
+  trainer:
+    numNodes: 1
+    command: [python]
+    args: ["-c", "import torch; print('trainer-ok', torch.__version__)"]
+    resourcesPerNode:
+      requests: {cpu: "1", memory: 2Gi}
+      limits: {cpu: "2", memory: 4Gi}
+```
+
+```bash
+oc get trainjob,jobset,job,pod,workload -n jukebox
+oc logs -n jukebox -l jobset.sigs.k8s.io/jobset-name=trainer-smoke --all-containers
+```
+
+2026-07-12 검증에서는 Kueue가 `TrainJob`을 admit한 뒤 JobSet/Job/Pod를 생성했고 `Complete=True`, `trainer-ok 2.10.0`을 확인했다. Ray는 RHOAI 3.4 workbench 이미지의 Ray 2.53.0으로 head 3Gi/worker 2Gi request를 사용했을 때 `SUCCEEDED`와 `ray-ok [0, 1, 4, 9]`를 확인했다. 2Gi head limit는 초기화 중 OOM이 발생했다.
+
 분산 실습을 끝내고 기본 상태로 돌아갈 때는 실행 중인 Ray workload를 먼저 제거한 뒤 `ray: Removed`로 되돌린다.
 
 ### Monitoring과 Guardrails 구성
+
+공식 문서: [Monitoring your AI systems](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/monitoring_your_ai_systems/index), [Enabling AI safety with NeMo Guardrails](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/enabling_ai_safety_with_guardrails/enabling-ai-safety-with-guardrails_safety)
 
 **목적**: 사용자 workload metric, 추론 latency/error, GPU metric과 Guardrails 차단 결과를 관측한다.
 
@@ -605,6 +655,8 @@ oc get servicemonitor,prometheusrule -A
 자세한 설정과 정리 절차는 [Week3 Day13](Week3-Day13%20실습.md)을 따른다.
 
 ### MaaS와 LLM API quota 구성
+
+공식 문서: [Govern LLM access with Models-as-a-Service](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/govern_llm_access_with_models-as-a-service/index)
 
 **목적**: LLM을 공통 endpoint로 publish하고 사용자·그룹별 API key, authorization, token quota를 적용한다.
 
@@ -646,6 +698,8 @@ Kueue는 MaaS control plane의 직접 의존성이 아니다. LLM API 사용량 
 
 ### Tekton CI/CD와 Argo CD GitOps 구성
 
+공식 문서: [Installing OpenShift Pipelines](https://docs.redhat.com/en/documentation/red_hat_openshift_pipelines/1.22/html/installing_and_configuring), [Installing OpenShift GitOps](https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/1.21/html/installing_gitops/installing-openshift-gitops)
+
 **목적**: 모델 build/test/deploy를 CI pipeline과 GitOps reconciliation으로 자동화한다.
 
 **방법**:
@@ -661,9 +715,55 @@ oc get tektonconfig
 oc get argocd -A
 ```
 
+Operator 준비 상태만 확인하지 말고 최소 PipelineRun을 실행한다.
+
+```yaml
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  generateName: pipeline-smoke-
+  namespace: jukebox
+spec:
+  pipelineSpec:
+    tasks:
+      - name: validate
+        taskSpec:
+          steps:
+            - name: run
+              image: registry.redhat.io/rhoai/odh-pipeline-runtime-datascience-cpu-py312-rhel9@sha256:ed6634540d78910ceedc826b871641fb3f66b27be45b50df31c504582204a661
+              command: [python]
+              args: ["-c", "print('tekton-ok')"]
+```
+
+`generateName`을 사용하므로 위 YAML은 `oc apply`가 아니라 `oc create -f`로 생성한다. 2026-07-12 검증에서는 PipelineRun `Succeeded=True`와 `tekton-ok`를 확인했고, Argo CD는 내부 Gitea의 ConfigMap을 `Synced/Healthy`로 동기화한 뒤 수동 변경을 Git 선언으로 self-heal했다.
+
 기능 실습은 [Week2 Day10](Week2-Day10%20실습.md)을 따른다.
 
+### OADP 백업·복구 구성
+
+공식 문서: [OADP application backup and restore](https://docs.redhat.com/en/documentation/openshift_container_platform/4.22/html/backup_and_restore/oadp-application-backup-and-restore)
+
+**목적**: RHOAI 프로젝트의 Kubernetes 리소스와 PVC를 S3 호환 저장소에 백업한다. DB 기반 컴포넌트는 OADP 파일 백업만으로 애플리케이션 일관성이 보장되지 않으므로 PostgreSQL/MySQL dump 또는 정지 절차를 별도로 설계한다.
+
+**방법**:
+
+1. `redhat-oadp-operator`를 현재 미러 카탈로그의 `stable` 채널로 설치한다.
+2. S3 자격증명 Secret과 `DataProtectionApplication`을 만든다.
+3. 이 환경에서는 S3망 EgressIP를 사용하도록 `openshift-adp` Namespace에 `network-zone=s3` 라벨을 추가한다.
+4. `BackupStorageLocation`이 `Available`인지 확인한 후 `Backup`을 생성한다.
+
+```bash
+oc label namespace openshift-adp network-zone=s3 --overwrite
+oc get csv -n openshift-adp
+oc get dataprotectionapplication,backupstoragelocation -n openshift-adp
+oc get backup -n openshift-adp
+```
+
+2026-07-12 검증에서는 OADP 1.6.0, MinIO S3, `snapshotVolumes: false` 조합으로 테스트 Namespace의 63개 리소스가 오류와 경고 없이 `Completed`가 됐다. S3 endpoint가 별도 네트워크에 있으면 Namespace EgressIP 라벨 누락 시 BSL 검증이 timeout 된다.
+
 ### 선택 컴포넌트 전환 원칙
+
+공식 문서: [Creating distributed data processing applications with the Kubeflow Spark Operator](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/creating_distributed_data_processing_applications_with_the_kubeflow_spark_operator/overview-of-kubeflow-operator_data-processing), [Deliver consistent ML features with Feature Store](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/working_with_machine_learning_features/index), [Build AI applications with Llama Stack](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html-single/working_with_llama_stack/index), [Distributed workloads](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/working_with_distributed_workloads/index)
 
 | 컴포넌트 | 켜는 시점 | 함께 확인할 외부 의존성 |
 |---|---|---|

@@ -1,6 +1,8 @@
 # RHOAI-3.4-HandsOn-커리큘럼-v1.1.xlsx 실습
 ## week 3 - Day14
 
+> 사전 활성화: [Week1 Day1&2 - MaaS와 LLM API quota 구성](Week1-Day1%262-환경구성.md#maas와-llm-api-quota-구성), [GPU Workbench·서빙·학습 구성](Week1-Day1%262-환경구성.md#gpu-workbench서빙학습-구성), [Monitoring과 Guardrails 구성](Week1-Day1%262-환경구성.md#monitoring과-guardrails-구성)을 먼저 확인한다.
+
 LLM을 OpenAI 호환 API로 서빙하고 RHOAI Models-as-a-Service의 subscription, authorization, API key, token quota를 확인한다.
 
 ### 기능 범위
@@ -445,14 +447,25 @@ oc get maassubscription,maasauthpolicy -n models-as-a-service
 
 Subscription만 있고 authorization policy가 없으면 `403`, authorization policy만 있고 quota가 없으면 `429`가 발생한다.
 
+`owner.groups`와 `subjects.groups`의 항목은 `{name: <GROUP>}` 객체지만, 특정 사용자를 직접 지정하는 `owner.users`와 `subjects.users`의 항목은 사용자명 문자열이다.
+
 ### API key와 OpenAI 호환 API 검증
-RHOAI 대시보드에서 실습용 API key를 발급한다. API key 값은 파일이나 문서에 저장하지 않고 현재 shell 환경변수로만 사용한다. `/maas-api` 관리 API는 OpenShift 로그인 토큰을 사용하고, 발급된 API key는 publish된 모델 endpoint에 사용한다.
+RHOAI 대시보드에서 발급하거나 `/maas-api/v1/api-keys`로 직접 생성한다. API key 원문은 생성 응답에서 한 번만 반환되므로 파일이나 문서에 저장하지 않고 현재 shell 변수로만 사용한다. 아래 명령은 일반 OpenShift OAuth 사용자로 로그인한 shell에서 실행한다. 클라이언트 인증서 기반 관리자 kubeconfig는 `oc whoami -t`로 token을 반환하지 않는다.
 
 ```bash
-read -rsp 'MaaS API key: ' MAAS_API_KEY
-echo
+OPENSHIFT_TOKEN=$(oc whoami -t)
 
-curl -sk -H "Authorization: Bearer $(oc whoami -t)" \
+API_KEY_RESPONSE=$(curl -sk -X POST \
+  https://maas.apps.sno.ocp422.com/maas-api/v1/api-keys \
+  -H "Authorization: Bearer $OPENSHIFT_TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{"name":"day14-lab","description":"Day14 validation","subscription":"rhoai-maas-lab","expiresIn":"1h"}')
+
+MAAS_API_KEY=$(jq -r '.key' <<<"$API_KEY_RESPONSE")
+MAAS_API_KEY_ID=$(jq -r '.id' <<<"$API_KEY_RESPONSE")
+test "${MAAS_API_KEY#sk-oai-}" != "$MAAS_API_KEY"
+
+curl -sk -H "Authorization: Bearer $MAAS_API_KEY" \
   https://maas.apps.sno.ocp422.com/maas-api/v1/models | jq .
 
 curl -sk https://maas.apps.sno.ocp422.com/jukebox/qwen-small/v1/chat/completions \
@@ -460,8 +473,19 @@ curl -sk https://maas.apps.sno.ocp422.com/jukebox/qwen-small/v1/chat/completions
   -H 'Content-Type: application/json' \
   -d '{"model":"qwen2.5-0.5b-instruct","messages":[{"role":"user","content":"한 문장으로 자기소개해 주세요."}],"max_tokens":64}' | jq .
 
-unset MAAS_API_KEY
+curl -sk -X DELETE \
+  -H "Authorization: Bearer $OPENSHIFT_TOKEN" \
+  "https://maas.apps.sno.ocp422.com/maas-api/v1/api-keys/$MAAS_API_KEY_ID" | jq .
+
+# 폐기한 key는 더 이상 사용할 수 없어야 한다.
+curl -sk -o /dev/null -w '%{http_code}\n' \
+  -H "Authorization: Bearer $MAAS_API_KEY" \
+  https://maas.apps.sno.ocp422.com/maas-api/v1/models
+
+unset API_KEY_RESPONSE MAAS_API_KEY MAAS_API_KEY_ID OPENSHIFT_TOKEN
 ```
+
+2026-07-12 검증에서는 key 생성 `201`, 모델 목록 `200`, Qwen chat completion `200`, key 폐기 `200`, 폐기된 key 재사용 `403`을 확인했다.
 
 ### vLLM RawDeployment와 MaaS 비교
 기존 `ServingRuntime + InferenceService(RawDeployment)`는 모델 서빙 자체를 확인하는 경로다. MaaS는 그 위에 subscription, authorization, API key, quota, consumption tracking을 추가하는 governance 계층이다.

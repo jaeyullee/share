@@ -1,6 +1,8 @@
 # RHOAI-3.4-HandsOn-커리큘럼-v1.1.xlsx 실습
 ## week 2 - Day10
 
+> 사전 활성화: [Week1 Day1&2 - AI Pipelines와 Model Registry 구성](Week1-Day1%262-환경구성.md#ai-pipelines와-model-registry-구성), [KServe RawDeployment 구성](Week1-Day1%262-환경구성.md#kserve-rawdeployment-구성), 선택 기능인 [Tekton CI/CD와 Argo CD GitOps 구성](Week1-Day1%262-환경구성.md#tekton-cicd와-argo-cd-gitops-구성)을 먼저 확인한다.
+
 Day6~9의 훈련, Registry, KServe, RBAC 흐름을 하나로 연결한다. 기본 E2E는 수동으로 수행하고, OpenShift GitOps가 설치된 환경에서는 InferenceService와 Route를 GitOps로 관리한다.
 
 ### 사전 상태 확인
@@ -88,7 +90,7 @@ git push -u origin main
 ```
 
 ### 비공개 Git 저장소 인증 Secret
-저장소가 공개라면 이 Secret은 필요 없다. 비공개 저장소일 때만 생성한다.
+비공개 저장소는 이 Secret에 ID/PAT를 함께 넣는다. 저장소가 공개여도 Gitea Route가 사설 CA를 사용하고 Argo CD에 해당 CA를 배포하지 않았다면 `insecure: "true"`인 repository Secret은 필요하다. 운영 환경에서는 `insecure` 대신 Gitea CA를 Argo CD에 신뢰시키는 구성을 사용한다.
 
 ```bash
 oc apply -f - <<'EOF'
