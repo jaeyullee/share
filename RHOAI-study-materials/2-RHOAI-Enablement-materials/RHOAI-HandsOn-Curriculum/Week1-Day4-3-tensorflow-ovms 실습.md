@@ -191,3 +191,15 @@ curl -s -H 'Content-Type: application/json' \
   http://127.0.0.1:18088/v2/models/tf-fraud/infer \
   -d @/tmp/python3/tf-fraud-request.json | jq .
 ```
+
+### 실습 리소스 정리
+InferenceService와 Predictor만 삭제하고 공유 `ovms-onnx` ServingRuntime은 유지한다.
+
+```bash
+oc delete isvc tf-fraud -n jukebox \
+  --ignore-not-found --wait=true --timeout=5m
+
+# NotFound이면 삭제가 완료된 상태다.
+oc get isvc tf-fraud -n jukebox
+oc get servingruntime ovms-onnx -n jukebox
+```

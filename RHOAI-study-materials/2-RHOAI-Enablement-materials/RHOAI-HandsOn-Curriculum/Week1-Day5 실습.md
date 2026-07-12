@@ -335,3 +335,16 @@ done | sort | uniq -c
 #   - For pure traffic-split verification, inspect predictor logs or route
 #     metrics because the response model_name is intentionally the same: fraud.
 ```
+
+### 실습 리소스 정리
+Blue/Green InferenceService와 Predictor만 삭제한다. `mlserver-sklearn` ServingRuntime과 `fraud-route`는 유지한다. 정리 후 Route의 backend Service가 없어지므로 재실습 전까지 Route 호출은 실패하며, 두 InferenceService를 다시 생성하면 같은 Route를 재사용할 수 있다.
+
+```bash
+oc delete isvc fraud-blue fraud-green -n jukebox \
+  --ignore-not-found --wait=true --timeout=5m
+
+# 두 리소스가 모두 NotFound이면 삭제가 완료된 상태다.
+oc get isvc fraud-blue fraud-green -n jukebox
+oc get servingruntime mlserver-sklearn -n jukebox
+oc get route fraud-route -n jukebox
+```

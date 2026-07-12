@@ -64,3 +64,13 @@ spec:
         name: sklearn
       storageUri: s3://<bucket 이름>/...
 ```
+
+## 실습 리소스 정리
+이 문서는 ServingRuntime 예시만 생성하므로 기본 절차에는 삭제할 InferenceService가 없다. 예시를 확장해 InferenceService를 생성했다면 해당 InferenceService만 삭제하고 ServingRuntime은 유지한다.
+
+```bash
+oc delete isvc <inferenceservice-name> -n jukebox \
+  --ignore-not-found --wait=true --timeout=5m
+
+oc get servingruntime -n jukebox
+```

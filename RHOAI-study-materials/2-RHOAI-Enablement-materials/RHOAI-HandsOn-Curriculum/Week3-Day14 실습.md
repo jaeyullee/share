@@ -78,12 +78,30 @@ oc get kuadrant kuadrant -n kuadrant-system -w
 oc get pods -n kuadrant-system
 ```
 
-MaaS API가 Authorino에서 내부 API key 검증 endpoint를 호출할 때 service CA를 신뢰하도록 mTLS를 활성화한다.
+이 홈랩의 `data-science-gateway-class`는 OpenShift CIO가 관리하는 Istio GatewayClass다. OCP 4.19 이상에서 이 토폴로지는 Kuadrant mTLS에 필요한 service-mesh sidecar 경로를 제공하지 않으므로 mTLS를 활성화하지 않는다. 활성화하면 Gateway에서 Authorino/Limitador로 가는 ext-auth gRPC가 `500`으로 실패한다.
 
 ```bash
 oc patch kuadrant kuadrant -n kuadrant-system --type=merge \
-  -p '{"spec":{"mtls":{"enable":true,"authorino":true,"limitador":true}}}'
+  -p '{"spec":{"mtls":null}}'
 oc get kuadrant kuadrant -n kuadrant-system
+```
+
+API key 인증 시 Authorino가 MaaS 내부 HTTPS endpoint의 OpenShift service CA를 신뢰하도록 CA를 mount한다. 이 설정이 없으면 OpenShift token 요청은 통과해도 MaaS API key 검증은 `403`으로 실패한다.
+
+```bash
+oc get configmap openshift-service-ca.crt -n kuadrant-system \
+  -o jsonpath='{.data.service-ca\.crt}' > /tmp/service-ca.crt
+
+oc create configmap authorino-openshift-service-ca \
+  -n kuadrant-system \
+  --from-file=service-ca.crt=/tmp/service-ca.crt \
+  --dry-run=client -o yaml | oc apply -f -
+
+oc patch authorino authorino -n kuadrant-system --type=merge -p '
+{"spec":{"volumes":{"items":[{"name":"openshift-service-ca","mountPath":"/etc/ssl/certs","configMaps":["authorino-openshift-service-ca"],"items":[{"key":"service-ca.crt","path":"service-ca.crt"}]}],"defaultMode":420}}}'
+
+oc rollout status deployment/authorino -n kuadrant-system --timeout=300s
+rm -f /tmp/service-ca.crt
 ```
 
 ### MaaS PostgreSQL 준비
@@ -227,6 +245,7 @@ metadata:
   annotations:
     opendatahub.io/managed: "false"
     security.opendatahub.io/authorino-tls-bootstrap: "true"
+    networking.istio.io/service-type: ClusterIP
 spec:
   gatewayClassName: data-science-gateway-class
   listeners:
@@ -245,7 +264,13 @@ spec:
 EOF
 ```
 
-이 랩은 LoadBalancer가 없으므로 Gateway Service를 OpenShift Route의 passthrough TLS로 노출한다.
+이 랩은 LoadBalancer controller가 없으므로 Gateway Service를 `ClusterIP`로 만들고 OpenShift Route의 passthrough TLS로 노출한다. Gateway의 `Programmed=True`와 Service의 `TYPE=ClusterIP`를 확인한다.
+
+```bash
+oc get gateway maas-default-gateway -n openshift-ingress
+oc get service maas-default-gateway-data-science-gateway-class \
+  -n openshift-ingress
+```
 
 ```bash
 oc apply -f - <<'EOF'
@@ -297,22 +322,41 @@ oc get llminferenceserviceconfig \
   -n redhat-ods-applications -o yaml
 ```
 
-모델은 disconnected 환경에 반입한 OCI ModelCar 또는 지원되는 내부 URI를 사용한다.
+모델은 disconnected 환경에 반입한 OCI ModelCar 또는 지원되는 내부 URI를 사용한다. 검증된 소형 모델은 `Qwen/Qwen2.5-0.5B-Instruct` commit `7ae557604adf67be50417f59c2c2f167def9a775`를 `/models`에 담은 ModelCar이며, 5010 registry의 `models/qwen2.5-0.5b-instruct:7ae5576`에 있다.
+
+private registry에서 ModelCar를 pull하도록 `jukebox`에 pull secret을 만들고 default ServiceAccount에 연결한다.
+
+```bash
+oc create secret docker-registry model-registry-pull \
+  -n jukebox \
+  --docker-server=192.168.10.50:5010 \
+  --docker-username='<MODEL_REGISTRY_ID>' \
+  --docker-password='<MODEL_REGISTRY_PW>' \
+  --dry-run=client -o yaml | oc apply -f -
+
+oc secrets link default model-registry-pull -n jukebox --for=pull
+```
 
 ```bash
 oc apply -f - <<'EOF'
 apiVersion: serving.kserve.io/v1alpha2
 kind: LLMInferenceService
 metadata:
-  name: granite-2b
+  name: qwen-small
   namespace: jukebox
 spec:
   baseRefs:
     - name: v3-4-0-kserve-config-llm-template-nvidia-cuda
   model:
-    name: granite-2b
-    uri: <DISCONNECTED_MODEL_URI>
+    name: qwen2.5-0.5b-instruct
+    uri: oci://192.168.10.50:5010/models/qwen2.5-0.5b-instruct:7ae5576
   replicas: 1
+  router:
+    route: {}
+    gateway:
+      refs:
+        - name: maas-default-gateway
+          namespace: openshift-ingress
   template:
     nodeSelector:
       lab-role: gpu
@@ -329,10 +373,10 @@ spec:
             nvidia.com/gpu: "1"
 EOF
 
-oc get llminferenceservice granite-2b -n jukebox -w
+oc get llminferenceservice qwen-small -n jukebox -w
 ```
 
-실제 config에서 요구하는 `baseRefs`, container name, model URI가 다르면 설치된 `LLMInferenceServiceConfig` 예제를 기준으로 수정한다.
+실제 config에서 요구하는 `baseRefs`, container name, model URI가 다르면 설치된 `LLMInferenceServiceConfig` 예제를 기준으로 수정한다. 단일 GPU 실습에서는 `router.scheduler: {}`를 넣지 않는다. 이를 넣으면 InferencePool 경로가 생성되며, 현재 랩 조합에서는 vLLM이 토큰을 생성해도 chat response body가 0바이트로 유실됐다.
 
 ### MaaS에 모델 publish
 ```bash
@@ -340,15 +384,15 @@ oc apply -f - <<'EOF'
 apiVersion: maas.opendatahub.io/v1alpha1
 kind: MaaSModelRef
 metadata:
-  name: granite-2b
+  name: qwen-small
   namespace: jukebox
 spec:
   modelRef:
     kind: LLMInferenceService
-    name: granite-2b
+    name: qwen-small
 EOF
 
-oc get maasmodelref granite-2b -n jukebox -o yaml
+oc get maasmodelref qwen-small -n jukebox -o yaml
 ```
 
 ### Subscription과 authorization policy 생성
@@ -356,7 +400,10 @@ oc get maasmodelref granite-2b -n jukebox -o yaml
 
 ```bash
 oc adm groups new rhoai-maas-lab
+oc adm groups add-users rhoai-maas-lab '<실습_사용자_ID>'
 ```
+
+API key를 생성할 실제 OpenShift 사용자를 group에 추가한다. `kube:admin`처럼 `:`가 포함된 system username 대신 일반 실습 계정을 사용하는 편이 단순하다.
 
 ```bash
 oc apply -f - <<'EOF'
@@ -371,7 +418,7 @@ spec:
       - name: rhoai-maas-lab
     users: []
   modelRefs:
-    - name: granite-2b
+    - name: qwen-small
       namespace: jukebox
       tokenRateLimits:
         - limit: 10000
@@ -389,7 +436,7 @@ spec:
       - name: rhoai-maas-lab
     users: []
   modelRefs:
-    - name: granite-2b
+    - name: qwen-small
       namespace: jukebox
 EOF
 
@@ -408,10 +455,10 @@ echo
 curl -sk -H "Authorization: Bearer $(oc whoami -t)" \
   https://maas.apps.sno.ocp422.com/maas-api/v1/models | jq .
 
-curl -sk https://maas.apps.sno.ocp422.com/jukebox/granite-2b/v1/chat/completions \
+curl -sk https://maas.apps.sno.ocp422.com/jukebox/qwen-small/v1/chat/completions \
   -H "Authorization: Bearer $MAAS_API_KEY" \
   -H 'Content-Type: application/json' \
-  -d '{"model":"granite-2b","messages":[{"role":"user","content":"한 문장으로 자기소개해 주세요."}],"max_tokens":64}' | jq .
+  -d '{"model":"qwen2.5-0.5b-instruct","messages":[{"role":"user","content":"한 문장으로 자기소개해 주세요."}],"max_tokens":64}' | jq .
 
 unset MAAS_API_KEY
 ```

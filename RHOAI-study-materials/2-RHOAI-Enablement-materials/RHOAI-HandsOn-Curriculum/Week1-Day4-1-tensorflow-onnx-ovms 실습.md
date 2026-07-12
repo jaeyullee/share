@@ -203,5 +203,17 @@ EOF
 curl -s \
   -H 'Content-Type: application/json' \
   http://127.0.0.1:18088/v2/models/jukebox-onnx/infer \
-  -d @/tmp/python3/mnist-request.json | jq .
+  -d @/tmp/python3/jukebox-request.json | jq .
+```
+
+### 실습 리소스 정리
+InferenceService와 Predictor만 삭제하고, Day 4의 다른 모델에서 재사용하는 `ovms-onnx` ServingRuntime은 유지한다.
+
+```bash
+oc delete isvc jukebox-onnx -n jukebox \
+  --ignore-not-found --wait=true --timeout=5m
+
+# NotFound이면 삭제가 완료된 상태다.
+oc get isvc jukebox-onnx -n jukebox
+oc get servingruntime ovms-onnx -n jukebox
 ```

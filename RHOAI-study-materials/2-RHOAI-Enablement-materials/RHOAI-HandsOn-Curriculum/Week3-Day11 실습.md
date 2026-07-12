@@ -13,6 +13,20 @@ oc get node ocp-w01-gpu \
 
 `lspci`에서 NVIDIA 장치가 보여야 설치를 계속할 수 있다. 출력이 없으면 VM/물리 노드에 GPU PCI 장치가 연결되지 않은 상태이므로 GPU Operator로 해결할 수 없다. GPU Operator 설치 전에는 allocatable 값이 빈 값을 반환할 수 있다.
 
+Proxmox VM에서 장치가 보이지 않으면 host의 VFIO 바인딩과 VM의 `hostpci`를 각각 확인한다. 이 랩의 GPU worker는 VMID `102`, 첫 번째 GPU는 `01:00`이다.
+
+```bash
+# Proxmox host
+lspci -nnk -s 01:00.0
+qm config 102 | grep '^hostpci'
+
+# hostpci가 없을 때: 먼저 OpenShift에서 노드를 drain한 뒤 VM을 종료한다.
+qm set 102 --hostpci0 01:00,pcie=1,x-vga=1
+qm start 102
+```
+
+`01:00.0`과 `01:00.1`은 같은 IOMMU group에 있어야 하고 host에서는 `vfio-pci`, 재기동한 RHCOS에서는 `NVIDIA GB206 [GeForce RTX 5060 Ti]`로 보여야 한다. VM 설정 변경 전에는 `oc adm cordon`과 `oc adm drain --ignore-daemonsets --delete-emptydir-data`로 일반 workload를 비운다.
+
 ### Node Feature Discovery Operator 설치
 ```bash
 oc apply -f - <<'EOF'
@@ -113,6 +127,14 @@ KMM OperatorGroup에 `targetNamespaces`를 지정하면 `UnsupportedOperatorGrou
 
 ### NVIDIA GPU Operator 설치
 현재 미러 CatalogSource의 기본 채널은 `v26.3`이다. `stable` 채널로 추측해서 설치하지 않는다.
+
+GPU Operator 26.3의 operand는 digest가 포함된 `nvcr.io/nvidia/...` 이미지를 사용한다. `ImageTagMirrorSet`만 있으면 태그 pull은 미러링되지만 digest pull은 외부 `nvcr.io`로 나가므로, 각 operand repository에 대한 `ImageDigestMirrorSet`도 있어야 한다. 다음 명령에서 `k8s-driver-manager` 항목이 `pull-from-mirror = "digest-only"`로 보여야 한다.
+
+```bash
+oc debug node/ocp-w01-gpu -- chroot /host \
+  grep -A6 'nvcr.io/nvidia/cloud-native/k8s-driver-manager' \
+  /etc/containers/registries.conf
+```
 
 ```bash
 oc apply -f - <<'EOF'

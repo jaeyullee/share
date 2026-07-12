@@ -288,3 +288,15 @@ oc logs deploy/iris-sklearn-predictor -n jukebox -c kserve-container
 oc port-forward -n jukebox deploy/iris-sklearn-predictor 18082:8082
 curl -s http://127.0.0.1:18082/metrics | grep -Ei 'request|infer|iris|mlserver'
 ```
+
+### 실습 리소스 정리
+InferenceService와 이 리소스가 생성한 Predictor만 삭제한다. 다음 실습에서 재사용하는 `mlserver-sklearn` ServingRuntime, S3 연결 Secret, ServiceAccount와 `jukebox` 프로젝트는 유지한다.
+
+```bash
+oc delete isvc iris-sklearn -n jukebox \
+  --ignore-not-found --wait=true --timeout=5m
+
+# NotFound이면 삭제가 완료된 상태다.
+oc get isvc iris-sklearn -n jukebox
+oc get servingruntime mlserver-sklearn -n jukebox
+```
