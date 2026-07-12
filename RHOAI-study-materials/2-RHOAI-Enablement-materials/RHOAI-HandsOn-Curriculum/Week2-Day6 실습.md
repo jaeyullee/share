@@ -3,7 +3,7 @@
 
 ### gitea 준비
 1. gitea 설치 (helm 이용)
-2. gitea 콘솔 접속 및 admin 로그인
+2. gitea 콘솔 접속 및 `<GITEA_ID>` 로그인
 3. hands-on 조직 생성
 4. day06 레포 생성 (비공개)
 5. 액세스 토큰 발급(gitea는 personal access token 만 존재)

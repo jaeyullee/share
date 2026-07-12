@@ -9,7 +9,7 @@ Model Registry에 모델과 버전을 등록하고, 메타데이터로 승격 �
 ```bash
 oc get dsc default-dsc \
   -o jsonpath='{.spec.components.modelregistry.managementState}{"\n"}'
-oc get modelregistry.components.platform.opendatahub.io default-modelregistry -o yaml
+oc get modelregistries.components.platform.opendatahub.io default-modelregistry -o yaml
 oc get crd modelregistries.modelregistry.opendatahub.io
 ```
 
@@ -50,37 +50,30 @@ spec:
       key: database-password
 EOF
 
-oc get modelregistry jukebox-registry -n rhoai-model-registries -w
+oc get modelregistries.modelregistry.opendatahub.io \
+  jukebox-registry -n rhoai-model-registries -w
 ```
 
 `PHASE`가 `Ready`가 되면 `Ctrl+C`로 종료한다.
 
 ```bash
 oc get pods,svc,route,pvc -n rhoai-model-registries
-oc get modelregistry jukebox-registry -n rhoai-model-registries -o yaml
+oc get modelregistries.modelregistry.opendatahub.io \
+  jukebox-registry -n rhoai-model-registries -o yaml
 ```
 
 ### Registry REST endpoint 확인
-실제 Service와 Route 이름은 Operator가 생성하므로 고정값을 추측하지 않고 label과 owner 정보를 확인한다.
+Model Registry Operator는 Registry별 REST Service를 생성하지만 개별 Route를 자동 생성하지 않는다. 대시보드에서 등록하거나, API를 직접 확인할 때는 Service를 port-forward한다.
 
 ```bash
-oc get route -n rhoai-model-registries \
-  -o custom-columns=NAME:.metadata.name,HOST:.spec.host
-
-REGISTRY_HOST=$(oc get route -n rhoai-model-registries \
-  -o jsonpath='{.items[?(@.metadata.ownerReferences[0].name=="jukebox-registry")].spec.host}')
-
-echo "$REGISTRY_HOST"
-curl -sk -H "Authorization: Bearer $(oc whoami -t)" \
-  "https://${REGISTRY_HOST}/api/model_registry/v1alpha3/registered_models" | jq .
+oc get svc jukebox-registry -n rhoai-model-registries
+oc port-forward -n rhoai-model-registries svc/jukebox-registry 18080:8080
 ```
 
-Route가 생성되지 않았으면 Registry REST Service를 port-forward해서 같은 API 경로를 확인한다.
+다른 터미널에서 API 응답을 확인한다.
 
 ```bash
-oc get svc -n rhoai-model-registries
-# 실제 REST Service 이름으로 변경
-oc port-forward -n rhoai-model-registries svc/<REGISTRY_REST_SERVICE> 18080:8080
+curl -s http://127.0.0.1:18080/api/model_registry/v1alpha3/registered_models | jq .
 ```
 
 ### 모델 v1 등록
@@ -91,15 +84,10 @@ RHOAI 대시보드에서 다음 순서로 등록한다.
 3. 버전 이름은 `v1`, 모델 위치는 `s3://rhoai-models/fraud/model.joblib`로 입력한다.
 4. 모델 프레임워크와 정확도, 학습 파라미터를 메타데이터로 입력한다.
 
-REST API로 등록할 때는 먼저 서버의 OpenAPI 문서를 확인한다.
+REST API로 자동화할 수도 있지만 이 실습에서는 대시보드를 사용한다. RHOAI 3.4 Registry REST 서버는 `/openapi.json`을 제공하지 않으므로, API 자동화 코드는 설치 버전의 Model Registry API/SDK와 맞춰 작성해야 한다.
 
 ```bash
-curl -sk -H "Authorization: Bearer $(oc whoami -t)" \
-  "https://${REGISTRY_HOST}/openapi.json" \
-  -o /tmp/model-registry-openapi.json
-
-jq -r '.paths | keys[]' /tmp/model-registry-openapi.json | \
-  grep -E 'registered_models|model_versions|model_artifacts'
+curl -s http://127.0.0.1:18080/api/model_registry/v1alpha3/registered_models | jq .
 ```
 
 ### 모델 v2 등록 및 승격
@@ -113,8 +101,7 @@ jq -r '.paths | keys[]' /tmp/model-registry-openapi.json | \
 
 ### Registry 메타데이터 확인
 ```bash
-curl -sk -H "Authorization: Bearer $(oc whoami -t)" \
-  "https://${REGISTRY_HOST}/api/model_registry/v1alpha3/registered_models" | jq .
+curl -s http://127.0.0.1:18080/api/model_registry/v1alpha3/registered_models | jq .
 ```
 
 응답에서 Registered Model ID와 Model Version ID를 확인한다. ID는 클러스터마다 달라지므로 YAML에 미리 고정하지 않는다.

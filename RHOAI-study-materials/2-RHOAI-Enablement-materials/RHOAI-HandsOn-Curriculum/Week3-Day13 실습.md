@@ -10,7 +10,15 @@ User Workload Monitoring으로 KServe metric을 수집하고, RHOAI 3.4의 NeMo 
 oc get configmap cluster-monitoring-config -n openshift-monitoring \
   -o jsonpath='{.data.config\.yaml}' > /tmp/cluster-monitoring-config.yaml
 
-yq -i '.enableUserWorkload = true' /tmp/cluster-monitoring-config.yaml
+python3 - <<'PY'
+from pathlib import Path
+import yaml
+
+path = Path("/tmp/cluster-monitoring-config.yaml")
+config = yaml.safe_load(path.read_text()) or {}
+config["enableUserWorkload"] = True
+path.write_text(yaml.safe_dump(config, sort_keys=False))
+PY
 
 oc create configmap cluster-monitoring-config \
   -n openshift-monitoring \
@@ -50,7 +58,7 @@ spec:
           - fraud-blue-metrics
           - fraud-green-metrics
   endpoints:
-    - targetPort: 8082
+    - port: mlserver-sklearn-metrics
       interval: 15s
       path: /metrics
 ---
@@ -72,7 +80,7 @@ spec:
           - mnist-onnx-metrics
           - tf-fraud-metrics
   endpoints:
-    - targetPort: 8888
+    - port: ovms-onnx-metrics
       interval: 15s
       path: /metrics
 EOF
@@ -113,7 +121,7 @@ curl -sG http://127.0.0.1:19090/api/v1/label/__name__/values | \
 metric 이름은 ServingRuntime 버전에 따라 달라질 수 있으므로 두 번째 명령으로 실제 이름을 먼저 확인한 후 PromQL을 작성한다.
 
 ### PrometheusRule 생성
-아래 `METRIC_NAME`은 위 조회에서 확인한 실제 histogram bucket 이름으로 변경한다.
+현재 OVMS runtime에서 확인한 `ovms_request_time_us_bucket`으로 P95를 계산한다. 단위가 microseconds이므로 1초 임계값은 `1000000`이다.
 
 ```bash
 cat > /tmp/day13-prometheus-rule.yaml <<'EOF'
@@ -134,7 +142,7 @@ spec:
           annotations:
             summary: "KServe metrics target is down"
         - alert: HighInferenceLatencyP95
-          expr: histogram_quantile(0.95, sum by (le) (rate(METRIC_NAME[5m]))) > 1
+          expr: histogram_quantile(0.95, sum by (le) (rate(ovms_request_time_us_bucket{namespace="jukebox"}[5m]))) > 1000000
           for: 5m
           labels:
             severity: warning
@@ -142,8 +150,6 @@ spec:
             summary: "P95 inference latency exceeded 1 second"
 EOF
 
-sed -i 's/METRIC_NAME/<ACTUAL_HISTOGRAM_BUCKET_METRIC>/g' \
-  /tmp/day13-prometheus-rule.yaml
 oc apply -f /tmp/day13-prometheus-rule.yaml
 oc get prometheusrule kserve-alerts -n jukebox
 ```
@@ -231,4 +237,3 @@ oc get events -n jukebox --sort-by=.lastTimestamp | tail -30
 ```
 
 > 기존 FMS `GuardrailsOrchestrator`는 RHOAI 3.4 문서에서 legacy로 분류되며 향후 deprecated될 예정이다. 신규 구성은 NeMo Guardrails를 우선한다.
-

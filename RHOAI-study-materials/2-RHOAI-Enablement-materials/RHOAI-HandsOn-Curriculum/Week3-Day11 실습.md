@@ -5,12 +5,13 @@ NFD, KMM, NVIDIA GPU Operator를 설치해서 GPU worker의 GPU를 OpenShift 리
 
 ### GPU worker 사전 확인
 ```bash
-oc get node -l node-role.kubernetes.io/gpu -o wide
+oc get node -l lab-role=gpu -o wide
+oc debug node/ocp-w01-gpu -- chroot /host lspci -nn | grep -i nvidia
 oc get node ocp-w01-gpu \
   -o jsonpath='{.status.allocatable.nvidia\.com/gpu}{"\n"}'
 ```
 
-GPU Operator 설치 전에는 두 번째 명령이 빈 값을 반환할 수 있다.
+`lspci`에서 NVIDIA 장치가 보여야 설치를 계속할 수 있다. 출력이 없으면 VM/물리 노드에 GPU PCI 장치가 연결되지 않은 상태이므로 GPU Operator로 해결할 수 없다. GPU Operator 설치 전에는 allocatable 값이 빈 값을 반환할 수 있다.
 
 ### Node Feature Discovery Operator 설치
 ```bash
@@ -45,7 +46,7 @@ EOF
 oc get csv,subscription,pods -n openshift-nfd
 ```
 
-CSV가 `Succeeded`가 된 뒤 `NodeFeatureDiscovery`를 생성한다. OCP 4.22에서는 `spec.operand.image`를 명시한다.
+CSV가 `Succeeded`가 된 뒤 `NodeFeatureDiscovery`를 생성한다. 설치된 CSV의 `alm-examples`와 같이 operand 이미지는 Operator의 관련 이미지 환경변수에 맡기고 고정하지 않는다.
 
 ```bash
 oc apply -f - <<'EOF'
@@ -56,8 +57,8 @@ metadata:
   namespace: openshift-nfd
 spec:
   operand:
-    image: registry.redhat.io/openshift4/ose-node-feature-discovery-rhel9:v4.22
     imagePullPolicy: IfNotPresent
+    servicePort: 12000
   workerConfig:
     configData: |
       core:
@@ -90,9 +91,7 @@ kind: OperatorGroup
 metadata:
   name: openshift-kmm
   namespace: openshift-kmm
-spec:
-  targetNamespaces:
-    - openshift-kmm
+spec: {} # KMM 2.6은 AllNamespaces 설치 모드만 지원한다.
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
@@ -109,6 +108,8 @@ EOF
 
 oc get csv,subscription,pods -n openshift-kmm
 ```
+
+KMM OperatorGroup에 `targetNamespaces`를 지정하면 `UnsupportedOperatorGroup`으로 실패한다.
 
 ### NVIDIA GPU Operator 설치
 현재 미러 CatalogSource의 기본 채널은 `v26.3`이다. `stable` 채널로 추측해서 설치하지 않는다.
@@ -156,28 +157,19 @@ oc get csv "$GPU_CSV" -n nvidia-gpu-operator \
   -o jsonpath='{.metadata.annotations.alm-examples}' | jq .
 ```
 
-기본 `ClusterPolicy`가 없을 때만 다음 최소 설정을 적용한다.
+기본 `ClusterPolicy`가 없을 때만 CSV의 현재 예제를 사용한다. RTX 5060 Ti 실습에 필요하지 않은 MIG, vGPU, sandbox 계열 기능은 비활성화한다.
 
 ```bash
-oc apply -f - <<'EOF'
-apiVersion: nvidia.com/v1
-kind: ClusterPolicy
-metadata:
-  name: gpu-cluster-policy
-spec:
-  driver:
-    enabled: true
-  toolkit:
-    enabled: true
-  devicePlugin:
-    enabled: true
-  dcgmExporter:
-    enabled: true
-  nodeStatusExporter:
-    enabled: true
-  migManager:
-    enabled: false
-EOF
+oc get csv "$GPU_CSV" -n nvidia-gpu-operator \
+  -o jsonpath='{.metadata.annotations.alm-examples}' | \
+  jq '.[0]
+      | .spec.migManager.enabled=false
+      | .spec.vgpuDeviceManager.enabled=false
+      | .spec.sandboxDevicePlugin.enabled=false
+      | .spec.kataSandboxDevicePlugin.enabled=false
+      | .spec.vfioManager.enabled=false
+      | .spec.ccManager.enabled=false' | \
+  oc apply -f -
 
 oc get clusterpolicy gpu-cluster-policy
 oc get pods -n nvidia-gpu-operator -o wide
@@ -205,7 +197,7 @@ GPU test image는 모델 이미지 레지스트리 `5010`에 미리 반입한다
 skopeo copy --src-tls-verify=false --dest-tls-verify=false \
   --src-creds '<MIRROR_REGISTRY_ID>:<MIRROR_REGISTRY_PW>' \
   --dest-creds '<MODEL_REGISTRY_ID>:<MODEL_REGISTRY_PW>' \
-  docker://192.168.10.50:5000/ocp-mirror/rhaii/vllm-cuda-rhel9:<MIRRORED_TAG_OR_DIGEST> \
+  docker://192.168.10.50:5000/ocp-mirror/rhaii/vllm-cuda-rhel9@sha256:ad06abf3bb5235ebb5b2df84cd1b9fd09e823f0ff2eebfc82bb4590275ccfe0b \
   docker://192.168.10.50:5010/rhaii/vllm-cuda-rhel9:rhoai-3.4
 ```
 
@@ -286,4 +278,3 @@ oc get hardwareprofile gpu-small -n redhat-ods-applications -o yaml
 RHOAI 대시보드에서 Workbench 또는 Model deployment 생성 시 `GPU Small - 1 GPU` 프로필이 표시되는지 확인한다.
 
 > RTX 5060 Ti는 MIG 실습 대상이 아니다. GPU 공유는 Day12에서 Time-Slicing으로 진행한다.
-

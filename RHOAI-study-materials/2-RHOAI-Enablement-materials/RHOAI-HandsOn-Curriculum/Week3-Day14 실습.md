@@ -23,8 +23,12 @@ oc get configmap cluster-monitoring-config -n openshift-monitoring \
 
 Day13의 User Workload Monitoring, Day11의 GPU, Leader Worker Set Operator가 준비되어 있어야 한다.
 
+> `oc debug node/ocp-w01-gpu -- chroot /host lspci -nn | grep -i nvidia`가 비어 있으면 LLM 배포 단계는 진행할 수 없다. MaaS 컨트롤 플레인과 정책 CR 검증은 가능하지만 실제 GPU 추론 검증은 PCI passthrough 복구 후 수행한다.
+
 ### Red Hat Connectivity Link Operator 설치
 RHCL은 MaaS의 Gateway, Authorino, Limitador, Kuadrant policy 계층을 제공한다.
+
+> RHCL 1.4.1은 `dns-operator 1.4.0`, `authorino-operator 1.4.1`, `limitador-operator 1.4.0`을 OLM 의존성으로 설치한다. 폐쇄망 카탈로그에 네 패키지와 operand 이미지가 모두 있어야 한다.
 
 ```bash
 oc apply -f - <<'EOF'
@@ -74,23 +78,34 @@ oc get kuadrant kuadrant -n kuadrant-system -w
 oc get pods -n kuadrant-system
 ```
 
+MaaS API가 Authorino에서 내부 API key 검증 endpoint를 호출할 때 service CA를 신뢰하도록 mTLS를 활성화한다.
+
+```bash
+oc patch kuadrant kuadrant -n kuadrant-system --type=merge \
+  -p '{"spec":{"mtls":{"enable":true,"authorino":true,"limitador":true}}}'
+oc get kuadrant kuadrant -n kuadrant-system
+```
+
 ### MaaS PostgreSQL 준비
 MaaS는 PostgreSQL 14 이상이 필요하며 RHOAI가 DB를 제공하지 않는다. 실습용 DB 이미지는 모델 이미지 레지스트리 `5010`에 반입해서 사용한다.
 
 ```bash
-podman login 192.168.10.50:5010 \
-  --username '<MODEL_REGISTRY_ID>' \
-  --password '<MODEL_REGISTRY_PW>'
-
-podman pull --authfile <PULL_SECRET_JSON> \
-  registry.redhat.io/rhel9/postgresql-16:latest
-podman tag registry.redhat.io/rhel9/postgresql-16:latest \
-  192.168.10.50:5010/rhel9/postgresql-16:latest
-podman push --tls-verify=false \
-  192.168.10.50:5010/rhel9/postgresql-16:latest
+skopeo copy --src-tls-verify=false --dest-tls-verify=false \
+  --src-creds '<MIRROR_REGISTRY_ID>:<MIRROR_REGISTRY_PW>' \
+  --dest-creds '<MODEL_REGISTRY_ID>:<MODEL_REGISTRY_PW>' \
+  docker://192.168.10.50:5000/ocp-mirror/rhel9/postgresql-16@sha256:d5842e96059ffa6020c22525014455637990543ffb126768d27b057cff2bb40a \
+  docker://192.168.10.50:5010/rhel9/postgresql-16:rhoai-3.4
 ```
 
 ```bash
+oc create namespace rhoai-maas-db --dry-run=client -o yaml | oc apply -f -
+oc create secret docker-registry model-registry-pull \
+  -n rhoai-maas-db \
+  --docker-server=192.168.10.50:5010 \
+  --docker-username='<MODEL_REGISTRY_ID>' \
+  --docker-password='<MODEL_REGISTRY_PW>' \
+  --dry-run=client -o yaml | oc apply -f -
+
 oc apply -f - <<'EOF'
 apiVersion: v1
 kind: Namespace
@@ -136,9 +151,11 @@ spec:
       labels:
         app: maas-postgresql
     spec:
+      imagePullSecrets:
+        - name: model-registry-pull
       containers:
         - name: postgresql
-          image: 192.168.10.50:5010/rhel9/postgresql-16:latest
+          image: 192.168.10.50:5010/rhel9/postgresql-16:rhoai-3.4
           env:
             - name: POSTGRESQL_USER
               valueFrom:
@@ -211,7 +228,7 @@ metadata:
     opendatahub.io/managed: "false"
     security.opendatahub.io/authorino-tls-bootstrap: "true"
 spec:
-  gatewayClassName: <OPENSHIFT_GATEWAY_CLASS>
+  gatewayClassName: data-science-gateway-class
   listeners:
     - name: https
       protocol: HTTPS
@@ -221,10 +238,33 @@ spec:
         mode: Terminate
         certificateRefs:
           - kind: Secret
-            name: <MAAS_GATEWAY_TLS_SECRET>
+            name: router-certs-default
       allowedRoutes:
         namespaces:
           from: All
+EOF
+```
+
+이 랩은 LoadBalancer가 없으므로 Gateway Service를 OpenShift Route의 passthrough TLS로 노출한다.
+
+```bash
+oc apply -f - <<'EOF'
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: maas-default-gateway
+  namespace: openshift-ingress
+spec:
+  host: maas.apps.sno.ocp422.com
+  port:
+    targetPort: 443
+  tls:
+    termination: passthrough
+  to:
+    kind: Service
+    name: maas-default-gateway-data-science-gateway-class
+    weight: 100
+  wildcardPolicy: None
 EOF
 ```
 
@@ -245,14 +285,16 @@ oc get tenant default-tenant -n models-as-a-service -o yaml
 oc get pods -n redhat-ods-applications | grep maas
 ```
 
-`default-tenant`의 Ready condition이 `True`이고 reason이 `AllComponentsReady`인지 확인한다.
+`default-tenant`의 `READY`가 `True`이고 RHOAI 3.4.0 환경에서 reason이 `Reconciled`인지 확인한다.
 
 ### LLMInferenceService 배포
 설치된 RHOAI가 제공하는 `LLMInferenceServiceConfig` 목록과 모델 URI 형식을 확인한다.
 
 ```bash
-oc get llminferenceserviceconfig
-oc get llminferenceserviceconfig -o yaml
+oc get llminferenceserviceconfig -n redhat-ods-applications
+oc get llminferenceserviceconfig \
+  v3-4-0-kserve-config-llm-template-nvidia-cuda \
+  -n redhat-ods-applications -o yaml
 ```
 
 모델은 disconnected 환경에 반입한 OCI ModelCar 또는 지원되는 내부 URI를 사용한다.
@@ -265,6 +307,8 @@ metadata:
   name: granite-2b
   namespace: jukebox
 spec:
+  baseRefs:
+    - name: v3-4-0-kserve-config-llm-template-nvidia-cuda
   model:
     name: granite-2b
     uri: <DISCONNECTED_MODEL_URI>
@@ -293,7 +337,7 @@ oc get llminferenceservice granite-2b -n jukebox -w
 ### MaaS에 모델 publish
 ```bash
 oc apply -f - <<'EOF'
-apiVersion: models.opendatahub.io/v1alpha1
+apiVersion: maas.opendatahub.io/v1alpha1
 kind: MaaSModelRef
 metadata:
   name: granite-2b
@@ -316,7 +360,7 @@ oc adm groups new rhoai-maas-lab
 
 ```bash
 oc apply -f - <<'EOF'
-apiVersion: models.opendatahub.io/v1alpha1
+apiVersion: maas.opendatahub.io/v1alpha1
 kind: MaaSSubscription
 metadata:
   name: rhoai-maas-lab
@@ -324,8 +368,7 @@ metadata:
 spec:
   owner:
     groups:
-      - kind: Group
-        name: rhoai-maas-lab
+      - name: rhoai-maas-lab
     users: []
   modelRefs:
     - name: granite-2b
@@ -335,14 +378,16 @@ spec:
           window: 1h
   priority: 100
 ---
-apiVersion: models.opendatahub.io/v1alpha1
+apiVersion: maas.opendatahub.io/v1alpha1
 kind: MaaSAuthPolicy
 metadata:
   name: rhoai-maas-lab
   namespace: models-as-a-service
 spec:
-  groups:
-    - rhoai-maas-lab
+  subjects:
+    groups:
+      - name: rhoai-maas-lab
+    users: []
   modelRefs:
     - name: granite-2b
       namespace: jukebox
@@ -354,16 +399,16 @@ oc get maassubscription,maasauthpolicy -n models-as-a-service
 Subscription만 있고 authorization policy가 없으면 `403`, authorization policy만 있고 quota가 없으면 `429`가 발생한다.
 
 ### API key와 OpenAI 호환 API 검증
-RHOAI 대시보드에서 실습용 API key를 발급한다. API key 값은 파일이나 문서에 저장하지 않고 현재 shell 환경변수로만 사용한다.
+RHOAI 대시보드에서 실습용 API key를 발급한다. API key 값은 파일이나 문서에 저장하지 않고 현재 shell 환경변수로만 사용한다. `/maas-api` 관리 API는 OpenShift 로그인 토큰을 사용하고, 발급된 API key는 publish된 모델 endpoint에 사용한다.
 
 ```bash
 read -rsp 'MaaS API key: ' MAAS_API_KEY
 echo
 
-curl -sk -H "Authorization: Bearer $MAAS_API_KEY" \
+curl -sk -H "Authorization: Bearer $(oc whoami -t)" \
   https://maas.apps.sno.ocp422.com/maas-api/v1/models | jq .
 
-curl -sk https://maas.apps.sno.ocp422.com/llm/granite-2b/v1/chat/completions \
+curl -sk https://maas.apps.sno.ocp422.com/jukebox/granite-2b/v1/chat/completions \
   -H "Authorization: Bearer $MAAS_API_KEY" \
   -H 'Content-Type: application/json' \
   -d '{"model":"granite-2b","messages":[{"role":"user","content":"한 문장으로 자기소개해 주세요."}],"max_tokens":64}' | jq .

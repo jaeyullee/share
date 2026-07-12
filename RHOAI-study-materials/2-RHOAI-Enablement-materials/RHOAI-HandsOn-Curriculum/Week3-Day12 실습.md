@@ -18,9 +18,7 @@ kind: OperatorGroup
 metadata:
   name: openshift-kueue-operator
   namespace: openshift-kueue-operator
-spec:
-  targetNamespaces:
-    - openshift-kueue-operator
+spec: {} # Red Hat build of Kueue 1.3은 AllNamespaces 설치 모드다.
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
@@ -38,7 +36,28 @@ EOF
 oc get csv,subscription,pods -n openshift-kueue-operator
 ```
 
-### RHOAI Kueue 연동 활성화
+### Kueue 컨트롤러와 RHOAI 연동 활성화
+Operator 설치 후 현재 CSV의 예제대로 Kueue 컨트롤러 인스턴스를 먼저 생성한다.
+
+```bash
+oc apply -f - <<'EOF'
+apiVersion: kueue.openshift.io/v1
+kind: Kueue
+metadata:
+  name: cluster
+spec:
+  managementState: Managed
+  config:
+    integrations:
+      frameworks:
+        - BatchJob
+EOF
+
+oc get kueues.kueue.openshift.io cluster
+```
+
+RHOAI가 별도 설치된 Kueue를 사용하도록 `Unmanaged`로 설정한다.
+
 ```bash
 oc patch dsc default-dsc --type=merge \
   -p '{"spec":{"components":{"kueue":{"managementState":"Unmanaged","defaultClusterQueueName":"team-cq","defaultLocalQueueName":"team-lq"}}}}'
@@ -59,7 +78,7 @@ oc label namespace jukebox kueue.openshift.io/managed=true --overwrite
 ### CPU ResourceFlavor와 Queue 생성
 ```bash
 oc apply -f - <<'EOF'
-apiVersion: kueue.x-k8s.io/v1beta1
+apiVersion: kueue.x-k8s.io/v1beta2
 kind: ResourceFlavor
 metadata:
   name: cpu-flavor
@@ -67,7 +86,7 @@ spec:
   nodeLabels:
     lab-role: cpu
 ---
-apiVersion: kueue.x-k8s.io/v1beta1
+apiVersion: kueue.x-k8s.io/v1beta2
 kind: ClusterQueue
 metadata:
   name: team-cq
@@ -90,7 +109,7 @@ spec:
             - name: memory
               nominalQuota: 8Gi
 ---
-apiVersion: kueue.x-k8s.io/v1beta1
+apiVersion: kueue.x-k8s.io/v1beta2
 kind: LocalQueue
 metadata:
   name: team-lq
@@ -98,14 +117,14 @@ metadata:
 spec:
   clusterQueue: team-cq
 ---
-apiVersion: kueue.x-k8s.io/v1beta1
+apiVersion: kueue.x-k8s.io/v1beta2
 kind: WorkloadPriorityClass
 metadata:
   name: day12-low
 value: 100
 description: "Day12 low priority workload"
 ---
-apiVersion: kueue.x-k8s.io/v1beta1
+apiVersion: kueue.x-k8s.io/v1beta2
 kind: WorkloadPriorityClass
 metadata:
   name: day12-high
@@ -118,7 +137,7 @@ oc get clusterqueue team-cq
 oc get localqueue team-lq -n jukebox
 ```
 
-설치된 Kueue 버전이 `v1beta2`만 제공하면 `oc api-resources --api-group=kueue.x-k8s.io`로 확인하고 위 리소스의 apiVersion을 `v1beta2`로 변경한다.
+Red Hat build of Kueue 1.3.1은 이 클러스터에서 `v1beta2`를 제공한다. 다른 버전에서는 `oc api-resources --api-group=kueue.x-k8s.io`로 제공 버전을 먼저 확인한다.
 
 ### 기본 Queue admission 확인
 ```bash
@@ -140,7 +159,7 @@ spec:
         lab-role: cpu
       containers:
         - name: workload
-          image: registry.redhat.io/ubi9/ubi-minimal:9.6
+          image: registry.redhat.io/rhoai/odh-pipeline-runtime-datascience-cpu-py312-rhel9@sha256:ed6634540d78910ceedc826b871641fb3f66b27be45b50df31c504582204a661
           command: ["sh", "-c", "echo admitted; sleep 60"]
           resources:
             requests:
@@ -181,13 +200,18 @@ spec:
         lab-role: cpu
       containers:
         - name: workload
-          image: registry.redhat.io/ubi9/ubi-minimal:9.6
+          image: registry.redhat.io/rhoai/odh-pipeline-runtime-datascience-cpu-py312-rhel9@sha256:ed6634540d78910ceedc826b871641fb3f66b27be45b50df31c504582204a661
           command: ["sh", "-c", "echo low-started; sleep 600"]
           resources:
             requests:
               cpu: "4"
               memory: 4Gi
----
+EOF
+
+oc wait --for=jsonpath='{.spec.suspend}'=false \
+  job/day12-low -n jukebox --timeout=120s
+
+oc apply -f - <<'EOF'
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -205,7 +229,7 @@ spec:
         lab-role: cpu
       containers:
         - name: workload
-          image: registry.redhat.io/ubi9/ubi-minimal:9.6
+          image: registry.redhat.io/rhoai/odh-pipeline-runtime-datascience-cpu-py312-rhel9@sha256:ed6634540d78910ceedc826b871641fb3f66b27be45b50df31c504582204a661
           command: ["sh", "-c", "echo high-started; sleep 60"]
           resources:
             requests:
@@ -262,7 +286,7 @@ oc get node ocp-w01-gpu \
 ### GPU ResourceFlavor 추가
 ```bash
 oc apply -f - <<'EOF'
-apiVersion: kueue.x-k8s.io/v1beta1
+apiVersion: kueue.x-k8s.io/v1beta2
 kind: ResourceFlavor
 metadata:
   name: gpu-shared-flavor
@@ -273,4 +297,3 @@ EOF
 ```
 
 GPU queue를 만들 때 `coveredResources: [nvidia.com/gpu]`와 `nominalQuota: 4`를 사용한다. CPU queue와 분리하면 CPU 실습에 영향을 주지 않고 GPU quota를 조정할 수 있다.
-

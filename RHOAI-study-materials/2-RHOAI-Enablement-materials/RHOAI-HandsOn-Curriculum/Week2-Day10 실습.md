@@ -6,7 +6,7 @@ Day6~9의 훈련, Registry, KServe, RBAC 흐름을 하나로 연결한다. 기�
 ### 사전 상태 확인
 ```bash
 oc get dspa -n jukebox
-oc get modelregistry -n rhoai-model-registries
+oc get modelregistries.modelregistry.opendatahub.io -n rhoai-model-registries
 oc get servingruntime,isvc,route -n jukebox
 mc stat truenas/rhoai-models/fraud/model.joblib
 mc stat truenas/rhoai-models/fraud-v2/model.joblib
@@ -45,8 +45,8 @@ oc get crd applications.argoproj.io
 day10-gitops/
 └── serving/
     ├── kustomization.yaml
-    ├── inferenceservice.yaml
-    └── route.yaml
+    ├── inferenceservice.json
+    └── route.json
 ```
 
 ```bash
@@ -57,17 +57,23 @@ cat > kustomization.yaml <<'EOF'
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - inferenceservice.yaml
-  - route.yaml
+  - inferenceservice.json
+  - route.json
 EOF
 
-oc get isvc fraud-blue -n jukebox -o yaml | \
-  yq 'del(.metadata.creationTimestamp, .metadata.generation, .metadata.resourceVersion, .metadata.uid, .metadata.ownerReferences, .status)' \
-  > inferenceservice.yaml
+oc get isvc fraud-blue -n jukebox -o json | jq \
+  'del(.metadata.creationTimestamp, .metadata.generation,
+       .metadata.resourceVersion, .metadata.uid, .metadata.ownerReferences,
+       .metadata.finalizers,
+       .metadata.annotations["kubectl.kubernetes.io/last-applied-configuration"],
+       .status)' > inferenceservice.json
 
-oc get route fraud-route -n jukebox -o yaml | \
-  yq 'del(.metadata.creationTimestamp, .metadata.resourceVersion, .metadata.uid, .status)' \
-  > route.yaml
+oc get route fraud-route -n jukebox -o json | jq \
+  'del(.metadata.creationTimestamp, .metadata.generation,
+       .metadata.resourceVersion, .metadata.uid,
+       .metadata.annotations["kubectl.kubernetes.io/last-applied-configuration"],
+       .metadata.annotations["openshift.io/host.generated"],
+       .status)' > route.json
 ```
 
 YAML을 검토한 뒤 저장소에 push한다. 인증정보는 remote URL에 직접 넣지 않는다.
@@ -130,8 +136,8 @@ spec:
       - CreateNamespace=false
 EOF
 
-oc get application jukebox-serving -n openshift-gitops
-oc describe application jukebox-serving -n openshift-gitops
+oc get applications.argoproj.io jukebox-serving -n openshift-gitops
+oc describe applications.argoproj.io jukebox-serving -n openshift-gitops
 ```
 
 ### GitOps 동작 검증
@@ -140,7 +146,7 @@ oc describe application jukebox-serving -n openshift-gitops
 3. 클러스터 Route에 변경된 weight가 반영됐는지 확인한다.
 
 ```bash
-oc get application jukebox-serving -n openshift-gitops \
+oc get applications.argoproj.io jukebox-serving -n openshift-gitops \
   -o custom-columns=NAME:.metadata.name,SYNC:.status.sync.status,HEALTH:.status.health.status
 
 oc get route fraud-route -n jukebox \
@@ -154,10 +160,9 @@ oc get route fraud-route -n jukebox \
 oc patch route fraud-route -n jukebox --type=merge \
   -p '{"spec":{"to":{"weight":100},"alternateBackends":[{"kind":"Service","name":"fraud-green-predictor","weight":0}]}}'
 
-oc get application jukebox-serving -n openshift-gitops -w
+oc get applications.argoproj.io jukebox-serving -n openshift-gitops -w
 ```
 
 Self-heal 후 Route가 Git의 선언값으로 복구되면 완료다.
 
 > GitOps Application을 삭제해도 기본값에서는 배포 리소스가 자동 삭제되지 않는다. `prune`과 finalizer를 사용하기 전에 삭제 범위를 반드시 확인한다.
-

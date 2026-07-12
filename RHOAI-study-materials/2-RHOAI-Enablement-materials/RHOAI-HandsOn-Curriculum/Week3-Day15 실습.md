@@ -7,7 +7,7 @@ Day6~14의 훈련, Pipeline, Registry, KServe, RBAC, Kueue, monitoring, Guardrai
 ```bash
 oc get dsc default-dsc
 oc get dspa -n jukebox
-oc get modelregistry -n rhoai-model-registries
+oc get modelregistries.modelregistry.opendatahub.io -n rhoai-model-registries
 oc get servingruntime,isvc,route -n jukebox
 oc get clusterqueue
 oc get localqueue,workload -n jukebox
@@ -37,7 +37,7 @@ Workbench/Git
 3. Day5 Route weight를 `90:10`, `50:50`, `10:90`으로 변경하고 응답 분포를 확인한다.
 4. Day13 Prometheus에서 inference target과 metric을 확인한다.
 5. Day13 NeMo Guardrails 정상/민감정보 요청 결과를 비교한다.
-6. Day14 MaaS API key로 model 목록과 chat completion을 호출한다.
+6. Day14 OpenShift 토큰으로 MaaS model 목록을 조회하고, 발급된 MaaS API key로 chat completion을 호출한다.
 
 ### 공통 추론 요청
 ```bash
@@ -126,10 +126,22 @@ oc wait --for=condition=Ready isvc/day15-broken-model \
 
 ### ResourceQuota 거부 재현
 ```bash
-oc run day15-quota-fail -n jukebox-team-a \
-  --image=registry.redhat.io/ubi9/ubi-minimal:9.6 \
-  --requests='cpu=5,memory=1Gi' \
-  --command -- sleep 300
+oc apply -f - <<'EOF'
+apiVersion: v1
+kind: Pod
+metadata:
+  name: day15-quota-fail
+  namespace: jukebox-team-a
+spec:
+  restartPolicy: Never
+  containers:
+    - name: check
+      image: registry.redhat.io/rhoai/odh-pipeline-runtime-datascience-cpu-py312-rhel9@sha256:ed6634540d78910ceedc826b871641fb3f66b27be45b50df31c504582204a661
+      command: ["sleep", "300"]
+      resources:
+        requests: {cpu: "5", memory: 1Gi}
+        limits: {cpu: "5", memory: 1Gi}
+EOF
 
 oc describe resourcequota team-a-quota -n jukebox-team-a
 oc get events -n jukebox-team-a --sort-by=.lastTimestamp | tail -20
@@ -140,10 +152,22 @@ oc get events -n jukebox-team-a --sort-by=.lastTimestamp | tail -20
 
 ```bash
 oc delete pod day15-quota-fail -n jukebox-team-a --ignore-not-found
-oc run day15-quota-ok -n jukebox-team-a \
-  --image=registry.redhat.io/ubi9/ubi-minimal:9.6 \
-  --requests='cpu=500m,memory=512Mi' \
-  --command -- sleep 60
+oc apply -f - <<'EOF'
+apiVersion: v1
+kind: Pod
+metadata:
+  name: day15-quota-ok
+  namespace: jukebox-team-a
+spec:
+  restartPolicy: Never
+  containers:
+    - name: check
+      image: registry.redhat.io/rhoai/odh-pipeline-runtime-datascience-cpu-py312-rhel9@sha256:ed6634540d78910ceedc826b871641fb3f66b27be45b50df31c504582204a661
+      command: ["sleep", "60"]
+      resources:
+        requests: {cpu: 500m, memory: 512Mi}
+        limits: {cpu: 500m, memory: 512Mi}
+EOF
 
 oc wait --for=condition=Ready pod/day15-quota-ok \
   -n jukebox-team-a --timeout=180s
@@ -199,4 +223,3 @@ oc delete pod day15-quota-ok day15-quota-fail \
 ```
 
 Day1~14에서 생성한 학습 리소스는 복습에 사용하므로 Day15에서 일괄 삭제하지 않는다. 전체 초기화가 필요하면 Namespace, cluster-scoped queue, DSC 설정, Operator를 구분해서 별도 정리한다.
-

@@ -182,7 +182,7 @@ spec:
   restartPolicy: Never
   containers:
     - name: check
-      image: registry.redhat.io/ubi9/ubi-minimal:9.6
+      image: registry.redhat.io/rhoai/odh-pipeline-runtime-datascience-cpu-py312-rhel9@sha256:ed6634540d78910ceedc826b871641fb3f66b27be45b50df31c504582204a661
       command: ["sh", "-c", "echo quota-and-secret-ready > /workspace/result.txt; sleep 300"]
       envFrom:
         - secretRef:
@@ -210,17 +210,32 @@ oc exec -n jukebox-team-a team-a-security-check -- cat /workspace/result.txt
 
 ### 쿼터 초과 재현
 ```bash
-oc run quota-too-large -n jukebox-team-a \
-  --image=registry.redhat.io/ubi9/ubi-minimal:9.6 \
-  --requests='cpu=5,memory=1Gi' \
-  --command -- sleep 300
+oc apply -f - <<'EOF'
+apiVersion: v1
+kind: Pod
+metadata:
+  name: quota-too-large
+  namespace: jukebox-team-a
+spec:
+  restartPolicy: Never
+  containers:
+    - name: check
+      image: registry.redhat.io/rhoai/odh-pipeline-runtime-datascience-cpu-py312-rhel9@sha256:ed6634540d78910ceedc826b871641fb3f66b27be45b50df31c504582204a661
+      command: ["sleep", "300"]
+      resources:
+        requests:
+          cpu: "5"
+          memory: 1Gi
+        limits:
+          cpu: "5"
+          memory: 1Gi
+EOF
 
 oc get events -n jukebox-team-a --sort-by=.lastTimestamp | tail -20
 ```
 
-ResourceQuota admission에서 거부되는 것을 확인한 뒤 실패 재현 Pod가 생성되었다면 삭제한다.
+LimitRange 또는 ResourceQuota admission에서 거부되는 것을 확인한 뒤 실패 재현 Pod가 생성되었다면 삭제한다. 현재 값에서는 Container CPU 상한 4를 먼저 초과하므로 LimitRange가 거부한다.
 
 ```bash
 oc delete pod quota-too-large -n jukebox-team-a --ignore-not-found
 ```
-
