@@ -1,3 +1,6 @@
+---
+custom-width: 60
+---
 # RHOAI-3.4-HandsOn-커리큘럼-v1.1.xlsx 실습
 ## week 2 - Day6
 
