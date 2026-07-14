@@ -115,33 +115,32 @@ CUDA_VISIBLE_DEVICES=-1 python3 models/train_fraud_sklearn.py
 
 출력된 `ROC-AUC = 0.xxx`의 숫자를 `roc_auc` property에 **Number** 타입으로 입력한다. 예를 들어 `ROC-AUC = 0.708`이라면 `<DAY5_ROC_AUC>` 대신 `0.708`을 입력한다. 학습 스크립트는 `random_state=42`를 사용하므로 동일한 데이터와 패키지 버전에서는 같은 결과를 생성한다.
 
-REST API로 자동화할 수도 있지만 이 실습에서는 대시보드를 사용한다. RHOAI 3.4 Registry REST 서버는 `/openapi.json`을 제공하지 않으므로, API 자동화 코드는 설치 버전의 Model Registry API/SDK와 맞춰 작성해야 한다.
+  ### Registry 메타데이터 확인
+앞에서 실행한 Registry `port-forward`를 유지하고 다른 Bastion 터미널에서 Registered Model ID와 v1 Model Version ID를 조회한다.
 
 ```bash
-curl -s http://127.0.0.1:18080/api/model_registry/v1alpha3/registered_models | jq .
+REGISTERED_MODEL_ID="$(
+  curl -s http://127.0.0.1:18080/api/model_registry/v1alpha3/registered_models |
+    jq -r '.items[] | select(.name == "fraud-detection") | .id'
+)"
+
+V1_MODEL_VERSION_ID="$(
+  curl -s http://127.0.0.1:18080/api/model_registry/v1alpha3/model_versions |
+    jq -r --arg id "$REGISTERED_MODEL_ID" \
+      '.items[] | select(.registeredModelId == $id and .name == "v1") | .id'
+)"
+
+printf 'Registered Model ID=%s\nv1 Model Version ID=%s\n' \
+  "$REGISTERED_MODEL_ID" "$V1_MODEL_VERSION_ID"
 ```
 
-### 모델 v2 등록 및 승격
-1. 같은 Registered Model 아래 `v2` 버전을 추가한다.
-2. 모델 위치는 `s3://rhoai-models/fraud-v2/model.joblib`로 입력한다.
-3. `stage=Staging` custom property를 추가한다.
-4. 추론 검증 후 v2의 custom property를 `stage=Production`으로 변경한다.
-5. v1은 `stage=Archived`로 변경한다.
+두 값이 모두 출력되는지 확인한다. ID는 클러스터마다 달라지므로 문서나 YAML에 고정하지 않는다.
 
-> Model Registry API의 기본 `state` 값은 구현 버전에 따라 `LIVE`/`ARCHIVED`를 사용한다. 커리큘럼의 `Staging`/`Production`은 별도의 custom property로 기록해 배포 승인 단계를 표현한다.
-
-### Registry 메타데이터 확인
-```bash
-curl -s http://127.0.0.1:18080/api/model_registry/v1alpha3/registered_models | jq .
-```
-
-응답에서 Registered Model ID와 Model Version ID를 확인한다. ID는 클러스터마다 달라지므로 YAML에 미리 고정하지 않는다.
-
-### Registry 모델을 KServe로 배포
-Registry의 메타데이터를 확인한 뒤 실제 S3 URI로 InferenceService를 생성한다.
+### v1 Registry 모델 배포 및 기준 추론
+Registry의 v1 메타데이터와 실제 S3 URI를 연결한 InferenceService를 생성한다. 실제 모델 로딩에는 `storageUri`가 사용되고, annotation은 배포가 어떤 Registry 모델과 버전을 참조했는지 추적하기 위한 메타데이터다.
 
 ```bash
-oc apply -f - <<'EOF'
+cat <<EOF | oc apply -f -
 apiVersion: serving.kserve.io/v1beta1
 kind: InferenceService
 metadata:
@@ -151,8 +150,86 @@ metadata:
     opendatahub.io/dashboard: "true"
   annotations:
     serving.kserve.io/deploymentMode: RawDeployment
-    modelregistry.opendatahub.io/registered-model-id: <REGISTERED_MODEL_ID>
-    modelregistry.opendatahub.io/model-version-id: <MODEL_VERSION_ID>
+    modelregistry.opendatahub.io/registered-model-id: "${REGISTERED_MODEL_ID}"
+    modelregistry.opendatahub.io/model-version-id: "${V1_MODEL_VERSION_ID}"
+spec:
+  predictor:
+    serviceAccountName: kserve-sa
+    minReplicas: 1
+    model:
+      modelFormat:
+        name: sklearn
+        version: "1"
+      runtime: mlserver-sklearn
+      storageUri: s3://rhoai-models/fraud
+      env:
+        - name: MLSERVER_MODEL_NAME
+          value: fraud
+EOF
+
+oc wait --for=condition=Ready \
+  isvc/fraud-registry-production -n jukebox --timeout=300s
+oc get isvc fraud-registry-production -n jukebox
+```
+
+InferenceService를 port-forward한다.
+
+```bash
+oc port-forward -n jukebox \
+  deploy/fraud-registry-production-predictor 18088:8080
+```
+
+다른 Bastion 터미널에서 Day5의 요청 파일로 v1을 호출한다.
+
+```bash
+curl -s -H 'Content-Type: application/json' \
+  http://127.0.0.1:18088/v2/models/fraud/infer \
+  -d @/tmp/python3/fraud-request.json | jq .
+```
+
+응답의 `outputs[0].data[0]`을 v1 기준값으로 기록한다. Day5 실습 데이터와 모델을 그대로 사용했다면 v1은 `0`을 반환한다. 정상 응답을 확인한 뒤 대시보드의 v1 상세 화면에서 `stage`를 `Staging`에서 `Production`으로 변경한다.
+
+### 모델 v2 등록
+1. `fraud-detection` Registered Model 상세 화면에서 새 Model Version을 추가한다.
+2. **Version name**은 `v2`, **Source model format**은 `scikit-learn`, **Source model format version**은 `1.6.1`로 입력한다.
+3. **Model location**에서 **Object storage**를 선택하고 `TrueNAS S3 models` Connection으로 자동 입력한 뒤 **Path**에 `fraud-v2/model.joblib`을 입력한다.
+4. 다음 custom property를 추가하고 등록한다.
+   - `algorithm=DummyClassifier`
+   - `roc_auc=0.500`
+   - `stage=Staging`
+
+> Day5의 `train_fraud_sklearn_v2.py`는 Blue/Green 응답 차이를 명확하게 보여주기 위해 항상 `1`을 예측하는 `DummyClassifier`를 생성한다. 따라서 이 실습의 v2 승격은 Registry 상태 변경 절차를 익히기 위한 것이며, 실제 운영의 성능 기반 승격 사례가 아니다. 실제 운영에서는 v1보다 ROC-AUC가 낮은 이 모델을 Production으로 승격하면 안 된다.
+
+### v2 Staging 추론 검증
+Registry `port-forward`가 실행 중인 터미널은 유지한다. ID를 조회했던 Bastion 터미널에서 v2 Model Version ID를 조회한다.
+
+```bash
+V2_MODEL_VERSION_ID="$(
+  curl -s http://127.0.0.1:18080/api/model_registry/v1alpha3/model_versions |
+    jq -r --arg id "$REGISTERED_MODEL_ID" \
+      '.items[] | select(.registeredModelId == $id and .name == "v2") | .id'
+)"
+
+printf 'v2 Model Version ID=%s\n' "$V2_MODEL_VERSION_ID"
+```
+
+v1 검증용 InferenceService를 삭제하고 같은 이름으로 v2를 배포한다. 이 실습 서비스에는 외부 Route가 연결되어 있지 않으므로 내부 검증 중에만 교체한다. 실제 운영 서비스의 버전 전환에는 Day5의 Blue/Green 또는 Canary 방식을 사용한다.
+
+```bash
+oc delete isvc fraud-registry-production -n jukebox --wait=true
+
+cat <<EOF | oc apply -f -
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: fraud-registry-production
+  namespace: jukebox
+  labels:
+    opendatahub.io/dashboard: "true"
+  annotations:
+    serving.kserve.io/deploymentMode: RawDeployment
+    modelregistry.opendatahub.io/registered-model-id: "${REGISTERED_MODEL_ID}"
+    modelregistry.opendatahub.io/model-version-id: "${V2_MODEL_VERSION_ID}"
 spec:
   predictor:
     serviceAccountName: kserve-sa
@@ -170,16 +247,16 @@ EOF
 
 oc wait --for=condition=Ready \
   isvc/fraud-registry-production -n jukebox --timeout=300s
-oc get isvc fraud-registry-production -n jukebox
 ```
 
-### 추론 테스트
+다시 port-forward한 뒤 같은 요청을 호출한다.
+
 ```bash
 oc port-forward -n jukebox \
   deploy/fraud-registry-production-predictor 18088:8080
 ```
 
-다른 터미널에서 Day5의 요청 파일을 사용한다.
+다른 Bastion 터미널에서 실행한다.
 
 ```bash
 curl -s -H 'Content-Type: application/json' \
@@ -187,4 +264,13 @@ curl -s -H 'Content-Type: application/json' \
   -d @/tmp/python3/fraud-request.json | jq .
 ```
 
-Registry의 Production 버전 URI와 InferenceService의 `storageUri`가 일치하고 추론 응답이 반환되면 완료다.
+Day5의 v2 모델을 사용했다면 `outputs[0].data[0]`이 `1`로 반환된다. v1의 기준 응답 `0`과 v2의 응답 `1`을 비교하고, v2의 `storageUri`와 Model Version ID가 Registry 정보와 일치하는지 확인한다.
+
+### v2 승격
+1. v2 추론이 정상임을 확인한 뒤 v2의 `stage` custom property를 `Staging`에서 `Production`으로 변경한다.
+2. v1의 `stage` custom property를 `Production`에서 `Archived`로 변경한다.
+3. v2 상세 화면의 모델 위치 `s3://rhoai-models/fraud-v2/model.joblib`과 InferenceService의 `storageUri` `s3://rhoai-models/fraud-v2`가 일치하는지 확인한다.
+
+> Model Registry API의 기본 `state` 값은 구현 버전에 따라 `LIVE`/`ARCHIVED`를 사용한다. 커리큘럼의 `Staging`/`Production`은 별도의 custom property로 기록해 배포 승인 단계를 표현한다.
+
+REST API로 자동화할 수도 있지만 이 실습에서는 대시보드를 사용한다. RHOAI 3.4 Registry REST 서버는 `/openapi.json`을 제공하지 않으므로, API 자동화 코드는 설치 버전의 Model Registry API/SDK와 맞춰 작성해야 한다.
