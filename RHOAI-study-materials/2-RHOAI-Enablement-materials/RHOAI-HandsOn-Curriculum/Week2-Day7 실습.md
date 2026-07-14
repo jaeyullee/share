@@ -1,7 +1,7 @@
 # RHOAI-3.4-HandsOn-커리큘럼-v1.1.xlsx 실습
 ## week 2 - Day7
 
-> 사전 활성화: [Week1 Day1&2 - AI Pipelines와 Model Registry 구성](Week1-Day1%262-환경구성.md#ai-pipelines와-model-registry-구성)과 같은 문서의 MinIO/S3 Egress 구성을 먼저 확인한다.
+> 사전 활성화: [Week1 Day1&2 - AI Pipelines와 Model Registry 구성](Week1-Day1%262-환경구성.md#ai-pipelines와-model-registry-구성)과 같은 문서의 MinIO/S3 `routingViaHost` 구성을 먼저 확인한다.
 
 Data Science Pipeline을 이용해서 전처리 -> 훈련 -> 평가 단계를 재사용 가능한 파이프라인으로 실행한다.
 폐쇄망 실습이므로 Pipeline component에서 외부 PyPI나 GitHub에 접근하지 않는다.
@@ -39,7 +39,7 @@ EOF
 ```
 
 ### DataSciencePipelinesApplication 생성
-이 랩에서는 DSPA Operator가 `jukebox`의 storage network EgressIP 경로 밖에서 실행되므로 Operator의 S3 health check만 생략한다. 실제 S3 연결은 Pipeline importer와 artifact upload로 검증한다.
+`routingViaHost`는 cluster-wide 설정이므로 DSPA Operator와 Pipeline Pod 모두 노드의 storage 경로로 MinIO에 접근할 수 있다. S3 health check를 활성화한 상태로 DSPA를 만들고 실제 Pipeline importer와 artifact upload도 함께 검증한다.
 
 ```bash
 oc apply -f - <<'EOF'
@@ -58,7 +58,6 @@ spec:
       storageClassName: truenas-nfs
       pvcSize: 5Gi
   objectStorage:
-    disableHealthCheck: true
     externalStorage:
       bucket: rhoai-pipelines
       host: 192.168.20.5
@@ -91,23 +90,26 @@ oc exec -n jukebox day07-compiler -- python -c \
 ```
 
 ### 3단계 파이프라인 작성
-`@dsl.component`는 실행 Pod에서 KFP package를 설치하려고 할 수 있다. 폐쇄망에서는 `@dsl.container_component`로 명령을 명시해서 runtime `pip install`을 제거한다.
+`@dsl.component`는 실행 Pod에서 KFP package를 설치하려고 할 수 있다. 폐쇄망에서는 `@dsl.container_component`로 명령을 명시해서 runtime `pip install`을 제거한다. 단, `dsl.Metrics` 값은 일반 파일 내용이 아니라 KFP Artifact metadata로 전달해야 대시보드에서 scalar metric으로 표시된다. `evaluate`는 KFP executor output 파일에 metadata를 기록한다. 이 환경의 DSPA MariaDB는 컴파일된 `PipelineSpec` 안의 한글 바이트를 저장하지 못하므로, Pipeline Python 코드 내부 주석은 ASCII 영문으로 작성한다. 한글 주석이 포함되면 version 업로드가 HTTP 500과 MariaDB `Error 1366 Incorrect string value`로 실패한다.
 
 ```bash
 cat > /tmp/python3/day07-pipeline.py <<'PY'
 from kfp import compiler, dsl
 
+# Pin the verified RHOAI runtime image for reproducible task environments.
 IMAGE = (
     "registry.redhat.io/rhoai/"
     "odh-pipeline-runtime-datascience-cpu-py312-rhel9@"
     "sha256:ed6634540d78910ceedc826b871641fb3f66b27be45b50df31c504582204a661"
 )
 
+# Preprocess the source CSV and publish train/test Dataset artifacts.
 PREPROCESS = r'''
 import os, sys, pandas as pd
 from sklearn.model_selection import train_test_split
 source, train_path, test_path = sys.argv[1:4]
 frame = pd.read_csv(source).dropna()
+# Keep the split reproducible for a fair model comparison.
 train, test = train_test_split(frame, test_size=0.2, random_state=42)
 for path in (train_path, test_path):
     os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -116,6 +118,7 @@ test.to_csv(test_path, index=False)
 print(f"train={len(train)} test={len(test)}")
 '''
 
+# Train a Random Forest from the Run parameter and publish a Model artifact.
 TRAIN = r'''
 import os, sys, joblib, pandas as pd
 from sklearn.ensemble import RandomForestClassifier
@@ -125,15 +128,17 @@ features = ["amount", "age", "tenure_months", "num_claims",
 frame = pd.read_csv(source)
 model = RandomForestClassifier(n_estimators=int(estimators), random_state=42)
 model.fit(frame[features], frame["label"])
+# Save the serialized model at the artifact path supplied by KFP.
 os.makedirs(os.path.dirname(output), exist_ok=True)
 joblib.dump(model, output)
 print(f"model={output}")
 '''
 
+# Evaluate the model and publish scalar metrics as a Metrics artifact.
 EVALUATE = r'''
 import json, os, sys, joblib, pandas as pd
 from sklearn.metrics import accuracy_score, roc_auc_score
-test_path, model_path, metrics_path = sys.argv[1:4]
+test_path, model_path, metrics_path, executor_input_json = sys.argv[1:5]
 features = ["amount", "age", "tenure_months", "num_claims",
             "credit_score", "distance_km", "channel"]
 frame = pd.read_csv(test_path)
@@ -142,15 +147,29 @@ prediction = model.predict(frame[features])
 probability = model.predict_proba(frame[features])[:, 1]
 accuracy = float(accuracy_score(frame["label"], prediction))
 roc_auc = float(roc_auc_score(frame["label"], probability))
+
+# Keep a readable artifact file for preview or download from object storage.
 os.makedirs(os.path.dirname(metrics_path), exist_ok=True)
 with open(metrics_path, "w", encoding="utf-8") as stream:
-    json.dump({"metrics": [
-        {"name": "accuracy", "numberValue": accuracy, "format": "RAW"},
-        {"name": "roc_auc", "numberValue": roc_auc, "format": "RAW"}
-    ]}, stream)
+    json.dump({"accuracy": accuracy, "roc_auc": roc_auc}, stream)
+
+# KFP v2 renders scalar metrics from Artifact metadata, not file contents.
+# The {{$}} placeholder supplies the runtime Artifact URI and output metadata path.
+executor_input = json.loads(executor_input_json)
+executor_output_path = executor_input["outputs"]["outputFile"]
+metrics_artifact = executor_input["outputs"]["artifacts"]["metrics"]["artifacts"][0]
+runtime_artifact = {
+    "name": metrics_artifact["name"],
+    "uri": metrics_artifact["uri"],
+    "metadata": {"accuracy": accuracy, "roc_auc": roc_auc},
+}
+os.makedirs(os.path.dirname(executor_output_path), exist_ok=True)
+with open(executor_output_path, "w", encoding="utf-8") as stream:
+    json.dump({"artifacts": {"metrics": {"artifacts": [runtime_artifact]}}}, stream)
 print(f"accuracy={accuracy:.3f} roc_auc={roc_auc:.3f}")
 '''
 
+# Container Components avoid runtime pip installs in the disconnected cluster.
 @dsl.container_component
 def preprocess(source: dsl.Input[dsl.Dataset],
                train_out: dsl.Output[dsl.Dataset],
@@ -172,15 +191,22 @@ def evaluate(test_in: dsl.Input[dsl.Dataset],
              metrics: dsl.Output[dsl.Metrics]):
     return dsl.ContainerSpec(
         image=IMAGE, command=["python", "-c"],
-        args=[EVALUATE, test_in.path, model_in.path, metrics.path])
+        args=[
+            EVALUATE,
+            test_in.path,
+            model_in.path,
+            metrics.path,
+            dsl.PIPELINE_TASK_EXECUTOR_INPUT_PLACEHOLDER])
 
 @dsl.pipeline(name="fraud-training-pipeline")
 def fraud_pipeline(
     dataset_uri: str = "s3://rhoai-pipelines/input/fraud_sample.csv",
     n_estimators: int = 100,
 ):
+    # Reimport checks the source URI and creates a fresh input artifact per Run.
     source = dsl.importer(
         artifact_uri=dataset_uri, artifact_class=dsl.Dataset, reimport=True)
+    # Artifact dependencies enforce preprocess -> train -> evaluate ordering.
     prepared = preprocess(source=source.output)
     trained = train(
         train_in=prepared.outputs["train_out"],
@@ -190,6 +216,7 @@ def fraud_pipeline(
         model_in=trained.outputs["model_out"])
 
 if __name__ == "__main__":
+    # Compile the Python DSL into the portable KFP v2 Pipeline specification.
     compiler.Compiler().compile(
         pipeline_func=fraud_pipeline,
         package_path="/tmp/day07-fraud-pipeline.yaml")
@@ -203,11 +230,124 @@ oc cp jukebox/day07-compiler:/tmp/day07-fraud-pipeline.yaml \
   /tmp/python3/day07-fraud-pipeline.yaml
 ```
 
-### Pipeline Run 실행
+### Pipeline 업로드
 1. RHOAI 대시보드에서 `jukebox` 프로젝트를 선택한다.
 2. Pipelines에서 `/tmp/python3/day07-fraud-pipeline.yaml`을 업로드한다.
-3. Experiment와 Run을 생성하고 기본 parameter로 실행한다.
-4. `n_estimators=20`, `n_estimators=200`으로 다시 실행해 결과를 비교한다.
+
+동일한 `fraud-training-pipeline`이 이미 있으면 새 Pipeline을 만들지 않는다. 기존 Pipeline 상세 화면에서 `Actions` -> `Upload new version`을 선택하고 새로 컴파일한 YAML을 버전 이름 `metrics-metadata-v2`로 업로드한다. 이후 Run 생성 시 이 Pipeline version을 선택한다.
+
+### CLI로 Pipeline 업로드
+UI 대신 KFP SDK로 Pipeline을 업로드할 수 있다. DSPA가 생성한 NetworkPolicy는 Workbench의 API 접근을 허용하지만 일반 임시 Pod는 허용하지 않으므로, `day07-compiler`가 아니라 `jukebox-workbench-0`에서 KFP Client를 실행한다.
+
+```bash
+# 컴파일된 Pipeline YAML을 Workbench로 복사한다.
+oc cp /tmp/python3/day07-fraud-pipeline.yaml \
+  jukebox/jukebox-workbench-0:/tmp/day07-fraud-pipeline.yaml \
+  -c jukebox-workbench
+
+# OpenShift service CA로 내부 DSPA HTTPS API 인증서를 검증하며 업로드한다.
+oc exec -i -n jukebox jukebox-workbench-0 \
+  -c jukebox-workbench -- python - <<'PY'
+from kfp import Client
+
+client = Client(
+    host="https://ds-pipeline-dspa.jukebox.svc:8888",
+    namespace="jukebox",
+    ssl_ca_cert=(
+        "/var/run/secrets/kubernetes.io/"
+        "serviceaccount/service-ca.crt"
+    ),
+    verify_ssl=True,
+)
+
+pipelines = client.list_pipelines(page_size=100, namespace="jukebox")
+existing = next(
+    (item for item in (pipelines.pipelines or [])
+     if item.display_name == "fraud-training-pipeline"),
+    None,
+)
+
+if existing:
+    pipeline = client.upload_pipeline_version(
+        pipeline_package_path="/tmp/day07-fraud-pipeline.yaml",
+        pipeline_version_name="metrics-metadata-v2",
+        pipeline_id=existing.pipeline_id,
+        description="Day 7 scalar metrics metadata",
+    )
+else:
+    pipeline = client.upload_pipeline(
+        pipeline_package_path="/tmp/day07-fraud-pipeline.yaml",
+        pipeline_name="fraud-training-pipeline",
+        description="Day 7 fraud training pipeline",
+        namespace="jukebox",
+    )
+
+print(pipeline)
+PY
+```
+
+업로드 목록을 CLI에서 확인한다.
+
+```bash
+oc exec -i -n jukebox jukebox-workbench-0 \
+  -c jukebox-workbench -- python - <<'PY'
+from kfp import Client
+
+client = Client(
+    host="https://ds-pipeline-dspa.jukebox.svc:8888",
+    namespace="jukebox",
+    ssl_ca_cert=(
+        "/var/run/secrets/kubernetes.io/"
+        "serviceaccount/service-ca.crt"
+    ),
+    verify_ssl=True,
+)
+
+print(client.list_pipelines())
+PY
+```
+
+### Pipeline Run 실행
+Pipeline을 UI 또는 CLI로 업로드한 뒤 RHOAI 대시보드에서 Run을 생성한다.
+
+1. 왼쪽 메뉴에서 `Develop & train` -> `Pipelines` -> `Pipeline definitions`로 이동한다.
+2. 프로젝트로 `jukebox`를 선택한다.
+3. `fraud-training-pipeline`을 선택한다.
+4. Pipeline 상세 화면에서 `Actions` -> `Create run`을 선택한다.
+5. 다음 값으로 기본 Run을 생성한다.
+
+| 항목               | 값                                             |
+| ---------------- | --------------------------------------------- |
+| Run group        | `Default`                                     |
+| Name             | `fraud-n100`                                  |
+| Pipeline         | `fraud-training-pipeline`                     |
+| Pipeline version | 현재 업로드한 버전                                    |
+| `dataset_uri`    | `s3://rhoai-pipelines/input/fraud_sample.csv` |
+| `n_estimators`   | `100`                                         |
+
+`Run group`은 관련 Pipeline Run을 묶어서 비교하는 단위다. 기본 실습에서는 `Default`를 사용한다.
+
+6. 같은 `Default` Run group에서 `n_estimators`만 변경한 Run을 두 개 더 생성한다. 나머지 parameter는 동일하게 유지한다.
+
+| Run group | Name         | `n_estimators` |
+| --------- | ------------ | -------------: |
+| `Default` | `fraud-n20`  |           `20` |
+| `Default` | `fraud-n100` |          `100` |
+| `Default` | `fraud-n200` |          `200` |
+
+이전 Pipeline version의 Run이 이미 있으면 새 version 검증 Run은 `fraud-v2-n20`, `fraud-v2-n100`, `fraud-v2-n200`처럼 구분해서 생성한다. 기존 Run의 Artifact metadata는 Pipeline version을 올려도 소급 변경되지 않는다.
+
+각 Run이 완료되면 다음 순서로 metric과 실행 시간을 확인한다.
+
+1. 왼쪽 메뉴에서 `Develop & train` -> `Pipelines` -> `Runs`로 이동한다.
+2. 프로젝트로 `jukebox`를 선택하고 `Active runs` 탭을 연다.
+3. `Run group` 열 또는 필터에서 `Default`에 속한 Run을 확인한다.
+4. 비교할 `fraud-n20`, `fraud-n100`, `fraud-n200`의 체크박스를 선택한다. 새 version을 재검증하는 경우에는 이름을 구분한 `fraud-v2-n20`, `fraud-v2-n100`, `fraud-v2-n200`을 선택한다.
+5. 목록 상단의 `Compare runs`를 클릭한다.
+6. 비교 화면에서 scalar metric인 `accuracy`, `roc_auc`와 Run별 실행 시간을 비교한다.
+7. 개별 Run 이름을 열어 그래프의 `evaluate` 단계를 선택하면 `Output artifacts`의 `metrics` metadata에서도 같은 값을 확인할 수 있다.
+
+현재 Pipeline은 원본 S3 객체를 매번 다시 확인하도록 importer에 `reimport=True`를 사용하므로, Run마다 새로운 입력 Artifact가 생성되어 `preprocess`도 다시 실행될 수 있다. `n_estimators`가 달라진 `train`과 새 모델을 입력받는 `evaluate`는 반드시 다시 실행된다.
 
 ### 검증
 ```bash
@@ -216,7 +356,7 @@ oc get pods -n jukebox | grep fraud-training
 mc ls --recursive truenas/rhoai-pipelines | tail -30
 ```
 
-정상 실행 시 `preprocess -> train -> evaluate`가 모두 성공하고 Pipeline 화면에 `accuracy`, `roc_auc`가 표시된다. 검증 환경의 기본 실행 결과는 `train=4000`, `test=1000`, `accuracy=0.973`, `roc_auc=0.708`이었다.
+정상 실행 시 `preprocess -> train -> evaluate`가 모두 성공하고 Run 비교 화면과 `evaluate`의 `metrics` metadata에 `accuracy`, `roc_auc`가 표시된다. 값이 `-`로 표시되면 `metrics` 파일만 생성하고 Artifact metadata를 기록하지 않은 이전 Pipeline 버전을 실행한 것이므로 Pipeline version을 확인한다. 검증 환경의 기본 실행 결과는 `train=4000`, `test=1000`, `accuracy=0.973`, `roc_auc=0.708`이었다.
 
 ### 실패 재현
 `dataset_uri`를 `s3://rhoai-pipelines/input/not-found.csv`로 바꿔 실패 로그를 확인한 뒤 정상 URI로 새 Run을 생성한다. 이전 실패 Run을 수정하지 않는다.

@@ -17,8 +17,8 @@ ls /tmp/python3/datasets/_mnist_cache
 ```bash
 ## 필요 라이브러리를 내부 넥서스에 업로드
 cd /tmp
-rm -rf /tmp/wheelhouse
-mkdir -p /tmp/wheelhouse
+rm -rf /tmp/wheelhouse-cp39-day4-pytorch
+mkdir -p /tmp/wheelhouse-cp39-day4-pytorch
 cat >/tmp/day4-pytorch-requirements.txt <<'EOF'
 torch==2.5.1+cpu
 torchvision==0.20.1+cpu
@@ -41,9 +41,19 @@ source /tmp/pypi-upload-venv/bin/activate
 python3 -m pip install --upgrade pip
 
 python3 -m pip download --only-binary=:all: \
-  -r /tmp/day4-pytorch-requirements.txt -d /tmp/wheelhouse \
   --index-url https://download.pytorch.org/whl/cpu \
-  --extra-index-url https://pypi.org/simple
+  --extra-index-url https://pypi.org/simple \
+  --no-cache-dir \
+  --python-version 39 \
+  --implementation cp \
+  --abi cp39 \
+  --platform linux_x86_64 \
+  --platform manylinux_2_28_x86_64 \
+  --platform manylinux_2_24_x86_64 \
+  --platform manylinux_2_17_x86_64 \
+  --platform manylinux2014_x86_64 \
+  -r /tmp/day4-pytorch-requirements.txt \
+  -d /tmp/wheelhouse-cp39-day4-pytorch
 
 python -m pip show twine pkginfo
 ## 설치 안됐으면 아래 진행
@@ -52,9 +62,10 @@ python -m pip show twine pkginfo
 #   'pkginfo==1.12.1.2'
 
 twine upload \
+  --skip-existing \
   --repository-url http://192.168.10.50:8081/repository/pypi-hosted/ \
   -u <NEXUS_ID> -p '<NEXUS_PW>' \
-  /tmp/wheelhouse/*
+  /tmp/wheelhouse-cp39-day4-pytorch/*
 
 ## 내부 nexus 이용해서 모델 생성
 cd /tmp/python3

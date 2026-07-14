@@ -47,20 +47,39 @@ trusted-host = 192.168.10.50
 no-cache-dir = true
 EOF
 
+## mc cli download
+curl -L https://dl.min.io/client/mc/release/linux-amd64/mc -o ./mc
+
 git add .
 git commit -m "initial workbench settings"
 GIT_SSL_NO_VERIFY=true git push -u origin main
 
-## 필요 라이브러리를 내부 넥서스에 업로드
-rm -rf /tmp/wheelhouse
-mkdir -p /tmp/wheelhouse
+## Workbench Python 3.12용 라이브러리를 내부 Nexus에 업로드
+## 베스천 Python 버전으로 wheel tag가 결정되지 않도록 대상 interpreter와 platform을 명시한다.
+rm -rf /tmp/wheelhouse-cp312
+mkdir -p /tmp/wheelhouse-cp312
 cd /tmp
 
 python3 -m venv /tmp/pypi-upload-venv
 source /tmp/pypi-upload-venv/bin/activate
 python3 -m pip install --upgrade pip
 
-python3 -m pip download --only-binary=:all: -r /opt/rhoai-data/git-repo/hands-on/day06/requirements.txt -d /tmp/wheelhouse
+python3 -m pip download \
+  --index-url https://pypi.org/simple \
+  --no-cache-dir \
+  --only-binary=:all: \
+  --python-version 312 \
+  --implementation cp \
+  --abi cp312 \
+  --platform manylinux_2_28_x86_64 \
+  --platform manylinux_2_24_x86_64 \
+  --platform manylinux_2_17_x86_64 \
+  --platform manylinux2014_x86_64 \
+  -r /opt/rhoai-data/git-repo/hands-on/day06/requirements.txt \
+  -d /tmp/wheelhouse-cp312
+
+## 바이너리 패키지는 cp312 wheel인지 확인한다. py2.py3-none/py3-none은 공용 wheel이다.
+ls -1 /tmp/wheelhouse-cp312
 
 python -m pip show twine pkginfo
 ## 설치 안됐으면 아래 진행
@@ -69,9 +88,20 @@ python -m pip show twine pkginfo
 #   'pkginfo==1.12.1.2'
 
 twine upload \
+  --skip-existing \
   --repository-url http://192.168.10.50:8081/repository/pypi-hosted/ \
   -u <NEXUS_ID> -p '<NEXUS_PW>' \
-  /tmp/wheelhouse/*
+  /tmp/wheelhouse-cp312/*
+```
+
+베스천의 Python이 3.9인 상태에서 대상 옵션 없이 `pip download`를 실행하면 `cp39` wheel만 준비된다. Python 3.12 Workbench는 이를 호환되지 않는 파일로 제외하므로, Nexus에 패키지 이름과 버전이 존재해도 `No matching distribution found`가 발생한다.
+
+업로드 후 `scikit-learn`의 `cp312` wheel이 인덱스에 노출되는지 확인한다.
+
+```bash
+curl -fsS \
+  http://192.168.10.50:8081/repository/pypi-hosted/simple/scikit-learn/ | \
+  grep cp312
 ```
 
 ### Workbench 생성
@@ -120,14 +150,18 @@ metadata:
     opendatahub.io/dashboard: "true"
   annotations:
     openshift.io/display-name: "Jukebox Workbench"
-    notebooks.opendatahub.io/inject-oauth: "true"
+    notebooks.opendatahub.io/inject-auth: "true"
+    notebooks.opendatahub.io/last-image-selection: >-
+      s2i-generic-data-science-notebook:3.4
+    notebooks.opendatahub.io/last-image-version-git-commit-selection: "d3137ca"
 spec:
   template:
     spec:
       serviceAccountName: jukebox-workbench
       containers:
         - name: jukebox-workbench
-          image: registry.redhat.io/rhoai/odh-workbench-jupyter-datascience-cpu-py312-rhel9@sha256:d82680de0790b333892da2179c12225f5858f862b060964f2c62314cb23714fe
+          image: >-
+            registry.redhat.io/rhoai/odh-workbench-jupyter-datascience-cpu-py312-rhel9@sha256:d82680de0790b333892da2179c12225f5858f862b060964f2c62314cb23714fe
           resources:
             requests:
               cpu: "1"
@@ -136,8 +170,16 @@ spec:
               cpu: "2"
               memory: 4Gi
           env:
+            - name: NOTEBOOK_ARGS
+              value: |-
+                --ServerApp.port=8888
+                --ServerApp.token=''
+                --ServerApp.password=''
+                --ServerApp.base_url=/notebook/jukebox/jukebox-workbench
+                --ServerApp.quit_button=False
             - name: JUPYTER_IMAGE
-              value: odh-workbench-jupyter-datascience-cpu-py312-rhel9
+              value: >-
+                registry.redhat.io/rhoai/odh-workbench-jupyter-datascience-cpu-py312-rhel9@sha256:d82680de0790b333892da2179c12225f5858f862b060964f2c62314cb23714fe
             - name: GIT_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -162,32 +204,52 @@ spec:
 EOF
 ```
 
-Notebook의 `image`는 노드의 CRI가 직접 pull한다. 따라서 노드 DNS에서 해석할 수 없는 `image-registry.openshift-image-registry.svc:5000/...`를 쓰지 않고, RHOAI ImageStream의 원본 digest를 사용해 IDMS가 내부 mirror로 치환하도록 한다. RHOAI 버전이 바뀌면 다음 명령으로 현재 source image를 다시 확인한다.
-
+>Notebook의 `image`는 노드의 CRI가 직접 pull한다. 따라서 노드 DNS에서 해석할 수 없는 `image-registry.openshift-image-registry.svc:5000/...`를 쓰지 않고, RHOAI ImageStream의 원본 digest를 사용해 IDMS가 내부 mirror로 치환하도록 한다. RHOAI 버전이 바뀌면 다음 명령으로 현재 source image를 다시 확인한다.
 ```bash
 oc get imagestream -n redhat-ods-applications -o yaml | \
   grep -A8 odh-workbench-jupyter-datascience
 ```
 
+> notebooks.opendatahub.io/last-image-version-git-commit-selection: "d3137ca" 는 RHOAI 버전이 바뀌면 다음 명령으로 현재 source image digest를 다시 확인한다. 해당 annotaion이 없으면 deprecated로 판정합니다.
+```
+oc get imagestream s2i-generic-data-science-notebook \
+  -n redhat-ods-applications \
+  -o jsonpath='{.spec.tags[?(@.name=="3.4")].annotations.opendatahub\.io/notebook-build-commit}{"\n"}'
+```
 ### 모델 생성&배포
 1. Workbench 접속
 ```bash
 ## git clone
 cd /opt/app-root/src
-git clone https://${GIT_USERNAME}:${GIT_TOKEN}@gitea.apps.sno.ocp422.com/hands-on/day06.git
+git clone http://${GIT_USERNAME}:${GIT_TOKEN}@gitea-http.gitea.svc.cluster.local:3000/hands-on/day06.git
 cd day06
 
 ## 내부 nexus 이용해서 모델 생성
-PIP_CONFIG_FILE=./pip.conf python3 -m pip install -r requirements.txt
+## Workbench 기본 Python 환경의 RHOAI 패키지와 버전 충돌을 피하기 위해 전용 venv를 사용한다.
+rm -rf /opt/app-root/src/.venvs/day06
+python3 -m venv /opt/app-root/src/.venvs/day06
+source /opt/app-root/src/.venvs/day06/bin/activate
+which python
 
-python3 -m pip check
-python3 models/train_iris_sklearn.py
+PIP_CONFIG_FILE=./pip.conf python -m pip install -r requirements.txt
+
+python -m pip check
+python models/train_iris_sklearn.py
 ls iris/
 
-mc alias set truenas http://192.168.20.5:9000 <MINIO_ID> <MINIO_PW>
-mc mb --ignore-existing truenas/rhoai-models
-mc cp --recursive iris/ truenas/rhoai-models/iris-day6/
-mc ls truenas/rhoai-models/iris-day6/
+./mc alias set truenas http://192.168.20.5:9000 <MINIO_ID> <MINIO_PW>
+./mc mb --ignore-existing truenas/rhoai-models
+./mc cp --recursive iris/ truenas/rhoai-models/iris-day6/
+./mc ls truenas/rhoai-models/iris-day6/
+```
+
+`pip check`는 위 venv를 활성화한 상태에서 실행한다. Workbench 기본 환경에 직접 패키지를 설치하면 Feast 등 이미지에 포함된 다른 도구의 의존성을 변경할 수 있다. 기본 이미지 자체의 `pip check`에는 `appengine-python-standard`와 `urllib3`의 기존 충돌이 표시될 수 있으므로 Day6 venv 검증 결과와 구분한다.
+
+`No matching distribution found`가 다시 발생하면 Nexus 연결뿐 아니라 Workbench와 wheel의 Python ABI가 일치하는지 확인한다.
+
+```bash
+python --version
+PIP_CONFIG_FILE=./pip.conf python -m pip index versions scikit-learn -vvv
 ```
 > 해당 실습에서는 모델 생성 후 s3 업로드 확인까지만 진행합니다.
 > 모델을 .pkl 확장자 파일이 아닌 .joblib 확장자 파일로 생성합니다. 현재 구성된 servingruntim이 MLServer sklearn runtime 이기 때문입니다.

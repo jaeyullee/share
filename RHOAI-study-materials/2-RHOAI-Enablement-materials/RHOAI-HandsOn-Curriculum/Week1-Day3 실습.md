@@ -13,7 +13,6 @@ metadata:
   labels:
     opendatahub.io/dashboard: "true"
     modelmesh-enabled: "false"
-    network-zone: s3
 EOF
 
 ```
@@ -31,7 +30,7 @@ metadata:
     opendatahub.io/managed: "true"
   annotations:
     opendatahub.io/connection-type: s3
-    openshift.io/display-name: models-minio
+    openshift.io/display-name: "TrueNAS S3 models"
     # KServe S3 자격증명 힌트
     serving.kserve.io/s3-endpoint: 192.168.10.50:9000   # TrueNAS MinIO면 해당 endpoint로
     serving.kserve.io/s3-usehttps: "0"
@@ -71,8 +70,8 @@ ls /tmp/python3/datasets/iris
 ```bash
 ## 필요 라이브러리를 내부 넥서스에 업로드
 cd /tmp
-rm -rf /tmp/wheelhouse
-mkdir -p /tmp/wheelhouse
+rm -rf /tmp/wheelhouse-cp39-day3
+mkdir -p /tmp/wheelhouse-cp39-day3
 cat >/tmp/day3-iris-requirements.txt <<'EOF'
 scikit-learn==1.6.1
 numpy==1.26.4
@@ -85,7 +84,20 @@ python3 -m venv /tmp/pypi-upload-venv
 source /tmp/pypi-upload-venv/bin/activate
 python3 -m pip install --upgrade pip
 
-python3 -m pip download --only-binary=:all: -r /tmp/day3-iris-requirements.txt -d /tmp/wheelhouse
+## 모델 생성 환경은 베스천 Python 3.9이므로 cp39 wheel을 명시적으로 준비한다.
+python3 -m pip download \
+  --index-url https://pypi.org/simple \
+  --no-cache-dir \
+  --only-binary=:all: \
+  --python-version 39 \
+  --implementation cp \
+  --abi cp39 \
+  --platform manylinux_2_28_x86_64 \
+  --platform manylinux_2_24_x86_64 \
+  --platform manylinux_2_17_x86_64 \
+  --platform manylinux2014_x86_64 \
+  -r /tmp/day3-iris-requirements.txt \
+  -d /tmp/wheelhouse-cp39-day3
 
 python3 -m pip install \
   'twine==5.0.0' \
@@ -93,9 +105,10 @@ python3 -m pip install \
 python -m pip show twine pkginfo
 
 twine upload \
+  --skip-existing \
   --repository-url http://192.168.10.50:8081/repository/pypi-hosted/ \
   -u <NEXUS_ID> -p '<NEXUS_PW>' \
-  /tmp/wheelhouse/*
+  /tmp/wheelhouse-cp39-day3/*
 
 ## 내부 nexus 이용해서 모델 생성
 cd /tmp/python3

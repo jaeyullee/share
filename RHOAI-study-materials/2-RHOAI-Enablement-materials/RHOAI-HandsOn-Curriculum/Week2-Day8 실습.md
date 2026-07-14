@@ -29,7 +29,7 @@ metadata:
   namespace: rhoai-model-registries
 type: Opaque
 stringData:
-  database-password: <MODEL_REGISTRY_DB_PW>
+  database-password: "<MODEL_REGISTRY_DB_PW>"
 EOF
 ```
 
@@ -81,10 +81,39 @@ curl -s http://127.0.0.1:18080/api/model_registry/v1alpha3/registered_models | j
 ### 모델 v1 등록
 RHOAI 대시보드에서 다음 순서로 등록한다.
 
-1. Settings -> Model registries에서 `jukebox-registry`가 Ready인지 확인한다.
-2. Models -> Model registry에서 `fraud-detection` 모델을 생성한다.
-3. 버전 이름은 `v1`, 모델 위치는 `s3://rhoai-models/fraud/model.joblib`로 입력한다.
-4. 모델 프레임워크와 정확도, 학습 파라미터를 메타데이터로 입력한다.
+1. `Settings` -> `Model resources and operations` -> `Model registry settings`에서 `jukebox-registry`가 목록에 표시되는지 확인한다.
+2. `AI hub` -> `Models` -> `Registry`로 이동하고, **Model registry** 목록에서 `jukebox-registry`를 선택한다.
+3. **Register model**을 누르고 **Model location and storage**에서 **Register**를 선택한다. 이미 MinIO에 저장된 모델의 위치와 메타데이터만 등록하며, **Register and store**는 선택하지 않는다.
+4. **Model details**를 다음과 같이 입력한다.
+   - **Model name**: `fraud-detection`
+   - **Model description**: `Day 5 fraud detection model` 또는 실습 목적에 맞는 설명
+5. **Version details**를 다음과 같이 입력한다.
+   - **Version name**: `v1`
+   - **Source model format**: `scikit-learn`
+   - **Source model format version**: `1.6.1`
+6. **Model location**에서 **Object storage**를 선택하고 다음과 같이 입력한다.
+   - **Autofill from connection**을 누른다.
+   - **Project**: `jukebox`
+   - **Connection name**: `TrueNAS S3 models` (Kubernetes Secret 이름: `aws-connection-models`)
+   - **Autofill**을 누른 뒤 Endpoint, Bucket, Region이 채워졌는지 확인한다.
+   - **Path**: `fraud/model.joblib`
+7. **Register model**을 누른다.
+8. 생성된 `fraud-detection`의 `v1` 상세 화면에서 모델 위치가 `s3://rhoai-models/fraud/model.joblib`을 가리키는지 확인한다.
+9. **Properties**에서 다음 custom property를 추가한다. `<DAY5_ROC_AUC>`는 자리표시자이므로 그대로 입력하지 않고, Day5 모델 생성 시 출력된 실제 값으로 바꾼다.
+   - `algorithm=GradientBoostingClassifier`
+   - `roc_auc=<DAY5_ROC_AUC>`
+   - `random_state=42`
+   - `stage=Staging`
+
+Day5의 출력값을 기록하지 않았다면 Workbench 터미널에서 학습 스크립트를 다시 실행한다.
+
+```bash
+cd /tmp/python3
+source .venv/bin/activate
+CUDA_VISIBLE_DEVICES=-1 python3 models/train_fraud_sklearn.py
+```
+
+출력된 `ROC-AUC = 0.xxx`의 숫자를 `roc_auc` property에 **Number** 타입으로 입력한다. 예를 들어 `ROC-AUC = 0.708`이라면 `<DAY5_ROC_AUC>` 대신 `0.708`을 입력한다. 학습 스크립트는 `random_state=42`를 사용하므로 동일한 데이터와 패키지 버전에서는 같은 결과를 생성한다.
 
 REST API로 자동화할 수도 있지만 이 실습에서는 대시보드를 사용한다. RHOAI 3.4 Registry REST 서버는 `/openapi.json`을 제공하지 않으므로, API 자동화 코드는 설치 버전의 Model Registry API/SDK와 맞춰 작성해야 한다.
 

@@ -15,8 +15,8 @@ ls /tmp/python3/datasets/fraud-credit
 ```bash
 ## 필요 라이브러리를 내부 넥서스에 업로드
 cd /tmp
-rm -rf /tmp/wheelhouse
-mkdir -p /tmp/wheelhouse
+rm -rf /tmp/wheelhouse-cp39-day4-tf
+mkdir -p /tmp/wheelhouse-cp39-day4-tf
 cat >/tmp/day4-tensorflow-not-onnx-requirements.txt <<'EOF'
 tensorflow==2.15.1
 pandas==2.3.3
@@ -29,7 +29,20 @@ python3 -m venv /tmp/pypi-upload-venv
 source /tmp/pypi-upload-venv/bin/activate
 python3 -m pip install --upgrade pip
 
-python3 -m pip download --only-binary=:all: -r /tmp/day4-tensorflow-not-onnx-requirements.txt -d /tmp/wheelhouse
+## TensorFlow 2.15.1 모델 생성 환경은 베스천 Python 3.9이다.
+python3 -m pip download \
+  --index-url https://pypi.org/simple \
+  --no-cache-dir \
+  --only-binary=:all: \
+  --python-version 39 \
+  --implementation cp \
+  --abi cp39 \
+  --platform manylinux_2_28_x86_64 \
+  --platform manylinux_2_24_x86_64 \
+  --platform manylinux_2_17_x86_64 \
+  --platform manylinux2014_x86_64 \
+  -r /tmp/day4-tensorflow-not-onnx-requirements.txt \
+  -d /tmp/wheelhouse-cp39-day4-tf
 
 python -m pip show twine pkginfo
 ## 설치 안됐으면 아래 진행
@@ -38,9 +51,10 @@ python -m pip show twine pkginfo
 #   'pkginfo==1.12.1.2'
 
 twine upload \
+  --skip-existing \
   --repository-url http://192.168.10.50:8081/repository/pypi-hosted/ \
   -u <NEXUS_ID> -p '<NEXUS_PW>' \
-  /tmp/wheelhouse/*
+  /tmp/wheelhouse-cp39-day4-tf/*
 
 ## 내부 nexus 이용해서 모델 생성
 cd /tmp/python3

@@ -312,54 +312,110 @@ curl -k -I https://rh-ai.apps.sno.ocp422.com/
 
 ### 9020 포트로 서비스하는 minio 준비 및 5010 포트로 서비스하는 model image registry 준비
 
-### node tuning operator(기본 오퍼레이터) 이용해서 ip forwarding 설정 노드튜닝 하기
+### OVN-Kubernetes routingViaHost와 storage NIC forwarding 구성
+
+공식 문서: [OVN-Kubernetes gateway와 egress routing policy](https://docs.redhat.com/en/documentation/openshift_container_platform/4.22/html-single/ovn-kubernetes_network_plugin/index), [Node Tuning Operator 사용](https://docs.redhat.com/en/documentation/openshift_container_platform/4.22/html/scalability_and_performance/using-node-tuning-operator)
+
+**목적**: Pod가 외부 주소에 접근할 때 노드의 Linux routing table을 사용하게 한다. 이 환경에서는 `192.168.20.0/24`가 storage NIC `enp6s19`, `192.168.10.0/24`와 기본 경로가 `br-ex`를 사용하므로 S3와 Nexus/Gitea 경로를 목적지별로 분리할 수 있다.
+
+`routingViaHost`는 cluster-wide 설정이다. 특정 Namespace만 선택하는 EgressIP와 달리 모든 Pod의 외부 egress가 host routing stack을 사용한다. OVS hardware offload를 사용할 때 필요한 `routingViaHost=false`와는 양립하지 않으므로 SmartNIC offload 도입 시 설계를 다시 검토한다.
+
+1. 기존 설정을 백업하고 `routingViaHost=true`로 전환한다.
+
+```bash
+oc get network.operator.openshift.io cluster -o yaml \
+  > network-operator-before-routing-via-host.yaml
+
+oc patch network.operator.openshift.io cluster --type=merge \
+  -p '{"spec":{"defaultNetwork":{"ovnKubernetesConfig":{"gatewayConfig":{"routingViaHost":true}}}}}'
+
+oc rollout status daemonset/ovnkube-node \
+  -n openshift-ovn-kubernetes --timeout=5m
+
+oc get clusteroperator network
+oc get network.operator.openshift.io cluster -o yaml | \
+  grep -A 5 gatewayConfig
+```
+
+Network Operator가 `Available=True`, `Progressing=False`, `Degraded=False`인지 확인한 뒤 다음 단계로 진행한다.
+
+2. storage NIC가 있는 노드에 전용 label을 지정한다.
+
+```bash
+oc label node ocp-w01-gpu ocp-w02-cpu sno-node \
+  network.openshift.io/storage-route=true --overwrite
+```
+
+3. storage NIC에만 IPv4 forwarding을 활성화한다. `routingViaHost=true`만으로 보조 NIC `enp6s19`의 forwarding이 자동 활성화되지 않았으므로 Node Tuning Operator로 좁게 적용한다. `gatewayConfig.ipForwarding: Global`은 사용하지 않는다.
+
 ```bash
 oc apply -f <<'EOF'
 apiVersion: tuned.openshift.io/v1
 kind: Tuned
 metadata:
-  name: s3-egressip-forwarding
+  name: routing-via-host-storage-forwarding
   namespace: openshift-cluster-node-tuning-operator
 spec:
   profile:
-    - name: s3-egressip-forwarding
+    - name: routing-via-host-storage-forwarding
       data: |
         [main]
-        summary=Enable IPv4 forwarding on the storage NIC for S3 EgressIP
+        summary=Enable IPv4 forwarding on the storage NIC for routingViaHost
         include=openshift-node
 
         [sysctl]
         net.ipv4.conf.enp6s19.forwarding=1
   recommend:
     - match:
-        - label: k8s.ovn.org/egress-assignable
-          value: !!str true
+        - label: network.openshift.io/storage-route
+          value: "true"
       priority: 20
-      profile: s3-egressip-forwarding
+      profile: routing-via-host-storage-forwarding
 EOF
+```
 
-oc label node ocp-w01-gpu k8s.ovn.org/egress-assignable=true --overwrite
-oc label node ocp-w02-cpu k8s.ovn.org/egress-assignable=true --overwrite
+4. 기존 EgressIP 방식에서 전환하는 경우 EgressIP CR, Namespace selector label, 기존 node label과 Tuned를 제거한다. 신규 Tuned가 노드에 적용된 것을 먼저 확인해야 S3 경로가 끊기지 않는다.
 
-oc label ns jukebox network-zone=s3 --overwrite
+```bash
+oc get profile.tuned.openshift.io \
+  -n openshift-cluster-node-tuning-operator \
+  -o custom-columns=NODE:.metadata.name,PROFILE:.status.tunedProfile
 
-oc apply -f <<'EOF'
-apiVersion: k8s.ovn.org/v1
-kind: EgressIP
-metadata:
-  name: s3-storage-egress
-spec:
-  egressIPs:
-    - 192.168.20.55
-  namespaceSelector:
-    matchLabels:
-      network-zone: s3
-EOF
+oc delete egressip s3-storage-egress --ignore-not-found
+oc label namespace jukebox network-zone-
+oc label node ocp-w01-gpu ocp-w02-cpu \
+  k8s.ovn.org/egress-assignable-
+oc delete tuned s3-egressip-forwarding \
+  -n openshift-cluster-node-tuning-operator --ignore-not-found
+```
 
-## 검증
-oc get egressip s3-storage-egress -oyaml
-oc get ns jukebox --show-labels
-oc get nodes -l k8s.ovn.org/egress-assignable --show-labels
+5. Workbench에서 storage망과 service망을 검증한다.
+
+```bash
+oc exec -n jukebox jukebox-workbench-0 -c jukebox-workbench -- \
+  curl -fsS http://192.168.20.5:9000/minio/health/live
+
+oc exec -n jukebox jukebox-workbench-0 -c jukebox-workbench -- \
+  curl -kfsSL -o /dev/null -w '%{http_code}\n' \
+  http://gitea.apps.sno.ocp422.com/
+
+oc exec -n jukebox jukebox-workbench-0 -c jukebox-workbench -- \
+  curl -fsSL -o /dev/null -w '%{http_code}\n' \
+  http://192.168.10.50:8081/
+```
+
+2026-07-14 검증에서는 세 노드 모두 `routing-via-host-storage-forwarding` profile이 적용됐고 Workbench에서 S3, Gitea 내부 Service/Route, Nexus가 모두 HTTP `200`을 반환했다. 기존 EgressIP, `network-zone=s3`, `k8s.ovn.org/egress-assignable`은 남아 있지 않다.
+
+**롤백**: host routing을 중단하려면 Network Operator 백업을 적용하거나 `routingViaHost=false`로 patch한다. 신규 Tuned와 `network.openshift.io/storage-route` label을 제거한 뒤, 특정 Namespace만 storage망으로 보내야 하면 별도 EgressIP 설계를 다시 적용한다.
+
+```bash
+oc patch network.operator.openshift.io cluster --type=merge \
+  -p '{"spec":{"defaultNetwork":{"ovnKubernetesConfig":{"gatewayConfig":{"routingViaHost":false}}}}}'
+
+oc delete tuned routing-via-host-storage-forwarding \
+  -n openshift-cluster-node-tuning-operator --ignore-not-found
+oc label node ocp-w01-gpu ocp-w02-cpu sno-node \
+  network.openshift.io/storage-route-
 ```
 
 
@@ -749,17 +805,16 @@ spec:
 
 1. `redhat-oadp-operator`를 현재 미러 카탈로그의 `stable` 채널로 설치한다.
 2. S3 자격증명 Secret과 `DataProtectionApplication`을 만든다.
-3. 이 환경에서는 S3망 EgressIP를 사용하도록 `openshift-adp` Namespace에 `network-zone=s3` 라벨을 추가한다.
+3. 위의 `routingViaHost`와 storage NIC forwarding 구성을 먼저 완료한다. cluster-wide host routing을 사용하므로 `openshift-adp` Namespace에 EgressIP selector label을 추가하지 않는다.
 4. `BackupStorageLocation`이 `Available`인지 확인한 후 `Backup`을 생성한다.
 
 ```bash
-oc label namespace openshift-adp network-zone=s3 --overwrite
 oc get csv -n openshift-adp
 oc get dataprotectionapplication,backupstoragelocation -n openshift-adp
 oc get backup -n openshift-adp
 ```
 
-2026-07-12 검증에서는 OADP 1.6.0, MinIO S3, `snapshotVolumes: false` 조합으로 테스트 Namespace의 63개 리소스가 오류와 경고 없이 `Completed`가 됐다. S3 endpoint가 별도 네트워크에 있으면 Namespace EgressIP 라벨 누락 시 BSL 검증이 timeout 된다.
+2026-07-12 EgressIP 구성에서 OADP 1.6.0, MinIO S3, `snapshotVolumes: false` 조합으로 테스트 Namespace의 63개 리소스가 오류와 경고 없이 `Completed`가 됐다. 2026-07-14 `routingViaHost` 전환 후 Workbench의 S3 기본 연결은 재검증했으며, OADP Backup/Restore 전체 재검증은 해당 실습에서 수행한다.
 
 ### 선택 컴포넌트 전환 원칙
 
