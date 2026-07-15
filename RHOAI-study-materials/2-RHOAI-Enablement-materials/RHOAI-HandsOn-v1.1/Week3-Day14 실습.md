@@ -30,7 +30,7 @@ Day13의 User Workload Monitoring, Day11의 GPU, Leader Worker Set Operator가 �
 ### Red Hat Connectivity Link Operator 설치
 RHCL은 MaaS의 Gateway, Authorino, Limitador, Kuadrant policy 계층을 제공한다.
 
-> RHCL 1.4.1은 `dns-operator 1.4.0`, `authorino-operator 1.4.1`, `limitador-operator 1.4.0`을 OLM 의존성으로 설치한다. 폐쇄망 카탈로그에 네 패키지와 operand 이미지가 모두 있어야 한다.
+> RHCL 1.4.1은 `dns-operator 1.4.0`, `authorino-operator 1.4.1`, `limitador-operator 1.4.0`을 OLM 의존성으로 설치한다. 폐쇄망 카탈로그에 네 패키지와 operand 이미지가 모두 있어야 한다. OLM은 네 Operator를 같은 InstallPlan으로 설치하지만 dependency Operator와 RHCL 내부 Kuadrant controller의 기동 순서는 보장하지 않는다.
 
 ```bash
 oc apply -f - <<'EOF'
@@ -47,12 +47,71 @@ spec:
   sourceNamespace: openshift-marketplace
 EOF
 
-oc get csv,subscription -n openshift-operators | grep -Ei 'rhcl|connectivity'
-oc get pods -n openshift-operators | grep -Ei 'rhcl|kuadrant'
+oc get csv,subscription -n openshift-operators | \
+  grep -Ei 'rhcl|connectivity|dns-operator|authorino|limitador'
 ```
 
+### OLM dependency 확인과 Kuadrant controller 재생성
+Kuadrant CR을 만들기 전에 세 dependency CSV가 모두 `Succeeded`, Operator Deployment가 `Available`이고 Authorino와 Limitador CRD가 존재하는지 확인한다. CSV 설치 완료와 실제 controller 준비는 별도 상태이므로 둘 다 hard gate로 둔다.
+
+```bash
+for csv in \
+  dns-operator.v1.4.0 \
+  authorino-operator.v1.4.1 \
+  limitador-operator.v1.4.0
+do
+  oc wait "csv/$csv" -n openshift-operators \
+    --for=jsonpath='{.status.phase}'=Succeeded --timeout=5m
+done
+
+for deployment in \
+  dns-operator-controller-manager \
+  authorino-operator \
+  limitador-operator-controller-manager
+do
+  oc wait "deployment/$deployment" -n openshift-operators \
+    --for=condition=Available --timeout=5m
+done
+
+oc get crd \
+  authorinos.operator.authorino.kuadrant.io \
+  limitadors.limitador.kuadrant.io
+
+oc get pods -n openshift-operators | \
+  grep -E 'dns-operator|authorino-operator|limitador-operator'
+```
+
+RHCL Operator 패키지 안에서 `Kuadrant` CR을 처리하는 controller의 Pod 이름은 `kuadrant-operator-controller-manager-*`다. 별도 Kuadrant Operator를 설치하는 단계가 아니다. RHCL controller가 dependency CRD보다 먼저 시작하면 이후 Kuadrant CR을 생성해도 `MissingDependency` 상태가 유지될 수 있으므로, dependency 확인 후 controller Pod를 한 번 재생성한다.
+
+```bash
+KUADRANT_OPERATOR_POD=$(oc get pod -n openshift-operators \
+  -l 'app=kuadrant,control-plane=controller-manager' \
+  -o jsonpath='{.items[0].metadata.name}')
+
+oc delete pod "$KUADRANT_OPERATOR_POD" -n openshift-operators
+
+oc wait pod -n openshift-operators \
+  -l 'app=kuadrant,control-plane=controller-manager' \
+  --for=condition=Ready --timeout=5m
+
+KUADRANT_OPERATOR_POD=$(oc get pod -n openshift-operators \
+  -l 'app=kuadrant,control-plane=controller-manager' \
+  -o jsonpath='{.items[0].metadata.name}')
+
+if oc logs "$KUADRANT_OPERATOR_POD" -n openshift-operators \
+  --since=5m | \
+  grep -Ei '(authorino|limitador) operator is not installed'; then
+  echo 'RHCL controller가 dependency를 인식하지 못했습니다.' >&2
+  exit 1
+fi
+
+echo 'RHCL controller dependency 인식 확인 완료'
+```
+
+controller Pod 재생성은 Limitador Operator를 설치하는 작업이 아니다. 이미 설치된 CRD를 RHCL controller가 다시 discovery하게 한다. dependency 세 Operator를 RHCL보다 먼저 별도 설치했다면 재생성이 필요하지 않지만, RHCL Subscription이 OLM dependency를 함께 설치하는 기본 경로에서는 위 절차를 수행하는 편이 확실하다. OLM이 관리하는 Deployment는 직접 수정하지 않고 Pod만 삭제해 같은 선언으로 다시 생성한다.
+
 ### Kuadrant 인스턴스 생성
-현재 CSV가 제공하는 CR 예제의 apiVersion을 먼저 확인한다.
+현재 CSV가 제공하는 CR 예제의 apiVersion을 먼저 확인한다. 조회 결과에서 `kind: Kuadrant`의 `apiVersion`을 아래 CR에 사용한다. RHCL 1.4.1의 현재 값은 `kuadrant.io/v1beta1`이다.
 
 ```bash
 RHCL_CSV=$(oc get csv -n openshift-operators \
@@ -76,7 +135,14 @@ metadata:
 spec: {}
 EOF
 
-oc get kuadrant kuadrant -n kuadrant-system -w
+oc wait kuadrant/kuadrant -n kuadrant-system \
+  --for=condition=Ready --timeout=10m
+oc wait authorino/authorino -n kuadrant-system \
+  --for=condition=Ready --timeout=5m
+oc wait limitador/limitador -n kuadrant-system \
+  --for=condition=Ready --timeout=5m
+oc get kuadrant kuadrant -n kuadrant-system
+oc get authorino,limitador -n kuadrant-system
 oc get pods -n kuadrant-system
 ```
 
@@ -314,7 +380,7 @@ oc get pods -n redhat-ods-applications | grep maas
 
 `default-tenant`의 `READY`가 `True`이고 RHOAI 3.4.0 환경에서 reason이 `Reconciled`인지 확인한다.
 
-### LLMInferenceService 배포
+### LLMInferenceServiceConfig 확인
 설치된 RHOAI가 제공하는 `LLMInferenceServiceConfig` 목록과 모델 URI 형식을 확인한다.
 
 ```bash
@@ -324,7 +390,115 @@ oc get llminferenceserviceconfig \
   -n redhat-ods-applications -o yaml
 ```
 
-모델은 disconnected 환경에 반입한 OCI ModelCar 또는 지원되는 내부 URI를 사용한다. 검증된 소형 모델은 `Qwen/Qwen2.5-0.5B-Instruct` commit `7ae557604adf67be50417f59c2c2f167def9a775`를 `/models`에 담은 ModelCar이며, 5010 registry의 `models/qwen2.5-0.5b-instruct:7ae5576`에 있다.
+### Qwen ModelCar 폐쇄망 반입
+모델은 외부 연결 구간에서 특정 commit으로 고정해 내려받고 OCI archive로 만든 다음 폐쇄망에 전달한다. 이 실습에서는 `Qwen/Qwen2.5-0.5B-Instruct` commit `7ae557604adf67be50417f59c2c2f167def9a775`를 사용한다. 7자리 값 `7ae5576`은 내부 image tag이고, 실제 다운로드에는 전체 commit을 사용한다.
+
+ModelCar는 vLLM 실행 image가 아니라 model weight, tokenizer, config를 `/models`에 담은 OCI image다. build context, OCI archive와 Podman local storage를 위해 약 4 GiB의 여유 공간을 준비한다. 다음 명령은 인터넷과 `registry.access.redhat.com`에 접근할 수 있고 Python 3와 Podman이 설치된 **외부 연결 호스트**에서 실행한다.
+
+```bash
+MODEL_REPO='Qwen/Qwen2.5-0.5B-Instruct'
+MODEL_REVISION='7ae557604adf67be50417f59c2c2f167def9a775'
+MODEL_TAG="${MODEL_REVISION:0:7}"
+WORK_DIR="$HOME/day14-modelcar"
+LOCAL_IMAGE="localhost/qwen2.5-0.5b-instruct:${MODEL_TAG}"
+
+rm -rf "$WORK_DIR"
+mkdir -p "$WORK_DIR/context/models"
+
+python3 -m venv "$WORK_DIR/.venv"
+source "$WORK_DIR/.venv/bin/activate"
+python -m pip install --upgrade pip huggingface_hub
+
+# branch나 latest가 아니라 전체 commit으로 model snapshot을 고정한다.
+hf download "$MODEL_REPO" \
+  --revision "$MODEL_REVISION" \
+  --local-dir "$WORK_DIR/context/models"
+
+rm -rf "$WORK_DIR/context/models/.cache"
+printf '%s\n' "$MODEL_REPO" > "$WORK_DIR/context/models/SOURCE_REPOSITORY"
+printf '%s\n' "$MODEL_REVISION" > "$WORK_DIR/context/models/SOURCE_REVISION"
+
+test -s "$WORK_DIR/context/models/config.json"
+test -s "$WORK_DIR/context/models/tokenizer.json"
+find "$WORK_DIR/context/models" -maxdepth 1 -name '*.safetensors' \
+  -type f -size +0c | grep -q .
+```
+
+RHOAI/KServe가 임의 UID와 root group으로 ModelCar를 읽을 수 있도록 shell이 있는 UBI base, `/models`, read/execute permission, non-root user를 사용한다. `scratch` base는 KServe가 model file 접근을 준비할 shell이 없어 사용하지 않는다.
+
+```bash
+cat > "$WORK_DIR/context/Containerfile" <<'EOF'
+FROM registry.access.redhat.com/ubi9/ubi-micro:9.6
+COPY --chown=0:0 models /models
+RUN chmod -R a=rX /models
+USER 65534
+EOF
+
+podman build --format=oci \
+  -t "$LOCAL_IMAGE" "$WORK_DIR/context"
+
+podman run --rm --entrypoint /bin/sh "$LOCAL_IMAGE" -c '
+  test -r /models/config.json
+  test -r /models/tokenizer.json
+  test -r /models/model.safetensors
+'
+
+ARCHIVE="$WORK_DIR/qwen2.5-0.5b-instruct-${MODEL_TAG}.oci.tar"
+podman save --format=oci-archive -o "$ARCHIVE" "$LOCAL_IMAGE"
+(
+  cd "$WORK_DIR"
+  sha256sum "$(basename "$ARCHIVE")" > "$(basename "$ARCHIVE").sha256"
+)
+
+deactivate 2>/dev/null || true
+ls -lh "$ARCHIVE" "$ARCHIVE.sha256"
+```
+
+생성된 OCI archive와 `.sha256` 파일을 승인된 이동식 매체나 파일 전송 절차로 Bastion에 전달한다. archive checksum은 OCI image digest와 목적이 다르다. 전자는 전달 중 파일 손상을 확인하고, 후자는 registry에 저장된 image manifest를 식별한다.
+
+다음 명령은 **폐쇄망 Bastion**에서 실행한다. `<반입_디렉터리>`에는 전달받은 두 파일이 있어야 한다.
+
+```bash
+MODEL_REVISION='7ae557604adf67be50417f59c2c2f167def9a775'
+MODEL_TAG="${MODEL_REVISION:0:7}"
+IMPORT_DIR='<반입_디렉터리>'
+ARCHIVE="$IMPORT_DIR/qwen2.5-0.5b-instruct-${MODEL_TAG}.oci.tar"
+LOCAL_IMAGE="localhost/qwen2.5-0.5b-instruct:${MODEL_TAG}"
+DEST_IMAGE="192.168.10.50:5010/models/qwen2.5-0.5b-instruct:${MODEL_TAG}"
+AUTH_FILE=/tmp/day14-model-registry-auth.json
+DIGEST_FILE=/tmp/day14-modelcar.digest
+
+(
+  cd "$IMPORT_DIR"
+  sha256sum -c "$(basename "$ARCHIVE").sha256"
+)
+
+podman load -i "$ARCHIVE"
+podman login --tls-verify=false --authfile "$AUTH_FILE" \
+  -u '<MODEL_REGISTRY_ID>' -p '<MODEL_REGISTRY_PW>' \
+  192.168.10.50:5010
+
+podman tag "$LOCAL_IMAGE" "$DEST_IMAGE"
+podman push --tls-verify=false --authfile "$AUTH_FILE" \
+  --digestfile "$DIGEST_FILE" "$DEST_IMAGE"
+
+PUSHED_DIGEST=$(cat "$DIGEST_FILE")
+REGISTRY_DIGEST=$(skopeo inspect --tls-verify=false \
+  --authfile "$AUTH_FILE" --format '{{.Digest}}' \
+  "docker://$DEST_IMAGE")
+
+printf 'Pushed digest:   %s\nRegistry digest: %s\n' \
+  "$PUSHED_DIGEST" "$REGISTRY_DIGEST"
+test "$PUSHED_DIGEST" = "$REGISTRY_DIGEST"
+
+rm -f "$AUTH_FILE" "$DIGEST_FILE"
+```
+
+`sha256sum`이 `OK`이고 두 registry digest가 같아야 한다. 현재 5010 registry에는 이 ModelCar가 미리 준비되어 있지 않으므로 위 push를 완료한 뒤 다음 단계로 진행한다.
+
+참조: [Red Hat OpenShift AI 3.4 - Deploying models](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/pdf/deploying_models/Red_Hat_OpenShift_AI_Self-Managed-3.4-Deploying_models-en-US.pdf), [Hugging Face Hub - Download files](https://huggingface.co/docs/huggingface_hub/guides/download)
+
+### LLMInferenceService 배포
 
 private registry에서 ModelCar를 pull하도록 `jukebox`에 pull secret을 만들고 default ServiceAccount에 연결한다.
 
