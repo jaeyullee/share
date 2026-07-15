@@ -165,12 +165,28 @@ spec:
       env:
         - name: MLSERVER_MODEL_NAME
           value: fraud
+      readinessProbe:
+        httpGet:
+          path: /v2/models/fraud/ready
+          port: 8080
+        initialDelaySeconds: 5
+        periodSeconds: 5
+        timeoutSeconds: 5
+      livenessProbe:
+        httpGet:
+          path: /v2/models/fraud/ready
+          port: 8080
+        initialDelaySeconds: 20
+        periodSeconds: 10
+        timeoutSeconds: 5
 EOF
 
 oc wait --for=condition=Ready \
   isvc/fraud-registry-production -n jukebox --timeout=300s
 oc get isvc fraud-registry-production -n jukebox
 ```
+
+`MLSERVER_MODEL_NAME=fraud`를 사용하므로 probe도 `/v2/models/fraud/ready`를 호출해야 한다. probe를 생략하면 KServe가 InferenceService 이름을 사용한 `/v2/models/fraud-registry-production/ready`를 생성하며, MLServer에는 해당 모델명이 없어 HTTP 404로 `READY=False`가 된다.
 
 InferenceService를 port-forward한다.
 
@@ -243,6 +259,20 @@ spec:
       env:
         - name: MLSERVER_MODEL_NAME
           value: fraud
+      readinessProbe:
+        httpGet:
+          path: /v2/models/fraud/ready
+          port: 8080
+        initialDelaySeconds: 5
+        periodSeconds: 5
+        timeoutSeconds: 5
+      livenessProbe:
+        httpGet:
+          path: /v2/models/fraud/ready
+          port: 8080
+        initialDelaySeconds: 20
+        periodSeconds: 10
+        timeoutSeconds: 5
 EOF
 
 oc wait --for=condition=Ready \
@@ -272,5 +302,6 @@ Day5의 v2 모델을 사용했다면 `outputs[0].data[0]`이 `1`로 반환된다
 3. v2 상세 화면의 모델 위치 `s3://rhoai-models/fraud-v2/model.joblib`과 InferenceService의 `storageUri` `s3://rhoai-models/fraud-v2`가 일치하는지 확인한다.
 
 > Model Registry API의 기본 `state` 값은 구현 버전에 따라 `LIVE`/`ARCHIVED`를 사용한다. 커리큘럼의 `Staging`/`Production`은 별도의 custom property로 기록해 배포 승인 단계를 표현한다.
+> v2를 배포하더라도 v1이 자동으로 `ARCHIVED` 로 변경되지는 않으니 v2가 `Production` 로 승격 후 v1를 보관 처리 하기로 결정 시 직접 수정해야 한다.
 
 REST API로 자동화할 수도 있지만 이 실습에서는 대시보드를 사용한다. RHOAI 3.4 Registry REST 서버는 `/openapi.json`을 제공하지 않으므로, API 자동화 코드는 설치 버전의 Model Registry API/SDK와 맞춰 작성해야 한다.

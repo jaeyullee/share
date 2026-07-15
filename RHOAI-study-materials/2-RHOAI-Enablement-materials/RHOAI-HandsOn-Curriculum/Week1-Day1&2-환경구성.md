@@ -793,7 +793,7 @@ spec:
 
 `generateName`을 사용하므로 위 YAML은 `oc apply`가 아니라 `oc create -f`로 생성한다. 2026-07-12 검증에서는 PipelineRun `Succeeded=True`와 `tekton-ok`를 확인했고, Argo CD는 내부 Gitea의 ConfigMap을 `Synced/Healthy`로 동기화한 뒤 수동 변경을 Git 선언으로 self-heal했다.
 
-기능 실습은 [Week2 Day10](Week2-Day10%20실습.md)을 따른다.
+Argo CD GitOps 기능 실습은 [Week2 Day10](Week2-Day10%20실습.md)을 따른다. Tekton은 Day10과 Day11~15 기본 과정에서 사용하지 않으며, 모델 build/test와 manifest 갱신까지 CI로 자동화하는 별도 확장에서 사용한다.
 
 ### OADP 백업·복구 구성
 
