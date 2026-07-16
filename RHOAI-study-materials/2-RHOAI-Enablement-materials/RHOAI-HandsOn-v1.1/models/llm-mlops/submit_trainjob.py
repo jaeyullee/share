@@ -93,7 +93,7 @@ def trainjob_body(args: argparse.Namespace) -> dict:
             },
             "podTemplateOverrides": [
                 {
-                    "targetJobs": ["node"],
+                    "targetJobs": [{"name": "node"}],
                     "spec": {
                         "serviceAccountName": "llm-trainer",
                         "nodeSelector": {"lab-role": "gpu"},

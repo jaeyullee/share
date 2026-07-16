@@ -34,7 +34,7 @@ GPU memory는 각 카드 약 16GiB이며 두 장을 합친 32GiB가 하나의 �
 
 ### 두 번째 GPU passthrough
 
-Proxmox host에서 VM 102의 현재 설정과 사용하지 않는 두 번째 GPU를 다시 확인한다. 이 홈랩에서 두 번째 카드의 PCI function은 `02:00.0`과 `02:00.1`이고 같은 IOMMU group에 있다.
+Proxmox host에서 VM 102의 현재 설정과 사용하지 않는 두 번째 GPU를 다시 확인한다. 검증 환경에서 두 번째 카드의 PCI function은 `02:00.0`과 `02:00.1`이고 같은 IOMMU group에 있다.
 
 ```bash
 lspci -nnk -s 02:00.0

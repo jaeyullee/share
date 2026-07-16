@@ -209,7 +209,7 @@ oc get machineset -n openshift-machine-api
 oc adm node-image create --help | sed -n '1,35p'
 ```
 
-현재 홈랩은 `platform=None`이고 MachineSet이 없다. 따라서 `oc scale machineset`은 적용 대상이 아니다. OCP 4.22의 on-premise node image 기능으로 ISO를 만들고 새 VM 또는 bare-metal host를 boot하는 경로를 사용한다.
+검증 환경은 `platform=None`이고 MachineSet이 없다. 따라서 `oc scale machineset`은 적용 대상이 아니다. OCP 4.22의 on-premise node image 기능으로 ISO를 만들고 새 VM 또는 bare-metal host를 boot하는 경로를 사용한다.
 
 실제 worker 추가 시의 운영 순서는 다음과 같다.
 

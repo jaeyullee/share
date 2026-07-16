@@ -371,7 +371,7 @@ oc kustomize . >/tmp/day10-rendered.yaml
 oc apply --dry-run=server -f /tmp/day10-rendered.yaml
 ```
 
-검토 후 저장소에 push한다. 인증정보는 remote URL에 직접 넣지 않는다. 이 홈랩의 Gitea는 별도 Route 인증서를 지정하지 않고 OCP 기본 Ingress 인증서를 사용하므로, Router가 제시하는 leaf 인증서가 아니라 이를 서명한 Ingress CA를 추출해 검증에 사용한다.
+검토 후 저장소에 push한다. 인증정보는 remote URL에 직접 넣지 않는다. 검증 환경의 Gitea는 별도 Route 인증서를 지정하지 않고 OCP 기본 Ingress 인증서를 사용하므로, Router가 제시하는 leaf 인증서가 아니라 이를 서명한 Ingress CA를 추출해 검증에 사용한다.
 
 ```bash
 GITEA_HOST=$(oc get route gitea -n gitea -o jsonpath='{.spec.host}')

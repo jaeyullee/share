@@ -125,7 +125,7 @@ operators:
 
 특히 bundle signature 오류를 우회하려고 bundle만 `additionalImages`와 `--remove-signatures`로 다시 미러하면, bundle의 `relatedImages`를 따라가는 Operator catalog 처리 과정이 생략될 수 있다. Bundle digest 확인만으로 미러 작업을 완료 처리하지 않는다.
 
-현재 홈랩에서 실제 pull이 확인된 operand repository는 다음과 같다.
+본 커리큘럼의 disconnected 검증 환경에서 실제 pull이 확인된 operand repository는 다음과 같다.
 
 ```text
 nvcr.io/nvidia/gpu-operator
@@ -193,16 +193,16 @@ oc get events -n openshift-operators --sort-by=.lastTimestamp | tail -50
 
 ### 당초 검토했다가 제외한 미러 대상
 
-아래 항목은 "있으면 좋다"가 아니라 현재 홈랩에서 실제 검증 가능한지 기준으로 제외했다. 나중에 하드웨어나 테스트 목표가 바뀌면 다시 포함한다.
+아래 항목은 "있으면 좋다"가 아니라 검증 환경에서 실제 검증 가능한지 기준으로 제외했다. 하드웨어나 테스트 목표가 바뀌면 다시 포함한다.
 | Package | 제외 이유 |
 |---|---|
 | `odf-operator` | 단일 홈서버 환경에서 리소스 부담이 크고, 현재 PVC/S3는 TrueNAS NFS CSI/S3로 대체한다. |
-| `sriov-network-operator` | SR-IOV capable NIC/VF 설계가 현재 홈랩에 없다. |
+| `sriov-network-operator` | SR-IOV capable NIC/VF 설계가 검증 환경에 없다. |
 | `nvidia-network-operator` | Mellanox/ConnectX, RDMA/RoCE, GPUDirect RDMA 환경이 아니다. |
 | `ibm-spyre-operator` | IBM Spyre 가속기 하드웨어가 없다. |
 | `kuadrant-operator` | community catalog 쪽 deprecated 가능성이 있어 RHCL + DNS + Authorino + Limitador 경로를 우선한다. |
 | `openshift-serverless-operator` | RHOAI 3.4 기본 서빙은 KServe RawDeployment 기준이고, KServe Serverless deployment mode는 deprecated다. |
-| `metallb-operator` | 현재 홈랩은 Bastion HAProxy/DNS와 VM 내부망으로 충분하다. 별도 LoadBalancer 실습 때만 포함한다. |
+| `metallb-operator` | 검증 환경은 Bastion HAProxy/DNS와 VM 내부망으로 구성했다. 별도 LoadBalancer 실습 때만 포함한다. |
 
 
 
@@ -316,7 +316,7 @@ curl -k -I https://rh-ai.apps.sno.ocp422.com/
 
 공식 문서: [OVN-Kubernetes gateway와 egress routing policy](https://docs.redhat.com/en/documentation/openshift_container_platform/4.22/html-single/ovn-kubernetes_network_plugin/index), [Node Tuning Operator 사용](https://docs.redhat.com/en/documentation/openshift_container_platform/4.22/html/scalability_and_performance/using-node-tuning-operator)
 
-**목적**: Pod가 외부 주소에 접근할 때 노드의 Linux routing table을 사용하게 한다. 이 환경에서는 `192.168.20.0/24`가 storage NIC `enp6s19`, `192.168.10.0/24`와 기본 경로가 `br-ex`를 사용하므로 S3와 Nexus/Gitea 경로를 목적지별로 분리할 수 있다.
+**목적**: Pod가 외부 주소에 접근할 때 노드의 Linux routing table을 사용하게 한다. 검증 환경에서는 `192.168.20.0/24`가 storage NIC `enp6s19`, `192.168.10.0/24`와 기본 경로가 `br-ex`를 사용하므로 S3와 Nexus/Gitea 경로를 목적지별로 분리할 수 있다.
 
 `routingViaHost`는 cluster-wide 설정이다. 특정 Namespace만 선택하는 EgressIP와 달리 모든 Pod의 외부 egress가 host routing stack을 사용한다. OVS hardware offload를 사용할 때 필요한 `routingViaHost=false`와는 양립하지 않으므로 SmartNIC offload 도입 시 설계를 다시 검토한다.
 

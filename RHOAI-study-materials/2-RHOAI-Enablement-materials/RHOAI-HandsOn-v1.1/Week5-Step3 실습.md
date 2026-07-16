@@ -16,6 +16,26 @@ Gitea에서 다음 비공개 저장소를 만든다.
 
 PAT에는 두 저장소를 읽고 쓸 최소 권한만 부여한다.
 
+### Bastion에서 Gitea Router CA 신뢰
+
+Gitea는 OpenShift Route 인증서를 사용한다. TLS 검증을 끄지 않고 OCP Ingress Router CA를 Bastion의 system trust에 등록한다.
+
+```bash
+oc get secret router-ca -n openshift-ingress-operator \
+  -o jsonpath='{.data.tls\.crt}' | \
+  base64 -d > \
+  /etc/pki/ca-trust/source/anchors/ocp-ingress-router-ca.crt
+
+openssl x509 \
+  -in /etc/pki/ca-trust/source/anchors/ocp-ingress-router-ca.crt \
+  -noout -subject -issuer -ext basicConstraints
+
+update-ca-trust extract
+curl -fsS https://gitea.apps.sno.ocp422.com/api/v1/version | jq .
+```
+
+인증서의 Basic Constraints가 `CA:TRUE`이고 Gitea version JSON이 반환돼야 한다. `http.sslVerify=false`는 사용하지 않는다.
+
 ### Source repository 작성
 
 ```bash
@@ -157,13 +177,18 @@ for ENV in staging production; do
 
   oc create --dry-run=client \
     -f /tmp/week5-serving-rendered.yaml -o json | \
-    jq '.items[] | select(.kind == "ServingRuntime")' \
+    jq 'if .kind == "List" then .items[] else . end
+        | select(.kind == "ServingRuntime")' \
     > "/tmp/week5-llm-gitops/environments/$ENV/runtime.json"
 
   oc create --dry-run=client \
     -f /tmp/week5-serving-rendered.yaml -o json | \
-    jq '.items[] | select(.kind == "InferenceService")' \
+    jq 'if .kind == "List" then .items[] else . end
+        | select(.kind == "InferenceService")' \
     > "/tmp/week5-llm-gitops/environments/$ENV/inferenceservice.json"
+
+  test -s "/tmp/week5-llm-gitops/environments/$ENV/runtime.json"
+  test -s "/tmp/week5-llm-gitops/environments/$ENV/inferenceservice.json"
 
   cat > "/tmp/week5-llm-gitops/environments/$ENV/kustomization.yaml" <<'EOF'
 apiVersion: kustomize.config.k8s.io/v1beta1

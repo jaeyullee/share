@@ -6,7 +6,7 @@
 GPU 공유와 Kueue cohort 실습 전에 물리 GPU, NVIDIA Device Plugin, Kueue API 버전을 확인하고 기존 설정을 백업한다.
 
 ### 커리큘럼 보정 사항
-현재 랩의 `ocp-w01-gpu`에는 passthrough된 RTX 5060 Ti가 **1개** 있다. 이 노드에서는 다음과 같이 실습한다.
+검증 환경의 `ocp-w01-gpu`에는 passthrough된 RTX 5060 Ti가 **1개** 있다. 이 노드에서는 다음과 같이 실습한다.
 
 | 원본 구상 | 검증 결과와 실습 방식 |
 |---|---|

@@ -146,7 +146,7 @@ oc get authorino,limitador -n kuadrant-system
 oc get pods -n kuadrant-system
 ```
 
-이 홈랩의 `data-science-gateway-class`는 OpenShift CIO가 관리하는 Istio GatewayClass다. OCP 4.19 이상에서 이 토폴로지는 Kuadrant mTLS에 필요한 service-mesh sidecar 경로를 제공하지 않으므로 mTLS를 활성화하지 않는다. 활성화하면 Gateway에서 Authorino/Limitador로 가는 ext-auth gRPC가 `500`으로 실패한다.
+검증 환경의 `data-science-gateway-class`는 OpenShift CIO가 관리하는 Istio GatewayClass다. OCP 4.19 이상에서 이 토폴로지는 Kuadrant mTLS에 필요한 service-mesh sidecar 경로를 제공하지 않으므로 mTLS를 활성화하지 않는다. 활성화하면 Gateway에서 Authorino/Limitador로 가는 ext-auth gRPC가 `500`으로 실패한다.
 
 ```bash
 oc patch kuadrant kuadrant -n kuadrant-system --type=merge \
@@ -343,7 +343,7 @@ spec:
 EOF
 ```
 
-이 랩은 LoadBalancer controller가 없으므로 Gateway Service를 `ClusterIP`로 만들고 OpenShift Route의 passthrough TLS로 노출한다. Gateway의 `Programmed=True`와 Service의 `TYPE=ClusterIP`를 확인한다.
+검증 환경에는 LoadBalancer controller가 없으므로 Gateway Service를 `ClusterIP`로 만들고 OpenShift Route의 passthrough TLS로 노출한다. Gateway의 `Programmed=True`와 Service의 `TYPE=ClusterIP`를 확인한다.
 
 ```bash
 oc get gateway maas-default-gateway -n openshift-ingress
@@ -563,7 +563,7 @@ EOF
 oc get llminferenceservice qwen-small -n jukebox -w
 ```
 
-실제 config에서 요구하는 `baseRefs`, container name, model URI가 다르면 설치된 `LLMInferenceServiceConfig` 예제를 기준으로 수정한다. 단일 GPU 실습에서는 `router.scheduler: {}`를 넣지 않는다. 이를 넣으면 InferencePool 경로가 생성되며, 현재 랩 조합에서는 vLLM이 토큰을 생성해도 chat response body가 0바이트로 유실됐다.
+실제 config에서 요구하는 `baseRefs`, container name, model URI가 다르면 설치된 `LLMInferenceServiceConfig` 예제를 기준으로 수정한다. 단일 GPU 실습에서는 `router.scheduler: {}`를 넣지 않는다. 이를 넣으면 InferencePool 경로가 생성되며, 검증된 구성 조합에서는 vLLM이 토큰을 생성해도 chat response body가 0바이트로 유실됐다.
 
 ### MaaS에 모델 publish
 ```bash

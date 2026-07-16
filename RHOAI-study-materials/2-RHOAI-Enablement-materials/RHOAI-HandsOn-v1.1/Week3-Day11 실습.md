@@ -13,9 +13,9 @@ oc get node ocp-w01-gpu \
   -o jsonpath='{.status.allocatable.nvidia\.com/gpu}{"\n"}'
 ```
 
-`lspci`에서 NVIDIA 장치가 보여야 설치를 계속할 수 있다. 출력이 없으면 VM/물리 노드에 GPU PCI 장치가 연결되지 않은 상태이므로 GPU Operator로 해결할 수 없다. GPU Operator 설치 전에는 allocatable 값이 빈 값 또는 `0`을 반환할 수 있다. ClusterPolicy와 device plugin이 정상화된 뒤에는 이 랩 기준 `1`이어야 한다.
+`lspci`에서 NVIDIA 장치가 보여야 설치를 계속할 수 있다. 출력이 없으면 VM/물리 노드에 GPU PCI 장치가 연결되지 않은 상태이므로 GPU Operator로 해결할 수 없다. GPU Operator 설치 전에는 allocatable 값이 빈 값 또는 `0`을 반환할 수 있다. ClusterPolicy와 device plugin이 정상화된 뒤에는 검증 환경 기준 `1`이어야 한다.
 
-Proxmox VM에서 장치가 보이지 않으면 host의 VFIO 바인딩과 VM의 `hostpci`를 각각 확인한다. 이 랩의 GPU worker는 VMID `102`, 첫 번째 GPU는 `01:00`이다.
+Proxmox VM에서 장치가 보이지 않으면 host의 VFIO 바인딩과 VM의 `hostpci`를 각각 확인한다. 검증 환경의 GPU worker는 VMID `102`, 첫 번째 GPU는 `01:00`이다.
 
 ```bash
 # Proxmox host

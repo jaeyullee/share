@@ -16,7 +16,7 @@ oc get packagemanifest redhat-oadp-operator \
   }'
 ```
 
-OCP 4.22에서는 OADP 1.6을 사용한다. 현재 홈랩 예상값은 `stable`, `oadp-operator.v1.6.0`이다.
+OCP 4.22에서는 OADP 1.6을 사용한다. 검증 환경의 예상값은 `stable`, `oadp-operator.v1.6.0`이다.
 
 ```bash
 oc apply -f - <<'EOF'

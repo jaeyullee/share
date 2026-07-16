@@ -7,7 +7,7 @@ Week7은 인증, 백업, 분산 워크로드, 관측성과 감사, Kueue 운영,
 
 ### 실습 범위와 경계
 
-| Step | 실습 범위 | 현재 홈랩 기준 |
+| Step | 실습 범위 | 검증 환경 기준 |
 |---|---|---|
 | 1 | RHBK 설치, realm/client/group/user, OpenShift OAuth OIDC, RHOAI 권한 | RHBK Operator 추가 미러 필요 |
 | 2 | OADP 1.6, TrueNAS S3, Namespace/PVC 백업·복구 | OADP 패키지는 현재 카탈로그에 있음 |
@@ -61,7 +61,7 @@ oc get configmap cluster-monitoring-config \
   -o jsonpath='{.data.config\.yaml}'
 ```
 
-현재 홈랩의 예상값은 다음과 같다.
+검증 환경의 예상값은 다음과 같다.
 
 - `redhat-oadp-operator`: `stable`, `oadp-operator.v1.6.0`
 - `rhbk-operator`: 추가 미러 전에는 `NotFound`, 추가 후 `stable-v26.6`
@@ -85,7 +85,7 @@ oc get machineset -n openshift-machine-api
 curl -fsS http://192.168.20.5:9000/minio/health/live
 ```
 
-현재 홈랩은 `platform=None`, control plane/infrastructure `SingleReplica`, StorageClass `truenas-nfs`, MachineSet 없음이 정상이다. 이 조건에서는 MachineSet scale-out 명령을 적용하지 않는다.
+검증 환경은 `platform=None`, control plane/infrastructure `SingleReplica`, StorageClass `truenas-nfs`, MachineSet 없음이 정상이다. 이 조건에서는 MachineSet scale-out 명령을 적용하지 않는다.
 
 ### RHBK 카탈로그 판정
 

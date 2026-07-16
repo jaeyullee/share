@@ -6,6 +6,13 @@
 외부 `week5-llm-mlops-tekton.yaml` 파일 없이 Week5 CI, promotion, Gitea trigger 리소스를 생성한다. 아래 블록 전체를 한 번에 실행한다.
 
 ```bash
+WEBHOOK_AUTH="Bearer $(openssl rand -hex 32)"
+oc create secret generic week5-gitea-webhook-token \
+  -n rhoai-llm-mlops \
+  --from-literal=authorization="$WEBHOOK_AUTH" \
+  --dry-run=client -o yaml | oc apply -f -
+unset WEBHOOK_AUTH
+
 oc apply -f - <<'WEEK5_TEKTON_EOF'
 apiVersion: tekton.dev/v1
 kind: Pipeline
@@ -73,7 +80,9 @@ spec:
                 "$(workspaces.shared.path)/source"
               cd "$(workspaces.shared.path)/source"
               git checkout "$(params.source-revision)"
-              git rev-parse HEAD | tee "$(results.commit.path)"
+              COMMIT="$(git rev-parse HEAD)"
+              printf '%s' "$COMMIT" | tee "$(results.commit.path)"
+              printf '\n'
               python -m py_compile models/llm-mlops/*.py
               python models/llm-mlops/validate_dataset.py \
                 datasets/llm-support-sft/train.jsonl
@@ -124,16 +133,29 @@ spec:
               mkdir -p "$HOME"
               SHORT_COMMIT="$(printf '%s' '$(params.commit)' | cut -c1-12)"
               IMAGE="$(params.image-repo):${SHORT_COMMIT}"
+              REPOSITORY="${IMAGE#*/}"
+              MANIFEST_URL="https://192.168.10.50:5010/v2/${REPOSITORY%:*}/manifests/${SHORT_COMMIT}"
               buildah login --tls-verify=false \
                 -u "$MIRROR_REGISTRY_ID" -p "$MIRROR_REGISTRY_PW" \
                 192.168.10.50:5000
               buildah login --tls-verify=false -u "$REGISTRY_ID" -p "$REGISTRY_PW" \
                 192.168.10.50:5010
-              cd "$(workspaces.shared.path)/source/models/llm-mlops"
-              buildah bud --storage-driver=vfs --tls-verify=false \
-                -f Containerfile -t "$IMAGE" .
-              buildah push --storage-driver=vfs --tls-verify=false \
-                --digestfile /tmp/image-digest "$IMAGE" "docker://$IMAGE"
+              if curl -fsSk -u "$REGISTRY_ID:$REGISTRY_PW" \
+                -D /tmp/image-headers -o /dev/null \
+                -H 'Accept: application/vnd.oci.image.manifest.v1+json, application/vnd.docker.distribution.manifest.v2+json' \
+                "$MANIFEST_URL"; then
+                awk -F': ' 'tolower($1) == "docker-content-digest" {
+                  gsub("\\r", "", $2); print $2
+                }' /tmp/image-headers > /tmp/image-digest
+                test -s /tmp/image-digest
+                echo "Reusing immutable commit image: $IMAGE"
+              else
+                cd "$(workspaces.shared.path)/source/models/llm-mlops"
+                buildah bud --storage-driver=vfs --tls-verify=false \
+                  -f Containerfile -t "$IMAGE" .
+                buildah push --storage-driver=vfs --tls-verify=false \
+                  --digestfile /tmp/image-digest "$IMAGE" "docker://$IMAGE"
+              fi
               printf '%s' "$IMAGE" | tee "$(results.image-url.path)"
               tr -d '\n' < /tmp/image-digest | tee "$(results.image-digest.path)"
     - name: compile-native-pipeline
@@ -259,7 +281,7 @@ spec:
                   verify_ssl=True,
               )
               pipeline = version = None
-              for _ in range(30):
+              for _ in range(60):
                   pipelines = client.list_pipelines(page_size=100, namespace="rhoai-llm-mlops")
                   pipeline = next(
                       (p for p in (pipelines.pipelines or [])
@@ -376,6 +398,80 @@ spec:
               git commit -m "Promote ${VERSION_NAME} to ${ENVIRONMENT}"
               git -c http.sslVerify=false push origin HEAD:main
 ---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-week5-start-kfp-run
+  namespace: rhoai-llm-mlops
+spec:
+  podSelector:
+    matchLabels:
+      app: ds-pipeline-dspa
+      component: data-science-pipelines
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              tekton.dev/pipeline: week5-llm-ci
+              tekton.dev/pipelineTask: start-kfp-run
+      ports:
+        - protocol: TCP
+          port: 8888
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: week5-argocd-kfp-finalizers
+  namespace: rhoai-llm-mlops
+rules:
+  - apiGroups: ["pipelines.kubeflow.org"]
+    resources: ["pipelines/finalizers"]
+    verbs: ["update"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: week5-argocd-kfp-finalizers
+  namespace: rhoai-llm-mlops
+subjects:
+  - kind: ServiceAccount
+    name: openshift-gitops-argocd-application-controller
+    namespace: openshift-gitops
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: week5-argocd-kfp-finalizers
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: week5-gitea-webhook-secret-reader
+  namespace: rhoai-llm-mlops
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames: ["week5-gitea-webhook-token"]
+    verbs: ["get"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create", "patch", "update"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: week5-gitea-webhook-secret-reader
+  namespace: rhoai-llm-mlops
+subjects:
+  - kind: ServiceAccount
+    name: llm-webhook
+    namespace: rhoai-llm-mlops
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: week5-gitea-webhook-secret-reader
+---
 apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerBinding
 metadata:
@@ -434,6 +530,8 @@ spec:
           params:
             - name: filter
               value: >-
+                header.canonical('Authorization').compareSecret(
+                  'authorization', 'week5-gitea-webhook-token') &&
                 header.canonical('X-Gitea-Event') == 'push' &&
                 body.ref == 'refs/heads/main'
       bindings:
@@ -463,8 +561,26 @@ WEEK5_TEKTON_EOF
 다음 리소스가 생성되면 원래 Step 4로 돌아간다.
 
 ```bash
-oc get pipeline -n rhoai-llm-mlops
+oc get pipelines.tekton.dev -n rhoai-llm-mlops
 oc get eventlistener,triggerbinding,triggertemplate \
   -n rhoai-llm-mlops
 oc get route week5-gitea-webhook -n rhoai-llm-mlops
+oc get networkpolicy allow-week5-start-kfp-run \
+  -n rhoai-llm-mlops
+oc auth can-i update pipelines/finalizers.pipelines.kubeflow.org \
+  -n rhoai-llm-mlops \
+  --as=system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller
+oc auth can-i get secret/week5-gitea-webhook-token \
+  -n rhoai-llm-mlops \
+  --as=system:serviceaccount:rhoai-llm-mlops:llm-webhook
 ```
+
+RHOAI의 KFP도 `Pipeline`이라는 이름의 CRD를 제공하므로 `oc get pipeline`은 `pipelines.pipelines.kubeflow.org`로 해석될 수 있다. Tekton Pipeline을 조회할 때는 `pipelines.tekton.dev`처럼 API group까지 지정한다.
+
+DSPA가 생성한 기본 NetworkPolicy는 KFP component와 Workbench Pod만 API 포트 `8888`에 접근하도록 허용한다. 별도 설치한 Tekton은 자동 허용 대상이 아니므로 위 정책은 `week5-llm-ci`의 `start-kfp-run` Task Pod만 DSPA API에 추가로 연결한다. Operator가 관리하는 `ds-pipelines-dspa` 정책은 직접 수정하지 않는다.
+
+KFP API는 `PipelineVersion` 생성 시 상위 `Pipeline`을 가리키는 `blockOwnerDeletion` owner reference를 자동으로 추가한다. Kubernetes는 이를 허용하기 전에 요청 주체가 `pipelines/finalizers`를 갱신할 수 있는지 별도로 검사하므로, namespace 관리용 Argo CD 기본 Role의 일반 `pipelines` 권한만으로는 부족하다. 위 별도 Role은 Argo CD application controller에 이 subresource의 `update`만 추가하며 Operator가 관리하는 기본 Role은 수정하지 않는다.
+
+`build-runtime`은 source commit의 앞 12자를 image tag로 사용한다. KFP `PipelineVersion`의 pipeline spec은 생성 후 변경할 수 없으므로 같은 commit을 재실행할 때 이미 존재하는 tag를 다시 빌드하거나 덮어쓰지 않고 registry manifest의 기존 digest를 재사용한다. 의존성이나 Containerfile을 바꿔 새 이미지를 만들어야 하면 source commit도 새로 생성한다.
+
+EventListener의 CEL interceptor는 `Authorization` header를 Secret과 상수 시간 비교한 뒤 Gitea push와 `main` branch 조건을 검사한다. 실제 토큰은 Kubernetes Secret과 Git server 설정에만 저장하고 문서나 Git 저장소에 기록하지 않는다.

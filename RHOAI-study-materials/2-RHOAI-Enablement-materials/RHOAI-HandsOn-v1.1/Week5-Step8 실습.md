@@ -3,7 +3,7 @@
 
 > 사전 활성화: [Week5 Step 7](<Week5-Step7 실습.md>)의 staging 추론 검증을 완료한다.
 
-Model Registry에서 승인 단계를 변경한 뒤 production에 승격한다. 단일 GPU 랩에서는 staging을 먼저 내리고 production을 배포한다. 마지막으로 Git rollback과 전체 실습 리소스 정리를 확인한다.
+Model Registry에서 승인 단계를 변경한 뒤 production에 승격한다. 단일 GPU 검증 환경에서는 staging을 먼저 내리고 production을 배포한다. 마지막으로 Git rollback과 전체 실습 리소스 정리를 확인한다.
 
 ### Registry 승인 상태 변경
 
