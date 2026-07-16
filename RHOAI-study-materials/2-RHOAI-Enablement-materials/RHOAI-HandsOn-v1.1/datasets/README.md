@@ -13,6 +13,7 @@
 | `iris/` | `export_iris.py` | 워크벤치 재생성 | `load_iris()` |
 | `guardrails/` | `pii_test_prompts.jsonl` (10건) | Day13 Guardrails 검증 | PII·유해·인젝션 + benign |
 | `_mnist_cache/` | `MNIST/raw/*` | Day4 PyTorch MNIST | torchvision MNIST 캐시 |
+| `llm-support-sft/` | `train.jsonl` (24건) | Week5 LLM LoRA MLOps | 합성 한국어 운영지원 대화 |
 
 ## 원본 데이터셋 링크 (connected 시 실제 데이터)
 

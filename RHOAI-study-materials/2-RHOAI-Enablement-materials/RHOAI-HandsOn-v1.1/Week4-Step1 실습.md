@@ -7,7 +7,35 @@
 
 ### Time-Slicing 설정 적용
 ```bash
-oc apply -f /tmp/python3/manifests/week4-gpu-sharing-config.yaml
+oc apply -f - <<'EOF'
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: week4-gpu-sharing
+  namespace: nvidia-gpu-operator
+data:
+  time-slicing-4: |-
+    version: v1
+    flags:
+      migStrategy: none
+    sharing:
+      timeSlicing:
+        renameByDefault: false
+        failRequestsGreaterThanOne: true
+        resources:
+          - name: nvidia.com/gpu
+            replicas: 4
+  mps-4: |-
+    version: v1
+    flags:
+      migStrategy: none
+    sharing:
+      mps:
+        renameByDefault: false
+        resources:
+          - name: nvidia.com/gpu
+            replicas: 4
+EOF
 
 oc patch clusterpolicy gpu-cluster-policy --type=merge \
   -p '{"spec":{"devicePlugin":{"config":{"name":"week4-gpu-sharing"}}}}'

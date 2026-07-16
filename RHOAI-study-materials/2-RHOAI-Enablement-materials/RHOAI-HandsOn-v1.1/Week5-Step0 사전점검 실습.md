@@ -1,7 +1,7 @@
 # RHOAI-3.4-HandsOn-커리큘럼-v1.1.xlsx 추가 스터디
 ## week 5 - LLM MLOps CI/CD 사전점검
 
-> 사전 활성화: [Week1 Day1&2](<Week1-Day1&2-환경구성.md>)의 AI Pipelines, Model Registry, KServe Standard, GPU/Trainer, Argo CD 구성을 확인하고 [Week3 Day11](<Week3-Day11 실습.md>)의 GPU를 정상화한다. Kueue를 사용할 경우 [Week3 Day12](<Week3-Day12 실습.md>)를 먼저 수행한다.
+> 사전 활성화: [Week1 Day1&2](<Week1-Day1&2-환경구성.md>)의 AI Pipelines, Model Registry, KServe Standard, GPU/Trainer 구성과 [Tekton CI/CD와 Argo CD GitOps 구성](<Week1-Day1&2-환경구성.md#tekton-cicd와-argo-cd-gitops-구성>)을 확인하고 [Week3 Day11](<Week3-Day11 실습.md>)의 GPU를 정상화한다. Kueue를 사용할 경우 [Week3 Day12](<Week3-Day12 실습.md>)를 먼저 수행한다.
 
 Tekton CI, KFP, Kubeflow Trainer v2, Model Registry, OpenShift GitOps와 KServe vLLM을 역할별로 연결한다. 운영형 흐름은 다음과 같다.
 
@@ -70,16 +70,19 @@ GPU allocatable은 최소 `1`이어야 한다. `OpenShift Pipelines`는 Step 2�
 
 ### 실습 자산 확인
 
-```bash
-ls /tmp/python3/manifests/week5-llm-mlops-*.yaml
-ls /tmp/python3/models/llm-mlops/
-ls /tmp/python3/datasets/llm-support-sft/train.jsonl
+공개 커리큘럼 저장소의 `RHOAI-HandsOn-v1.1` 디렉터리에서 실행한다. 다른 위치에서 실행한다면 `RHOAI_HANDSON_DIR`에 해당 디렉터리의 절대경로를 지정한다.
 
-python /tmp/python3/models/llm-mlops/validate_dataset.py \
-  /tmp/python3/datasets/llm-support-sft/train.jsonl
+```bash
+cd /tmp/python3
+export RHOAI_HANDSON_DIR="$PWD"
+test -d "$RHOAI_HANDSON_DIR/models/llm-mlops"
+test -f "$RHOAI_HANDSON_DIR/datasets/llm-support-sft/train.jsonl"
+
+python "$RHOAI_HANDSON_DIR/models/llm-mlops/validate_dataset.py" \
+  "$RHOAI_HANDSON_DIR/datasets/llm-support-sft/train.jsonl"
 ```
 
-예상 출력은 `valid_rows=24`다. 데이터는 운영 지원 질의응답 형식의 합성 데이터이며 고객정보를 포함하지 않는다.
+외부 `week5-*.yaml` 파일은 사용하지 않는다. 필요한 리소스 선언은 각 Step 문서의 heredoc에 포함되어 있다. 예상 출력은 `valid_rows=24`이며, 데이터는 운영 지원 질의응답 형식의 합성 데이터로 고객정보를 포함하지 않는다.
 
 ### 공식 문서
 
@@ -88,4 +91,3 @@ python /tmp/python3/models/llm-mlops/validate_dataset.py \
 - [RHOAI 3.4 Kubeflow Trainer v2](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html-single/working_with_distributed_workloads/working_with_distributed_workloads)
 - [RHOAI 3.4 KServe vLLM](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/deploying_models/deploying_models)
 - [OpenShift GitOps 1.21](https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/1.21/html/argo_cd_instance/argo-cd-cr-component-properties)
-

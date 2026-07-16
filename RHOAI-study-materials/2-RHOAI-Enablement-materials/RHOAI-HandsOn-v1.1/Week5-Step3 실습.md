@@ -19,13 +19,18 @@ PAT에는 두 저장소를 읽고 쓸 최소 권한만 부여한다.
 ### Source repository 작성
 
 ```bash
+cd /tmp/python3
+export RHOAI_HANDSON_DIR="$PWD"
+test -d "$RHOAI_HANDSON_DIR/models/llm-mlops"
+test -d "$RHOAI_HANDSON_DIR/datasets/llm-support-sft"
+
 rm -rf /tmp/week5-llm-source
 mkdir -p /tmp/week5-llm-source/models \
   /tmp/week5-llm-source/datasets
 
-cp -a /tmp/python3/models/llm-mlops \
+cp -a "$RHOAI_HANDSON_DIR/models/llm-mlops" \
   /tmp/week5-llm-source/models/
-cp -a /tmp/python3/datasets/llm-support-sft \
+cp -a "$RHOAI_HANDSON_DIR/datasets/llm-support-sft" \
   /tmp/week5-llm-source/datasets/
 
 cd /tmp/week5-llm-source
@@ -47,7 +52,9 @@ Git remote URL에 ID나 PAT를 포함하지 않는다. credential prompt에 입�
 ### GitOps repository skeleton 작성
 
 ```bash
-rm -rf /tmp/week5-llm-gitops /tmp/week5-serving-rendered.yaml
+rm -rf /tmp/week5-llm-gitops \
+  /tmp/week5-serving-template.yaml \
+  /tmp/week5-serving-rendered.yaml
 mkdir -p /tmp/week5-llm-gitops/pipelines \
   /tmp/week5-llm-gitops/environments/staging \
   /tmp/week5-llm-gitops/environments/production
@@ -62,6 +69,75 @@ EOF
 serving template를 환경별 JSON으로 렌더링한다. 초기 Kustomization에는 ServingRuntime만 넣고 InferenceService는 promotion Pipeline이 gate 통과 후 추가한다.
 
 ```bash
+cat > /tmp/week5-serving-template.yaml <<'EOF'
+apiVersion: serving.kserve.io/v1alpha1
+kind: ServingRuntime
+metadata:
+  name: vllm-cuda-runtime
+  namespace: <TARGET_NAMESPACE>
+  annotations:
+    opendatahub.io/recommended-accelerators: '["nvidia.com/gpu"]'
+    opendatahub.io/runtime-version: v0.18.0
+    openshift.io/display-name: Week 5 vLLM NVIDIA GPU Runtime
+  labels:
+    opendatahub.io/dashboard: "true"
+spec:
+  annotations:
+    opendatahub.io/kserve-runtime: vllm
+    prometheus.io/path: /metrics
+    prometheus.io/port: "8080"
+  containers:
+    - name: kserve-container
+      image: registry.redhat.io/rhaii/vllm-cuda-rhel9@sha256:ad06abf3bb5235ebb5b2df84cd1b9fd09e823f0ff2eebfc82bb4590275ccfe0b
+      command: [python, -m, vllm.entrypoints.openai.api_server]
+      args:
+        - --port=8080
+        - --model=/mnt/models
+        - --served-model-name={{.Name}}
+        - --max-model-len=2048
+        - --gpu-memory-utilization=0.85
+      env:
+        - name: HF_HOME
+          value: /tmp/hf_home
+      ports:
+        - containerPort: 8080
+          protocol: TCP
+  multiModel: false
+  supportedModelFormats:
+    - name: vLLM
+      autoSelect: true
+---
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: support-assistant-<TARGET_ENVIRONMENT>
+  namespace: <TARGET_NAMESPACE>
+  annotations:
+    serving.kserve.io/deploymentMode: Standard
+    serving.kserve.io/secretKey: aws-connection-llm-models
+    mlops.opendatahub.io/model-version: <RUN_ID>
+    mlops.opendatahub.io/deployment-stage: <TARGET_STAGE>
+spec:
+  predictor:
+    nodeSelector:
+      lab-role: gpu
+    model:
+      modelFormat:
+        name: vLLM
+      name: ""
+      runtime: vllm-cuda-runtime
+      storageUri: s3://rhoai-llm-mlops/models/support-assistant/<RUN_ID>/model
+      resources:
+        requests:
+          cpu: "4"
+          memory: 12Gi
+          nvidia.com/gpu: "1"
+        limits:
+          cpu: "8"
+          memory: 24Gi
+          nvidia.com/gpu: "1"
+EOF
+
 for ENV in staging production; do
   if [ "$ENV" = staging ]; then
     NS=rhoai-llm-staging
@@ -76,7 +152,7 @@ for ENV in staging production; do
     -e "s/<TARGET_ENVIRONMENT>/$ENV/g" \
     -e "s/<TARGET_STAGE>/$STAGE/g" \
     -e 's/<RUN_ID>/not-promoted/g' \
-    /tmp/python3/manifests/week5-llm-mlops-serving.yaml \
+    /tmp/week5-serving-template.yaml \
     > /tmp/week5-serving-rendered.yaml
 
   oc create --dry-run=client \
@@ -97,7 +173,8 @@ resources:
 EOF
 done
 
-rm -f /tmp/week5-serving-rendered.yaml
+rm -f /tmp/week5-serving-template.yaml \
+  /tmp/week5-serving-rendered.yaml
 oc kustomize /tmp/week5-llm-gitops/environments/staging >/dev/null
 oc kustomize /tmp/week5-llm-gitops/environments/production >/dev/null
 ```

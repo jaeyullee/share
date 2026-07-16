@@ -36,9 +36,9 @@ oc get clusterqueue gpu-team-a-cq gpu-team-b-cq -o yaml | \
 `lendingLimit: 1`은 각 Queue가 자기 nominal quota 2개 중 최소 1개를 유휴 상태로 보존한다는 뜻이다. 빌리는 쪽의 상한을 직접 제한하려면 `borrowingLimit`을 사용한다.
 
 ### Team A Job 4개 재제출
-```bash
-oc apply -f /tmp/python3/manifests/week4-team-a-borrow.yaml
+외부 YAML 대신 [Week4 Step 3의 Team A Job 4개 제출](<Week4-Step3 실습.md#team-a-job-4개-제출>)에 있는 heredoc 명령을 다시 실행한다.
 
+```bash
 oc get jobs -n gpu-team-a -w
 ```
 

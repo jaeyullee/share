@@ -31,8 +31,67 @@ EOF
 ### Argo CD Application 생성
 
 ```bash
-oc apply -f \
-  /tmp/python3/manifests/week5-llm-mlops-gitops.yaml
+oc apply -f - <<'EOF'
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: week5-llm-pipelines
+  namespace: openshift-gitops
+spec:
+  project: default
+  source:
+    repoURL: https://gitea.apps.sno.ocp422.com/hands-on/week5-llm-gitops.git
+    targetRevision: main
+    path: pipelines
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: rhoai-llm-mlops
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions: [CreateNamespace=false]
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: week5-llm-serving-production
+  namespace: openshift-gitops
+spec:
+  project: default
+  source:
+    repoURL: https://gitea.apps.sno.ocp422.com/hands-on/week5-llm-gitops.git
+    targetRevision: main
+    path: environments/production
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: rhoai-llm-production
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions: [CreateNamespace=false]
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: week5-llm-serving-staging
+  namespace: openshift-gitops
+spec:
+  project: default
+  source:
+    repoURL: https://gitea.apps.sno.ocp422.com/hands-on/week5-llm-gitops.git
+    targetRevision: main
+    path: environments/staging
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: rhoai-llm-staging
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions: [CreateNamespace=false]
+EOF
 
 oc get applications.argoproj.io -n openshift-gitops \
   | grep week5-llm
@@ -42,15 +101,7 @@ oc get applications.argoproj.io -n openshift-gitops \
 
 ### Tekton Pipeline과 Trigger 생성
 
-```bash
-oc apply -f \
-  /tmp/python3/manifests/week5-llm-mlops-tekton.yaml
-
-oc get pipeline -n rhoai-llm-mlops
-oc get eventlistener,triggerbinding,triggertemplate \
-  -n rhoai-llm-mlops
-oc get route week5-gitea-webhook -n rhoai-llm-mlops
-```
+[Week5 Step 4 Tekton 리소스 적용](<Week5-Step4-Tekton 리소스.md>)의 heredoc 블록을 실행한다. 외부 YAML 파일은 필요하지 않다.
 
 `week5-llm-ci`는 다음 순서로 동작한다.
 

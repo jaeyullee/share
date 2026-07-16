@@ -1,0 +1,12 @@
+{
+  "model": "support-assistant",
+  "messages": [
+    {
+      "role": "user",
+      "content": "워크벤치가 시작되지 않을 때 가장 먼저 무엇을 확인해야 하나요?"
+    }
+  ],
+  "max_tokens": 96,
+  "temperature": 0.1
+}
+

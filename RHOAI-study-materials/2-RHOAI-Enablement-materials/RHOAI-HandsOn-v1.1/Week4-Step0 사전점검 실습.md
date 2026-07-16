@@ -61,12 +61,16 @@ cat /tmp/week4-node-config-label-before
 두 파일은 Step 6의 원복에 사용하므로 실습이 끝날 때까지 삭제하지 않는다.
 
 ### 실습 파일 확인
+공개 커리큘럼 저장소의 `RHOAI-HandsOn-v1.1` 디렉터리에서 실행한다. 다른 위치에서 실행한다면 `RHOAI_HANDSON_DIR`에 해당 디렉터리의 절대경로를 지정한다.
+
 ```bash
-ls /tmp/python3/manifests/week4-*.yaml
-ls /tmp/python3/models/gpu_share_load.py
+cd /tmp/python3
+RHOAI_HANDSON_DIR="${RHOAI_HANDSON_DIR:-$PWD}"
+test -f "$RHOAI_HANDSON_DIR/models/gpu_share_load.py"
+python3 -m py_compile "$RHOAI_HANDSON_DIR/models/gpu_share_load.py"
 ```
 
-추가 dataset과 학습 모델은 필요하지 않다. `gpu_share_load.py`가 PyTorch 행렬 연산으로 일정한 CUDA 부하를 만든다.
+외부 `week4-*.yaml` 파일은 사용하지 않는다. 필요한 리소스 선언은 각 Step 문서의 heredoc에 포함되어 있다. 추가 dataset과 학습 모델은 필요하지 않으며, `gpu_share_load.py`가 PyTorch 행렬 연산으로 일정한 CUDA 부하를 만든다.
 
 ### 공식 문서
 - [Red Hat OpenShift AI 3.4 - Working with accelerators](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/pdf/working_with_accelerators/Red_Hat_OpenShift_AI_Self-Managed-3.4-Working_with_accelerators-en-US.pdf)

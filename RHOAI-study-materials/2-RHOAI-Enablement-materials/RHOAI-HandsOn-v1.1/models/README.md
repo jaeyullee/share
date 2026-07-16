@@ -8,10 +8,13 @@
 |---|---|---|---|
 | `train_iris_sklearn.py` | `iris/model.joblib` | MLServer(sklearn) | 3, 6 |
 | `train_fraud_sklearn.py` | `fraud/model.joblib` | MLServer(sklearn) | 5 |
+| `train_fraud_sklearn_v2.py` | `fraud-v2/model.joblib` | MLServer(sklearn) | 5 |
 | `train_jukebox_onnx.py` | `jukebox/1/model.onnx` (+labels) | OVMS(ONNX) | 4, 8 (AI500 재현) |
 | `train_mnist_pytorch.py` | `mnist/1/model.onnx` | OVMS(ONNX) | 4 |
 | `train_tf_savedmodel.py` | `tf-fraud/1/` (SavedModel) | KServe tensorflow | 4 |
 | `llm-serving-models.md` | (HF 링크) | vLLM(GPU) | 14 |
+| `gpu_share_load.py` | 지속적인 PyTorch CUDA 행렬 연산 | GPU 공유 부하 Job | Week 4 추가 스터디 |
+| `llm-mlops/` | LoRA training image, Trainer v2 제출, KFP compile와 Registry 등록 | Trainer v2 + vLLM | Week 5 추가 스터디 |
 
 ## 실행 위치와 산출물 경로
 
@@ -50,4 +53,6 @@ mc cp --recursive jukebox/ m/rhoai-models/jukebox/
 - sklearn 스크립트: 워크벤치 기본 이미지로 충분(scikit-learn, joblib, pandas).
 - `train_jukebox_onnx.py`: `tensorflow`, `tf2onnx`, `onnx` 필요(스크립트 상단 주석).
 - `train_mnist_pytorch.py`: `torch`, `torchvision`, `onnx`.
-- 전부 **CPU 동작**(jukebox/mnist는 학습도 CPU로 수 분 내).
+- `gpu_share_load.py`: CUDA가 활성화된 `torch`. 산출물 없이 GPU 공유/queue 동작을 관찰하는 부하를 생성한다.
+- `llm-mlops/`: RHOAI CUDA training image를 기반으로 S3의 Qwen2.5 0.5B와 합성 JSONL을 LoRA 학습하고 merged model을 등록한다. `boto3==1.40.18`은 폐쇄망 Nexus에 먼저 반입한다.
+- 기존 학습/변환 스크립트는 **CPU 동작**(jukebox/mnist도 수 분 내)이며, `gpu_share_load.py`만 CUDA GPU가 필요하다.

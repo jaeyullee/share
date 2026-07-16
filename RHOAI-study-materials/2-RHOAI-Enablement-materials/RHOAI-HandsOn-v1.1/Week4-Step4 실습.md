@@ -7,7 +7,63 @@ Team B가 GPU Job 2개를 제출하면 자신의 nominal quota를 사용 중인 
 
 ### Team B Job 제출
 ```bash
-oc apply -f /tmp/python3/manifests/week4-team-b-reclaim.yaml
+oc apply -f - <<'EOF'
+apiVersion: v1
+kind: List
+items:
+  - apiVersion: batch/v1
+    kind: Job
+    metadata:
+      name: team-b-gpu-1
+      namespace: gpu-team-b
+      labels: &job-labels
+        app.kubernetes.io/name: week4-gpu-load
+        week4.rhoai/team: b
+        kueue.x-k8s.io/queue-name: team-lq
+        kueue.x-k8s.io/priority-class: week4-owner
+    spec: &job-spec
+      suspend: true
+      backoffLimit: 0
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: week4-gpu-load
+            week4.rhoai/team: b
+        spec:
+          restartPolicy: Never
+          nodeSelector:
+            lab-role: gpu
+          containers:
+            - name: gpu-load
+              image: 192.168.10.50:5010/rhaii/vllm-cuda-rhel9:rhoai-3.4
+              command: [python3, /opt/week4/gpu_share_load.py]
+              env:
+                - name: DURATION_SECONDS
+                  value: "1800"
+                - name: MATRIX_SIZE
+                  value: "2048"
+              resources:
+                requests:
+                  cpu: 250m
+                  memory: 1Gi
+                limits:
+                  nvidia.com/gpu: "1"
+              volumeMounts:
+                - name: load-script
+                  mountPath: /opt/week4
+                  readOnly: true
+          volumes:
+            - name: load-script
+              configMap:
+                name: week4-gpu-load
+  - apiVersion: batch/v1
+    kind: Job
+    metadata:
+      name: team-b-gpu-2
+      namespace: gpu-team-b
+      labels: *job-labels
+    spec: *job-spec
+EOF
 ```
 
 두 ClusterQueue에는 `reclaimWithinCohort: Any`가 설정되어 있다. 따라서 Team B workload가 자신의 nominal quota 안에 들어오면 Kueue는 Team A가 Team B quota에서 빌려 실행 중인 workload를 회수할 수 있다.

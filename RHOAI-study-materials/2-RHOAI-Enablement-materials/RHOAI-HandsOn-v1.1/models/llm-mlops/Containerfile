@@ -1,0 +1,15 @@
+FROM 192.168.10.50:5000/ocp-mirror/rhoai/odh-th06-cuda130-torch210-py312-rhel9@sha256:6f6eeb1eb7923fe3212cf7de043b7980bec9099b518cbeb95c5fe9d83af954bf
+
+ARG PIP_INDEX_URL=http://192.168.10.50:8081/repository/pypi-hosted/simple
+
+USER 0
+RUN python -m pip install --no-cache-dir \
+      --index-url "${PIP_INDEX_URL}" \
+      --trusted-host 192.168.10.50 \
+      boto3==1.40.18
+
+COPY validate_dataset.py train_lora.py submit_trainjob.py register_model.py /opt/llm-mlops/
+RUN chmod 0555 /opt/llm-mlops/*.py
+
+USER 1001
+WORKDIR /opt/llm-mlops

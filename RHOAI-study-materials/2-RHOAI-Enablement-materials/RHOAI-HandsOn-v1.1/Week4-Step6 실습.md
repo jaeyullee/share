@@ -32,8 +32,9 @@ oc get clusterqueue gpu-team-a-cq gpu-team-b-cq \
 `COHORT`가 비어 있으면 두 Queue는 서로 quota를 빌려주지 않는다.
 
 ### Team A Job 4개 재제출
+외부 YAML 대신 [Week4 Step 3의 Team A Job 4개 제출](<Week4-Step3 실습.md#team-a-job-4개-제출>)에 있는 heredoc 명령을 다시 실행한다.
+
 ```bash
-oc apply -f /tmp/python3/manifests/week4-team-a-borrow.yaml
 oc get jobs -n gpu-team-a -w
 ```
 
@@ -60,7 +61,11 @@ oc delete jobs -n gpu-team-a \
 oc delete jobs -n gpu-team-b \
   -l app.kubernetes.io/name=week4-gpu-load --ignore-not-found
 
-oc delete -f /tmp/python3/manifests/week4-kueue-cohort.yaml \
+oc delete namespace gpu-team-a gpu-team-b --ignore-not-found
+oc delete clusterqueue gpu-team-a-cq gpu-team-b-cq --ignore-not-found
+oc delete cohort week4-gpu-cohort --ignore-not-found
+oc delete resourceflavor week4-shared-gpu --ignore-not-found
+oc delete workloadpriorityclass week4-borrower week4-owner \
   --ignore-not-found
 ```
 

@@ -59,10 +59,12 @@ podman login --tls-verify=false \
 
 REGISTRY_AUTH_FILE=/tmp/week5-model-auth.json \
 oc image extract --confirm \
-  --path /models:/tmp/week5-qwen-base \
+  --path /models/:/tmp/week5-qwen-base \
   192.168.10.50:5010/models/qwen2.5-0.5b-instruct:7ae5576
 
 find /tmp/week5-qwen-base -maxdepth 2 -type f | sort
+test -s /tmp/week5-qwen-base/config.json
+test -s /tmp/week5-qwen-base/model.safetensors
 ```
 
 `config.json`, tokenizer 파일과 safetensors가 있어야 한다. `/models` 아래에 한 단계 디렉터리가 더 생겼다면 실제 모델 파일이 있는 디렉터리를 다음 `BASE_DIR`로 지정한다.
@@ -70,6 +72,11 @@ find /tmp/week5-qwen-base -maxdepth 2 -type f | sort
 ### S3에 버전 고정
 
 ```bash
+cd /tmp/python3
+
+export RHOAI_HANDSON_DIR="$PWD"
+test -f "$RHOAI_HANDSON_DIR/datasets/llm-support-sft/train.jsonl"
+
 mc alias set truenas http://192.168.20.5:9000 \
   '<MINIO_ID>' '<MINIO_PW>'
 
@@ -79,7 +86,7 @@ BASE_DIR=/tmp/week5-qwen-base
 mc mirror --overwrite "$BASE_DIR" \
   truenas/rhoai-llm-mlops/base/qwen2.5-0.5b-instruct/
 
-mc cp /tmp/python3/datasets/llm-support-sft/train.jsonl \
+mc cp "$RHOAI_HANDSON_DIR/datasets/llm-support-sft/train.jsonl" \
   truenas/rhoai-llm-mlops/datasets/support/v1/train.jsonl
 
 mc ls --recursive truenas/rhoai-llm-mlops/base/qwen2.5-0.5b-instruct/
@@ -91,7 +98,7 @@ rm -f /tmp/week5-model-auth.json
 ### 재현성 기록
 
 ```bash
-sha256sum /tmp/python3/datasets/llm-support-sft/train.jsonl
+sha256sum "$RHOAI_HANDSON_DIR/datasets/llm-support-sft/train.jsonl"
 mc stat --json \
   truenas/rhoai-llm-mlops/datasets/support/v1/train.jsonl | jq .
 ```

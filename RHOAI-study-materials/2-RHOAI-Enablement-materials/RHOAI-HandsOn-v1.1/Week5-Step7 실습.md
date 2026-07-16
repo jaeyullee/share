@@ -97,9 +97,11 @@ oc port-forward -n rhoai-llm-staging \
 다른 Bastion 터미널에서 실행한다.
 
 ```bash
+cd /tmp/python3
+export RHOAI_HANDSON_DIR="$PWD"
 curl -sS -H 'Content-Type: application/json' \
   http://127.0.0.1:18090/v1/chat/completions \
-  -d @/tmp/python3/models/llm-mlops/inference-request.json | \
+  -d @"$RHOAI_HANDSON_DIR/models/llm-mlops/inference-request.json" | \
   jq '{id,model,answer:.choices[0].message.content,usage}'
 ```
 
