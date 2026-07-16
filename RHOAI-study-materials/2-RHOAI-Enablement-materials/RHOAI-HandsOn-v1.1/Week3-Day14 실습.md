@@ -289,10 +289,21 @@ oc rollout status deployment/maas-postgresql -n rhoai-maas-db --timeout=300s
 실습 DB는 cluster 내부 plain connection을 사용하지만 운영 환경은 TLS와 `sslmode=require`를 사용한다.
 
 ```bash
+DB_URL_FILE=$(mktemp)
+chmod 600 "$DB_URL_FILE"
+
+# DB 배포에 사용한 Secret에서 같은 ID/PW를 읽어 URL-encode하므로 값 불일치를 방지한다.
+oc get secret maas-postgresql -n rhoai-maas-db -o json | jq -r '
+  "postgresql://\(.data["database-user"] | @base64d | @uri):\(.data["database-password"] | @base64d | @uri)@maas-postgresql.rhoai-maas-db.svc:5432/\(.data["database-name"] | @base64d | @uri)?sslmode=disable"
+' > "$DB_URL_FILE"
+
 oc create secret generic maas-db-config \
   -n redhat-ods-applications \
-  --from-literal=DB_CONNECTION_URL='postgresql://<MAAS_DB_ID>:<MAAS_DB_PW>@maas-postgresql.rhoai-maas-db.svc:5432/maas?sslmode=disable' \
+  --from-file="DB_CONNECTION_URL=$DB_URL_FILE" \
   --dry-run=client -o yaml | oc apply -f -
+
+rm -f "$DB_URL_FILE"
+unset DB_URL_FILE
 ```
 
 ### Gateway API 준비
@@ -572,14 +583,74 @@ oc get maasmodelref qwen-small -n jukebox -o yaml
 ```
 
 ### Subscription과 authorization policy 생성
-실제 계정명 대신 실습용 OpenShift Group을 사용한다.
+MaaS API key를 발급할 일반 OpenShift OAuth 사용자를 HTPasswd identity provider에 추가한다. 기존 provider가 있으면 HTPasswd 파일을 추출해 다른 계정을 보존하고, 없으면 Secret과 provider를 처음 생성한다. 비밀번호는 문서나 shell history에 직접 기록하지 않고 대화형 입력으로만 받는다.
 
 ```bash
-oc adm groups new rhoai-maas-lab
-oc adm groups add-users rhoai-maas-lab '<실습_사용자_ID>'
+command -v htpasswd >/dev/null || sudo dnf install -y httpd-tools
+
+MAAS_USER='rhoai-maas-lab-user'
+read -rsp 'MaaS lab user password: ' MAAS_PASSWORD
+echo
+
+HTPASSWD_SECRET=$(oc get oauth cluster \
+  -o jsonpath='{.spec.identityProviders[?(@.type=="HTPasswd")].htpasswd.fileData.name}')
+HTPASSWD_PROVIDER_EXISTS=false
+if test -n "$HTPASSWD_SECRET"; then
+  HTPASSWD_PROVIDER_EXISTS=true
+else
+  HTPASSWD_SECRET=htpass-secret
+fi
+
+HTPASSWD_DIR=$(mktemp -d)
+if oc get "secret/$HTPASSWD_SECRET" -n openshift-config >/dev/null 2>&1; then
+  oc extract "secret/$HTPASSWD_SECRET" -n openshift-config \
+    --to="$HTPASSWD_DIR" --confirm
+else
+  touch "$HTPASSWD_DIR/htpasswd"
+fi
+
+htpasswd -B -b "$HTPASSWD_DIR/htpasswd" "$MAAS_USER" "$MAAS_PASSWORD"
+
+if oc get "secret/$HTPASSWD_SECRET" -n openshift-config >/dev/null 2>&1; then
+  oc set data "secret/$HTPASSWD_SECRET" -n openshift-config \
+    --from-file="htpasswd=$HTPASSWD_DIR/htpasswd"
+else
+  oc create secret generic "$HTPASSWD_SECRET" -n openshift-config \
+    --from-file="htpasswd=$HTPASSWD_DIR/htpasswd"
+fi
+rm -rf "$HTPASSWD_DIR"
+
+# HTPasswd provider가 없던 클러스터에서는 기존 provider 배열을 보존해 추가한다.
+if test "$HTPASSWD_PROVIDER_EXISTS" = false; then
+  OAUTH_PATCH=$(oc get oauth cluster -o json | jq -c \
+    --arg secret "$HTPASSWD_SECRET" \
+    '{spec:{identityProviders:((.spec.identityProviders // []) + [{
+      name:"htpasswd",
+      mappingMethod:"claim",
+      type:"HTPasswd",
+      htpasswd:{fileData:{name:$secret}}
+    }])}}')
+  oc patch oauth cluster --type=merge -p "$OAUTH_PATCH"
+fi
+
+oc get oauth cluster \
+  -o jsonpath='{range .spec.identityProviders[*]}{.name}{"\t"}{.type}{"\n"}{end}'
+
+# 관리자 kubeconfig를 바꾸지 않고 별도 kubeconfig로 새 사용자의 로그인을 확인한다.
+OCP_API=$(oc whoami --show-server)
+MAAS_KUBECONFIG=/tmp/day14-maas-user.kubeconfig
+rm -f "$MAAS_KUBECONFIG"
+KUBECONFIG="$MAAS_KUBECONFIG" oc login "$OCP_API" \
+  -u "$MAAS_USER" -p "$MAAS_PASSWORD"
+KUBECONFIG="$MAAS_KUBECONFIG" oc whoami
+
+# Subscription과 policy는 개인 계정보다 실습용 Group을 대상으로 연결한다.
+oc adm groups new rhoai-maas-lab 2>/dev/null || true
+oc adm groups add-users rhoai-maas-lab "$MAAS_USER"
+oc get group rhoai-maas-lab -o yaml
 ```
 
-API key를 생성할 실제 OpenShift 사용자를 group에 추가한다. `kube:admin`처럼 `:`가 포함된 system username 대신 일반 실습 계정을 사용하는 편이 단순하다.
+`kube:admin`처럼 `:`가 포함된 system username 대신 위에서 만든 일반 OAuth 계정을 사용한다. HTPasswd Secret 변경이 OAuth server에 반영되기까지 잠시 걸리면 몇 초 뒤 `oc login`을 다시 실행한다.
 
 ```bash
 oc apply -f - <<'EOF'
@@ -624,10 +695,10 @@ Subscription만 있고 authorization policy가 없으면 `403`, authorization po
 `owner.groups`와 `subjects.groups`의 항목은 `{name: <GROUP>}` 객체지만, 특정 사용자를 직접 지정하는 `owner.users`와 `subjects.users`의 항목은 사용자명 문자열이다.
 
 ### API key와 OpenAI 호환 API 검증
-RHOAI 대시보드에서 발급하거나 `/maas-api/v1/api-keys`로 직접 생성한다. API key 원문은 생성 응답에서 한 번만 반환되므로 파일이나 문서에 저장하지 않고 현재 shell 변수로만 사용한다. 아래 명령은 일반 OpenShift OAuth 사용자로 로그인한 shell에서 실행한다. 클라이언트 인증서 기반 관리자 kubeconfig는 `oc whoami -t`로 token을 반환하지 않는다.
+RHOAI 대시보드에서 발급하거나 `/maas-api/v1/api-keys`로 직접 생성한다. API key 원문은 생성 응답에서 한 번만 반환되므로 파일이나 문서에 저장하지 않고 현재 shell 변수로만 사용한다. 아래 명령은 앞에서 만든 일반 OpenShift OAuth 사용자의 임시 kubeconfig에서 token을 가져온다. 클라이언트 인증서 기반 관리자 kubeconfig는 `oc whoami -t`로 token을 반환하지 않는다.
 
 ```bash
-OPENSHIFT_TOKEN=$(oc whoami -t)
+OPENSHIFT_TOKEN=$(KUBECONFIG="$MAAS_KUBECONFIG" oc whoami -t)
 
 API_KEY_RESPONSE=$(curl -sk -X POST \
   https://maas.apps.sno.ocp422.com/maas-api/v1/api-keys \
@@ -656,7 +727,10 @@ curl -sk -o /dev/null -w '%{http_code}\n' \
   -H "Authorization: Bearer $MAAS_API_KEY" \
   https://maas.apps.sno.ocp422.com/maas-api/v1/models
 
+rm -f "$MAAS_KUBECONFIG"
 unset API_KEY_RESPONSE MAAS_API_KEY MAAS_API_KEY_ID OPENSHIFT_TOKEN
+unset MAAS_PASSWORD MAAS_KUBECONFIG OCP_API OAUTH_PATCH
+unset HTPASSWD_SECRET HTPASSWD_DIR HTPASSWD_PROVIDER_EXISTS
 ```
 
 2026-07-12 검증에서는 key 생성 `201`, 모델 목록 `200`, Qwen chat completion `200`, key 폐기 `200`, 폐기된 key 재사용 `403`을 확인했다.

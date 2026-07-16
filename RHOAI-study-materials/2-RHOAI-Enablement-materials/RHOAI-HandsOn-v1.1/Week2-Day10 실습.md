@@ -371,7 +371,39 @@ oc kustomize . >/tmp/day10-rendered.yaml
 oc apply --dry-run=server -f /tmp/day10-rendered.yaml
 ```
 
-검토 후 저장소에 push한다. 인증정보는 remote URL에 직접 넣지 않는다.
+검토 후 저장소에 push한다. 인증정보는 remote URL에 직접 넣지 않는다. 이 홈랩의 Gitea는 별도 Route 인증서를 지정하지 않고 OCP 기본 Ingress 인증서를 사용하므로, Router가 제시하는 leaf 인증서가 아니라 이를 서명한 Ingress CA를 추출해 검증에 사용한다.
+
+```bash
+GITEA_HOST=$(oc get route gitea -n gitea -o jsonpath='{.spec.host}')
+TLS_WORKDIR=$(mktemp -d)
+
+oc get secret router-certs-default -n openshift-ingress -o json |
+  jq -r '.data["tls.crt"]' | base64 -d \
+  > "$TLS_WORKDIR/router-chain.pem"
+
+# Router 인증서 체인에서 CA:TRUE인 인증서만 분리한다.
+awk -v dir="$TLS_WORKDIR" '
+  /-----BEGIN CERTIFICATE-----/ {cert=""}
+  {cert=cert $0 ORS}
+  /-----END CERTIFICATE-----/ {
+    n++
+    file=dir "/cert-" n ".pem"
+    printf "%s", cert > file
+    close(file)
+  }
+' "$TLS_WORKDIR/router-chain.pem"
+
+: > "$TLS_WORKDIR/ingress-ca.pem"
+for cert in "$TLS_WORKDIR"/cert-*.pem; do
+  if openssl x509 -in "$cert" -noout -text | grep -q 'CA:TRUE'; then
+    cat "$cert" >> "$TLS_WORKDIR/ingress-ca.pem"
+  fi
+done
+
+test -s "$TLS_WORKDIR/ingress-ca.pem"
+openssl x509 -in "$TLS_WORKDIR/ingress-ca.pem" \
+  -noout -subject -issuer -dates
+```
 
 ```bash
 git init
@@ -380,13 +412,36 @@ git commit -m 'Manage Day 10 KFP model rollout'
 git branch -M main
 git remote add origin \
   https://gitea.apps.sno.ocp422.com/hands-on/day10.git
-# 검증 환경의 Gitea Route가 사설 CA를 사용하므로 이 push 한 번에만
-# 인증서 검증을 비활성화한다. CA를 Bastion trust store에 등록했다면
-# 일반 git push를 사용한다.
-git -c http.sslVerify=false push -u origin main
+git -c http.sslCAInfo="$TLS_WORKDIR/ingress-ca.pem" \
+  push -u origin main
 ```
 
+### OCP Ingress CA를 Argo CD에 등록
+Argo CD는 HTTPS Git 서버의 사용자 인증과 TLS 서버 인증을 별도로 처리한다. 다음 명령은 OCP Ingress CA를 Gitea 호스트 이름의 값으로 `argocd-tls-certs-cm`에 추가한다. 인증서 검증을 끄는 `insecure` 설정은 사용하지 않는다.
+
+```bash
+TLS_PATCH=$(jq -n \
+  --arg host "$GITEA_HOST" \
+  --rawfile ca "$TLS_WORKDIR/ingress-ca.pem" \
+  '{data:{($host):$ca}}')
+
+oc patch configmap argocd-tls-certs-cm \
+  -n openshift-gitops --type=merge -p "$TLS_PATCH"
+
+oc rollout restart deployment/openshift-gitops-repo-server \
+  -n openshift-gitops
+oc rollout status deployment/openshift-gitops-repo-server \
+  -n openshift-gitops --timeout=180s
+
+oc get configmap argocd-tls-certs-cm -n openshift-gitops \
+  -o json | jq -r '.data | keys[]'
+```
+
+출력에 `gitea.apps.sno.ocp422.com`이 있어야 한다. 동일 Gitea 서버의 다른 저장소에도 이 CA 신뢰 설정이 공통 적용된다. OCP 기본 Ingress CA가 교체되면 같은 절차로 값을 갱신한다. Argo CD 공식 문서도 자체 서명 또는 사설 CA를 사용하는 HTTPS 저장소에는 서버 인증서나 발급 CA를 `argocd-tls-certs-cm`에 등록하는 방식을 권장한다: [Argo CD Private Repositories](https://argo-cd.readthedocs.io/en/latest/user-guide/private-repositories/#self-signed--untrusted-tls-certificates)
+
 ### 비공개 Git 저장소 인증 Secret
+Gitea 사용자 설정의 `Applications`에서 `read:repository` 권한만 가진 PAT를 발급한다. PAT 값은 생성 직후 한 번만 확인할 수 있으므로 `<GITEA_PAT>` 자리에 직접 입력하고 문서나 Git 저장소에는 기록하지 않는다.
+
 ```bash
 oc apply -f - <<'EOF'
 apiVersion: v1
@@ -402,11 +457,10 @@ stringData:
   url: https://gitea.apps.sno.ocp422.com/hands-on/day10.git
   username: <GITEA_ID>
   password: <GITEA_PAT>
-  insecure: "true"
 EOF
 ```
 
-랩의 Gitea Route가 사설 CA를 사용하므로 `insecure: "true"`로 시작한다. 운영에서는 Gitea CA를 Argo CD trust store에 추가한다.
+CA는 ConfigMap, 사용자 인증정보는 Secret으로 분리된다. Secret에서 `insecure` 필드가 없어야 TLS 인증서 검증이 유지된다.
 
 ### Argo CD Application 생성
 처음에는 `prune: false`로 두고 관리 범위를 확인한다.
@@ -442,6 +496,23 @@ oc get applications.argoproj.io jukebox-serving \
 
 `SYNC=Synced`, `HEALTH=Healthy`가 되면 `Ctrl+C`로 종료한다.
 
+`SYNC=Unknown`이 계속되면 조건과 repo-server 로그를 확인한다.
+
+```bash
+oc get applications.argoproj.io jukebox-serving -n openshift-gitops \
+  -o json | jq '{sync:.status.sync.status,
+    health:.status.health.status,
+    conditions:(.status.conditions // [])}'
+
+oc logs deployment/openshift-gitops-repo-server \
+  -n openshift-gitops --tail=200 | \
+  grep -E 'x509|Unauthorized|authentication required|failed to list refs'
+```
+
+- `x509: certificate signed by unknown authority`: Gitea 호스트 키 또는 Ingress CA 등록을 다시 확인한다.
+- `authentication required: Unauthorized`: repository Secret의 URL, ID, PAT와 PAT의 `read:repository` 권한을 확인한다.
+- 정상 상태에서는 `conditions`가 빈 배열이고 Application과 세 관리 리소스가 모두 `Synced/Healthy`다.
+
 ### GitOps 동작과 self-heal 검증
 1. Git의 Route weight를 `0:100`에서 `50:50`으로 변경하고 push한다.
 2. Argo CD가 클러스터 Route를 `50:50`으로 변경하는지 확인한다.
@@ -449,6 +520,11 @@ oc get applications.argoproj.io jukebox-serving \
 4. `selfHeal`이 Git의 `50:50`으로 복구하는지 확인한다.
 
 ```bash
+# Route 선언을 수정한 Git 작업 디렉터리에서 실행한다.
+git add fraud-kfp-route.json
+git commit -m 'Change Day 10 route weight to 50:50'
+git -c http.sslCAInfo="$TLS_WORKDIR/ingress-ca.pem" push
+
 # Git push 후 기본 refresh 주기를 기다리거나 즉시 새 revision을 확인시킨다.
 oc annotate applications.argoproj.io jukebox-serving \
   -n openshift-gitops argocd.argoproj.io/refresh=hard --overwrite
@@ -463,6 +539,11 @@ oc get applications.argoproj.io jukebox-serving -n openshift-gitops -w
 ```
 
 Self-heal 후 Route가 Git 선언값으로 복구되면 완료다.
+
+```bash
+rm -rf "$TLS_WORKDIR"
+unset TLS_WORKDIR TLS_PATCH GITEA_HOST
+```
 
 > Application을 삭제해도 `prune: false`이고 리소스 삭제 finalizer가 없으면 기존 InferenceService와 Route는 자동 삭제되지 않는다.
 

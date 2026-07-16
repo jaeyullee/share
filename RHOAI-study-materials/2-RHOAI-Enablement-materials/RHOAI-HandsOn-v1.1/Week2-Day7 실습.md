@@ -366,12 +366,13 @@ Pipeline을 UI 또는 CLI로 업로드한 뒤 RHOAI 대시보드에서 Run을 �
 각 Run이 완료되면 다음 순서로 metric과 실행 시간을 확인한다.
 
 1. 왼쪽 메뉴에서 `Develop & train` -> `Pipelines` -> `Runs`로 이동한다.
-2. 프로젝트로 `jukebox`를 선택하고 `Active runs` 탭을 연다.
+2. 프로젝트로 `jukebox`를 선택하고 Run 목록을 확인한다. `Active runs`라는 별도 탭은 없다.
 3. `Run group` 열 또는 필터에서 `Default`에 속한 Run을 확인한다.
 4. 비교할 `fraud-n20`, `fraud-n100`, `fraud-n200`의 체크박스를 선택한다. 새 version을 재검증하는 경우에는 이름을 구분한 `fraud-v3-n20`, `fraud-v3-n100`, `fraud-v3-n200`을 선택한다.
 5. 목록 상단의 `Compare runs`를 클릭한다.
-6. 비교 화면에서 scalar metric인 `accuracy`, `roc_auc`와 Run별 실행 시간을 비교한다.
-7. 개별 Run 이름을 열어 그래프의 `evaluate` 단계를 선택하면 `Output artifacts`의 `metrics` metadata에서도 같은 값을 확인할 수 있다.
+6. 비교 화면에서 parameter와 Run별 실행 시간을 비교한다. RHOAI 3.4 대시보드가 scalar metric을 표시하면 `accuracy`, `roc_auc`도 비교하되, 값이 `-`이면 아래 S3 Artifact 확인 결과를 사용한다.
+
+RHOAI 3.4의 Run 그래프는 ML Metadata DB에 custom property가 저장돼 있어도 `evaluate`의 `metrics`와 `train`의 `model_out` metadata를 `-`로 표시할 수 있다. 따라서 UI의 `-`를 이전 Pipeline version 또는 실행 실패로 판정하지 않는다.
 
 현재 Pipeline은 원본 S3 객체를 매번 다시 확인하도록 importer에 `reimport=True`를 사용하므로, Run마다 새로운 입력 Artifact가 생성되어 `preprocess`도 다시 실행될 수 있다. `n_estimators`가 달라진 `train`과 새 모델을 입력받는 `evaluate`는 반드시 다시 실행된다.
 
@@ -382,7 +383,7 @@ oc get pods -n jukebox | grep fraud-training
 mc ls --recursive truenas/rhoai-pipelines | tail -30
 ```
 
-정상 실행 시 `preprocess -> train -> evaluate`가 모두 성공하고 Run 비교 화면과 `evaluate`의 `metrics` metadata에 `accuracy`, `roc_auc`가 표시된다. `train` 단계의 `model_out`에는 `algorithm`, `n_estimators`, `random_state`, `sha256` metadata도 표시되어야 한다. 값이 `-`이거나 model metadata가 없으면 이전 Pipeline version을 실행한 것이므로 `lineage-metadata-v3` 이후 version인지 확인한다. 검증 환경의 기본 실행 결과는 `train=4000`, `test=1000`, `accuracy=0.973`, `roc_auc=0.708`이었다.
+정상 실행 시 `preprocess -> train -> evaluate`가 모두 성공하고 S3에 `model_out`과 `metrics` Artifact가 생성된다. metric 값은 Day8의 `KFP metric artifact 확인` 절에서 Run ID로 S3 경로를 찾은 뒤 `mc cat`으로 확인한다. `model_out`의 SHA-256도 S3 객체를 직접 계산하고 Day8에서 Model Registry custom property로 기록한다. 검증 환경의 `n_estimators=20` 결과는 `accuracy=0.971`, `roc_auc=0.660915`, `n_estimators=200` 결과는 `accuracy=0.973`, `roc_auc=0.745676`이었다.
 
 ### Day8에서 사용할 baseline과 candidate 확정
 Day8은 Day5 모델을 다시 사용하지 않는다. 이 실습에서는 Day7의 성공한 KFP Run 중 `fraud-n20`을 v1 baseline, `fraud-n200`을 v2 candidate로 고정한다. 이는 모델 lineage와 배포 전환을 관찰하기 위한 선택이며, estimator 수가 많은 모델이 항상 더 우수하다는 의미는 아니다.
