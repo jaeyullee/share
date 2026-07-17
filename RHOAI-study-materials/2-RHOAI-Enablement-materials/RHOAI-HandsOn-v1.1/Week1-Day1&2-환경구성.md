@@ -1,6 +1,8 @@
 # 오퍼레이터 설치
 
-## 오퍼레이터 준비/미러링 (홈서버 RHOAI 기능 테스트 기준, 기능별 설치는 해당 Day에서 진행)
+> **환경별 재확인**: OCP/RHOAI 버전, mirror registry 주소, CatalogSource, StorageClass, node label과 네트워크 경로는 검증 환경 값이다. 다른 클러스터에서는 대응 값을 먼저 확인한다. 공통 경계 조건은 [실습자료 검토 항목](<00-실습자료-검토항목.md#환경별-재확인>)을 참고한다.
+
+## 오퍼레이터 준비/미러링 (disconnected 검증 환경 기준, 기능별 설치는 해당 Day에서 진행)
 
 공식 문서: [Deploy OpenShift AI in a disconnected environment](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html-single/installing_and_uninstalling_openshift_ai_self-managed_in_a_disconnected_environment/)
 

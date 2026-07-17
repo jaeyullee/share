@@ -1,6 +1,8 @@
 # RHOAI-3.4-HandsOn-커리큘럼-v1.1.xlsx 추가 스터디
 ## week 5 - Step 1 폐쇄망 LLM artifact 준비
 
+> **환경별 재확인**: model registry, Nexus와 S3 endpoint, bucket/prefix, base image digest와 반입 가능한 Python package version은 환경마다 다르다. 다운로드·반입 전에 실제 값을 확인한다. 공통 경계 조건은 [실습자료 검토 항목](<00-실습자료-검토항목.md#환경별-재확인>)을 참고한다.
+
 > 사전 활성화: [Week5 Step 0 사전점검](<Week5-Step0 사전점검 실습.md>)을 완료한다.
 
 훈련 입력인 base model과 dataset을 S3에 버전 고정하고, 커스텀 training image가 추가로 설치할 `boto3` wheel을 Nexus에 준비한다.

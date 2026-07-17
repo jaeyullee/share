@@ -1,6 +1,8 @@
 # RHOAI-3.4-HandsOn-커리큘럼-v1.1.xlsx 실습
 ## week 3 - Day11
 
+> **환경별 재확인**: GPU 모델, PCI 주소, VMID, IOMMU/VFIO, GPU Operator channel과 CatalogSource는 검증 환경 값이다. 설치 전에 대상 노드의 실제 장치와 지원 조합을 확인한다. 공통 경계 조건은 [실습자료 검토 항목](<00-실습자료-검토항목.md#환경별-재확인>)을 참고한다.
+
 > 배경 참고 및 전제 확인: [Week1 Day1&2 - GPU Workbench·서빙·학습 구성](<Week1-Day1&2-환경구성.md#gpu-workbench서빙학습-구성>)은 목적과 전체 순서를 요약한 인덱스다. NFD, KMM, NVIDIA GPU Operator와 HardwareProfile의 실제 설치는 이 Day11에서 모두 수행하므로 미리 중복 설치하지 않는다. 단, GPU PCI passthrough와 `cs-redhat-gpu-localstorage-v4-22`, `cs-certified-operator-index-v4-22` CatalogSource 및 관련 mirror는 준비되어 있어야 한다.
 
 NFD, KMM, NVIDIA GPU Operator를 설치해서 GPU worker의 GPU를 OpenShift 리소스로 노출하고 RHOAI HardwareProfile을 만든다.

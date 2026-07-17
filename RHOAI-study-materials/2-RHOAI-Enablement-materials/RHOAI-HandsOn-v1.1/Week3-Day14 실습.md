@@ -1,6 +1,8 @@
 # RHOAI-3.4-HandsOn-커리큘럼-v1.1.xlsx 실습
 ## week 3 - Day14
 
+> **환경별 재확인**: GatewayClass 구현, RHCL/Kuadrant 의존 Operator, mTLS 경로, GPU 자원, model registry와 S3 endpoint는 검증 환경에 종속된다. 특히 OpenShift CIO GatewayClass가 아닌 환경에는 mTLS 제한을 그대로 적용하지 않는다. 공통 경계 조건은 [실습자료 검토 항목](<00-실습자료-검토항목.md#환경별-재확인>)을 참고한다.
+
 > 사전 활성화: [Week1 Day1&2 - MaaS와 LLM API quota 구성](<Week1-Day1&2-환경구성.md#maas와-llm-api-quota-구성>), [GPU Workbench·서빙·학습 구성](<Week1-Day1&2-환경구성.md#gpu-workbench서빙학습-구성>), [Monitoring과 Guardrails 구성](<Week1-Day1&2-환경구성.md#monitoring과-guardrails-구성>)을 먼저 확인한다.
 
 LLM을 OpenAI 호환 API로 서빙하고 RHOAI Models-as-a-Service의 subscription, authorization, API key, token quota를 확인한다.

@@ -1,6 +1,8 @@
 # RHOAI-3.4-HandsOn-커리큘럼-v1.1.xlsx 추가 스터디
 ## week 7 - Step 2 OADP 백업과 복구
 
+> **환경별 재확인**: OADP channel/CSV, VolumeSnapshot 지원, NFS FSB 방식, S3 endpoint와 bucket/prefix는 환경마다 다르다. 실제 backup 대상과 보존 정책을 확인한 뒤 실행한다. 공통 경계 조건은 [실습자료 검토 항목](<00-실습자료-검토항목.md#환경별-재확인>)을 참고한다.
+
 > 사전 준비: [Week7 Step0](<Week7-Step0 사전점검 실습.md>)의 백업 경계와 TrueNAS S3 연결을 확인한다.
 
 OADP 1.6과 File System Backup(FSB, Kopia)을 이용해 Namespace의 Kubernetes 리소스와 NFS PVC 데이터를 S3에 백업하고 삭제 후 복구한다.

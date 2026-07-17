@@ -1,13 +1,44 @@
 # RHOAI-3.4-HandsOn-커리큘럼-v1.1.xlsx 추가 스터디
 ## week 5 - Step 4 Tekton CI와 Argo CD 연결
 
+> **환경별 재확인**: Gitea Route hostname과 발급 CA, Argo CD reconcile 주기는 클러스터마다 다르다. 아래 명령의 `GITEA_HOST`와 CA 등록 결과를 확인한 뒤 진행한다. 공통 경계 조건은 [실습자료 검토 항목](<00-실습자료-검토항목.md#환경별-재확인>)을 참고한다.
+
 > 사전 활성화: [Week5 Step 3](<Week5-Step3 실습.md>)의 source/GitOps 저장소를 준비하고 두 저장소에 같은 Gitea PAT로 접근할 수 있어야 한다.
 
 Argo CD가 비공개 GitOps 저장소를 읽도록 등록하고, Tekton Pipeline과 Gitea webhook을 구성한다. 첫 실행은 webhook보다 문제를 분리하기 쉬운 수동 PipelineRun으로 검증한다.
 
+### Gitea CA를 Argo CD와 Tekton에 공유
+
+[Week2 Day10 - OCP Ingress CA를 Argo CD에 등록](<Week2-Day10 실습.md#ocp-ingress-ca를-argo-cd에-등록>)을 먼저 완료한다. Day10에서 Gitea hostname별로 등록한 CA를 Tekton Namespace의 ConfigMap으로 복제해 모든 Git clone과 push가 같은 trust anchor를 사용하게 한다.
+
+```bash
+GITEA_HOST=gitea.apps.sno.ocp422.com
+GITEA_CA_DIR=$(mktemp -d)
+
+oc get configmap argocd-tls-certs-cm \
+  -n openshift-gitops -o json | \
+  jq -r --arg host "$GITEA_HOST" \
+    '.data[$host] // empty' \
+  > "$GITEA_CA_DIR/ca-bundle.crt"
+
+test -s "$GITEA_CA_DIR/ca-bundle.crt"
+openssl x509 -in "$GITEA_CA_DIR/ca-bundle.crt" \
+  -noout -subject -issuer -dates
+
+oc create configmap week5-gitea-ca \
+  -n rhoai-llm-mlops \
+  --from-file=ca-bundle.crt="$GITEA_CA_DIR/ca-bundle.crt" \
+  --dry-run=client -o yaml | oc apply -f -
+
+rm -rf "$GITEA_CA_DIR"
+unset GITEA_CA_DIR
+```
+
+다른 Git server나 사내 CA를 사용한다면 해당 hostname으로 `argocd-tls-certs-cm`을 등록하고 같은 CA bundle로 `week5-gitea-ca`를 만든다. 서버 인증서 검증 비활성화로 대체하지 않는다.
+
 ### Argo CD repository Secret
 
-공개 문서나 Git 저장소에 실제 ID/PAT를 기록하지 않는다. 검증 환경의 Gitea Route는 사설 인증서를 사용하므로 `insecure: "true"`로 시작하되, 운영에서는 Gitea CA를 Argo CD trust store에 추가한다.
+공개 문서나 Git 저장소에 실제 ID/PAT를 기록하지 않는다. TLS 서버 인증은 앞에서 등록한 `argocd-tls-certs-cm`, 사용자 인증은 아래 repository Secret이 담당한다.
 
 ```bash
 oc apply -f - <<'EOF'
@@ -24,9 +55,20 @@ stringData:
   url: https://gitea.apps.sno.ocp422.com/hands-on/week5-llm-gitops.git
   username: <GITEA_ID>
   password: <GITEA_PAT>
-  insecure: "true"
 EOF
+
+if test -n "$(oc get secret week5-llm-gitops-repository \
+  -n openshift-gitops -o jsonpath='{.data.insecure}')"; then
+  oc patch secret week5-llm-gitops-repository \
+    -n openshift-gitops --type=json \
+    -p='[{"op":"remove","path":"/data/insecure"}]'
+fi
+
+oc get secret week5-llm-gitops-repository \
+  -n openshift-gitops -o json | jq -r '.data | keys[]'
 ```
+
+출력에는 `type`, `url`, `username`, `password`만 있고 `insecure`가 없어야 한다.
 
 ### Argo CD Application 생성
 

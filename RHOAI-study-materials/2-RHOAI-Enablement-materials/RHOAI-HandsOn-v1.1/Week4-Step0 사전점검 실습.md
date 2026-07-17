@@ -1,6 +1,8 @@
 # RHOAI-3.4-HandsOn-커리큘럼-v1.1.xlsx 추가 스터디
 ## week 4 - GPU 공유 사전점검
 
+> **환경별 재확인**: GPU 개수·모델, Device Plugin API, Kueue API version과 node label은 검증 환경 값이다. 공유 정책을 적용하기 전에 현재 ClusterPolicy와 allocatable GPU를 백업한다. 공통 경계 조건은 [실습자료 검토 항목](<00-실습자료-검토항목.md#환경별-재확인>)을 참고한다.
+
 > 사전 활성화: [Week3 Day11](<Week3-Day11 실습.md>)의 NFD/KMM/NVIDIA GPU Operator와 [Week3 Day12](<Week3-Day12 실습.md>)의 Red Hat build of Kueue를 먼저 구성한다.
 
 GPU 공유와 Kueue cohort 실습 전에 물리 GPU, NVIDIA Device Plugin, Kueue API 버전을 확인하고 기존 설정을 백업한다.

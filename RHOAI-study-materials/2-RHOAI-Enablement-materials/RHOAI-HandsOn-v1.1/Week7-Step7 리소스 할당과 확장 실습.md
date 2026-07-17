@@ -1,6 +1,8 @@
 # RHOAI-3.4-HandsOn-커리큘럼-v1.1.xlsx 추가 스터디
 ## week 7 - Step 7 사용자 리소스 할당과 클러스터 확장
 
+> **환경별 재확인**: platform type과 Machine API 제공 여부에 따라 MachineSet scale-out 또는 Agent ISO 경로가 달라진다. 문서의 `platform=None` 결과를 다른 클러스터에 그대로 적용하지 않는다. 공통 경계 조건은 [실습자료 검토 항목](<00-실습자료-검토항목.md#환경별-재확인>)을 참고한다.
+
 > 사전 준비: [Week2 Day9](<Week2-Day9 실습.md>)의 프로젝트 RBAC·ResourceQuota와 [Week3 Day12](<Week3-Day12 실습.md>)의 Kueue quota 차이를 복습한다.
 
 Namespace ResourceQuota와 LimitRange로 사용자 workload의 상한과 기본 request를 제어하고, 현재 클러스터가 MachineSet scale-out 대상인지 Agent ISO worker 추가 대상인지 판정한다.

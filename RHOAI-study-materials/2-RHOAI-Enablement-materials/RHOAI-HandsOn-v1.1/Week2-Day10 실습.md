@@ -1,6 +1,8 @@
 # RHOAI-3.4-HandsOn-커리큘럼-v1.1.xlsx 실습
 ## week 2 - Day10
 
+> **환경별 재확인**: Gitea Route hostname, Ingress 인증서 체인과 Argo CD trust ConfigMap은 클러스터마다 다르다. 저장소 생성 전에 실제 Route와 CA를 확인한다. 공통 경계 조건은 [실습자료 검토 항목](<00-실습자료-검토항목.md#환경별-재확인>)을 참고한다.
+
 > 사전 활성화: [Week1 Day1&2 - KServe RawDeployment 구성](<Week1-Day1&2-환경구성.md#kserve-rawdeployment-구성>), [Week2 Day7](<Week2-Day7 실습.md>)의 KFP Run, [Week2 Day8](<Week2-Day8 실습.md>)의 `fraud-kfp` Registry v1/v2와 `fraud-kfp-v1`·`fraud-kfp-v2` InferenceService를 먼저 완료한다. GitOps는 선택 기능이며 같은 문서의 [Tekton CI/CD와 Argo CD GitOps 구성](<Week1-Day1&2-환경구성.md#tekton-cicd와-argo-cd-gitops-구성>) 중 Argo CD만 필요하다.
 
 Day7에서 훈련한 정확한 모델 artifact를 Day8에서 Registry에 등록한 뒤, Day10에서 현재 v1 트래픽을 새 v2로 점진적으로 전환한다. Day5의 `fraud-blue`, `fraud-green`, `fraud-route`는 사용하지 않는다.

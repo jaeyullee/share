@@ -1,6 +1,8 @@
 # RHOAI-3.4-HandsOn-커리큘럼-v1.1.xlsx 추가 스터디
 ## week 6 - 2GPU Tensor Parallel 사전점검
 
+> **환경별 재확인**: GPU 모델·개수, PCI/IOMMU group, P2P 지원, NUMA, VM 메모리와 vLLM image 지원 여부는 검증 환경에 종속된다. 두 GPU를 연결하기 전에 대상 하드웨어 토폴로지를 다시 판정한다. 공통 경계 조건은 [실습자료 검토 항목](<00-실습자료-검토항목.md#환경별-재확인>)을 참고한다.
+
 > 사전 활성화: [Week3 Day11](<Week3-Day11 실습.md>)의 NFD/KMM/NVIDIA GPU Operator와 KServe Standard 구성을 완료한다. Week4 GPU 공유 설정을 적용한 상태라면 [Week4 Step 6](<Week4-Step6 실습.md>)에서 먼저 기본 exclusive GPU 상태로 복원한다.
 
 같은 GPU worker에 RTX 5060 Ti 두 장을 노출하고 vLLM `tensor_parallel_size=2`를 검증한다. 이 실습은 **단일 노드 Tensor Parallel 기능 검증**이며, 여러 노드에 걸친 분산 추론이나 Ray, LeaderWorkerSet, `LLMInferenceService` 실습이 아니다.

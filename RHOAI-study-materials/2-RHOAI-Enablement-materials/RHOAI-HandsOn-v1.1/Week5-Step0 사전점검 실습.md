@@ -1,6 +1,8 @@
 # RHOAI-3.4-HandsOn-커리큘럼-v1.1.xlsx 추가 스터디
 ## week 5 - LLM MLOps CI/CD 사전점검
 
+> **환경별 재확인**: Operator version, GPU·메모리, StorageClass, 내부 registry/Nexus/S3/Git endpoint와 image digest는 검증 환경 값이다. Step1 전에 대상 환경의 대응 값을 표로 기록한다. 공통 경계 조건은 [실습자료 검토 항목](<00-실습자료-검토항목.md#환경별-재확인>)을 참고한다.
+
 > 사전 활성화: [Week1 Day1&2](<Week1-Day1&2-환경구성.md>)의 AI Pipelines, Model Registry, KServe Standard, GPU/Trainer 구성과 [Tekton CI/CD와 Argo CD GitOps 구성](<Week1-Day1&2-환경구성.md#tekton-cicd와-argo-cd-gitops-구성>)을 확인하고 [Week3 Day11](<Week3-Day11 실습.md>)의 GPU를 정상화한다. Kueue를 사용할 경우 [Week3 Day12](<Week3-Day12 실습.md>)를 먼저 수행한다.
 
 Tekton CI, KFP, Kubeflow Trainer v2, Model Registry, OpenShift GitOps와 KServe vLLM을 역할별로 연결한다. 운영형 흐름은 다음과 같다.

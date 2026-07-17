@@ -1,6 +1,8 @@
 # RHOAI-3.4-HandsOn-커리큘럼-v1.1.xlsx 추가 스터디
 ## week 5 - Step 2 OpenShift Pipelines와 프로젝트 구성
 
+> **환경별 재확인**: StorageClass, registry pull/push Secret, S3 Secret과 Namespace 보안 정책은 환경마다 다르다. placeholder를 대상 환경 값으로 치환하되 실제 자격 증명은 문서에 기록하지 않는다. 공통 경계 조건은 [실습자료 검토 항목](<00-실습자료-검토항목.md#환경별-재확인>)을 참고한다.
+
 > 사전 활성화: [Week5 Step 1](<Week5-Step1 실습.md>)의 artifact 준비와 [Week1 Day1&2](<Week1-Day1&2-환경구성.md#tekton-cicd와-argo-cd-gitops-구성>)의 GitOps 구성을 완료한다.
 
 OpenShift Pipelines Operator를 설치하고 LLM CI, KFP, Trainer, staging과 production을 분리한 Namespace를 만든다.

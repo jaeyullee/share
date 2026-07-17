@@ -4,6 +4,8 @@ custom-width: 60
 # RHOAI-3.4-HandsOn-커리큘럼-v1.1.xlsx 실습
 ## week 2 - Day6
 
+> **환경별 재확인**: Gitea Route hostname과 OCP Ingress CA는 클러스터마다 다르다. Git clone 전에 실제 Route와 인증서 체인을 확인하고, 서버 인증서 검증을 비활성화하지 않는다. 공통 경계 조건은 [실습자료 검토 항목](<00-실습자료-검토항목.md#환경별-재확인>)을 참고한다.
+
 > 사전 활성화: [Week1 Day1&2 - 대시보드 Workbench의 Kueue 사용 여부](<Week1-Day1&2-환경구성.md#대시보드-workbench의-kueue-사용-여부>)를 먼저 확인한다. 이 Day의 기본 YAML 경로는 `disableKueue=true`, DSC `kueue: Removed` 모드로 실행할 수 있다.
 
 ### gitea 준비
@@ -20,7 +22,39 @@ ls /tmp/python3/models/train_iris_sklearn.py
 
 mkdir -p /opt/rhoai-data/git-repo/hands-on
 cd /opt/rhoai-data/git-repo/hands-on
-GIT_SSL_NO_VERIFY=true git clone https://gitea.apps.sno.ocp422.com/hands-on/day06.git
+
+GITEA_HOST=$(oc get route gitea -n gitea -o jsonpath='{.spec.host}')
+TLS_WORKDIR=$(mktemp -d)
+
+oc get secret router-certs-default -n openshift-ingress -o json |
+  jq -r '.data["tls.crt"]' | base64 -d \
+  > "$TLS_WORKDIR/router-chain.pem"
+
+# Router 인증서 체인에서 CA:TRUE인 인증서만 Git trust bundle로 만든다.
+awk -v dir="$TLS_WORKDIR" '
+  /-----BEGIN CERTIFICATE-----/ {cert=""}
+  {cert=cert $0 ORS}
+  /-----END CERTIFICATE-----/ {
+    n++
+    file=dir "/cert-" n ".pem"
+    printf "%s", cert > file
+    close(file)
+  }
+' "$TLS_WORKDIR/router-chain.pem"
+
+: > "$TLS_WORKDIR/ingress-ca.pem"
+for cert in "$TLS_WORKDIR"/cert-*.pem; do
+  if openssl x509 -in "$cert" -noout -text | grep -q 'CA:TRUE'; then
+    cat "$cert" >> "$TLS_WORKDIR/ingress-ca.pem"
+  fi
+done
+
+test -s "$TLS_WORKDIR/ingress-ca.pem"
+openssl x509 -in "$TLS_WORKDIR/ingress-ca.pem" \
+  -noout -subject -issuer -dates
+
+git -c http.sslCAInfo="$TLS_WORKDIR/ingress-ca.pem" \
+  clone "https://${GITEA_HOST}/hands-on/day06.git"
 cd day06
 
 mkdir -p models
@@ -52,7 +86,11 @@ curl -L https://dl.min.io/client/mc/release/linux-amd64/mc -o ./mc
 
 git add .
 git commit -m "initial workbench settings"
-GIT_SSL_NO_VERIFY=true git push -u origin main
+git -c http.sslCAInfo="$TLS_WORKDIR/ingress-ca.pem" \
+  push -u origin main
+
+rm -rf "$TLS_WORKDIR"
+unset TLS_WORKDIR GITEA_HOST
 
 ## Workbench Python 3.12용 라이브러리를 내부 Nexus에 업로드
 ## 베스천 Python 버전으로 wheel tag가 결정되지 않도록 대상 interpreter와 platform을 명시한다.

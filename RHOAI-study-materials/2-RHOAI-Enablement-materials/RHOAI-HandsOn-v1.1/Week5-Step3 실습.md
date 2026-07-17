@@ -1,6 +1,8 @@
 # RHOAI-3.4-HandsOn-커리큘럼-v1.1.xlsx 추가 스터디
 ## week 5 - Step 3 Source와 GitOps 저장소 준비
 
+> **환경별 재확인**: Git server hostname, Route CA, 조직·저장소 경로와 PAT 권한은 환경마다 다르다. TLS 검증을 끄지 말고 대상 Git server의 발급 CA를 system trust에 등록한다. 공통 경계 조건은 [실습자료 검토 항목](<00-실습자료-검토항목.md#환경별-재확인>)을 참고한다.
+
 > 사전 활성화: [Week5 Step 2](<Week5-Step2 실습.md>)를 완료하고 Gitea에 저장소를 만들 수 있어야 한다.
 
 소스와 배포 선언을 서로 다른 저장소로 분리한다. Tekton은 source repository를 읽고 GitOps repository만 갱신하며 클러스터에 InferenceService를 직접 적용하지 않는다.

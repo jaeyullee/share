@@ -1,6 +1,8 @@
 # RHOAI-3.4-HandsOn-커리큘럼-v1.1.xlsx 추가 스터디
 ## week 7 - 운영관리 보강 사전점검
 
+> **환경별 재확인**: platform type, control plane topology, StorageClass, MachineSet, OADP/RHBK/Ray channel과 backup endpoint는 검증 환경 값이다. 각 Step 전에 현재 클러스터 값을 수집해 적용 가능 여부를 판정한다. 공통 경계 조건은 [실습자료 검토 항목](<00-실습자료-검토항목.md#환경별-재확인>)을 참고한다.
+
 > 사전 활성화: [Week1 Day1&2](<Week1-Day1&2-환경구성.md>)의 RHOAI 기본 구성, [Week3 Day12](<Week3-Day12 실습.md>)의 Red Hat build of Kueue, [Week3 Day13](<Week3-Day13 실습.md>)의 User Workload Monitoring을 먼저 확인한다.
 
 Week7은 인증, 백업, 분산 워크로드, 관측성과 감사, Kueue 운영, 플랫폼 커스터마이징, 용량 관리를 운영자 관점에서 연결한다. 운영 설정을 변경하므로 시작 상태를 파일로 보존하고 각 Step의 원복 절차를 반드시 수행한다.

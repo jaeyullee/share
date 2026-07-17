@@ -1,6 +1,8 @@
 # RHOAI-3.4-HandsOn-커리큘럼-v1.1.xlsx 추가 스터디
 ## week 5 - Step 4 Tekton 리소스 적용
 
+> **환경별 재확인**: `week5-gitea-ca`는 대상 Git server의 실제 발급 CA를 포함해야 한다. [Week5 Step 4](<Week5-Step4 실습.md#gitea-ca를-argo-cd와-tekton에-공유>)에서 ConfigMap과 Argo CD trust를 먼저 확인한다.
+
 > 사전 활성화: [Week5 Step 4](<Week5-Step4 실습.md>)의 Argo CD Application 생성까지 완료한다.
 
 외부 `week5-llm-mlops-tekton.yaml` 파일 없이 Week5 CI, promotion, Gitea trigger 리소스를 생성한다. 아래 블록 전체를 한 번에 실행한다.
@@ -60,9 +62,16 @@ spec:
           - {name: git-credentials}
         results:
           - {name: commit}
+        volumes:
+          - name: gitea-ca
+            configMap: {name: week5-gitea-ca}
         steps:
           - name: clone
             image: registry.redhat.io/rhoai/odh-workbench-jupyter-datascience-cpu-py312-rhel9@sha256:19e62e604a6b74ded1c5df88112e5be44424fb1752df46dc1587447fe024865f
+            volumeMounts:
+              - {name: gitea-ca, mountPath: /etc/pki/week5-gitea, readOnly: true}
+            env:
+              - {name: GIT_SSL_CAINFO, value: /etc/pki/week5-gitea/ca-bundle.crt}
             script: |
               #!/usr/bin/env bash
               set -euo pipefail
@@ -76,7 +85,7 @@ spec:
               EOF
               chmod 0700 /tmp/git-askpass
               export GIT_ASKPASS=/tmp/git-askpass GIT_TERMINAL_PROMPT=0
-              git -c http.sslVerify=false clone "$(params.source-url)" \
+              git clone "$(params.source-url)" \
                 "$(workspaces.shared.path)/source"
               cd "$(workspaces.shared.path)/source"
               git checkout "$(params.source-revision)"
@@ -215,9 +224,16 @@ spec:
         workspaces:
           - {name: shared}
           - {name: git-credentials}
+        volumes:
+          - name: gitea-ca
+            configMap: {name: week5-gitea-ca}
         steps:
           - name: commit
             image: registry.redhat.io/rhoai/odh-workbench-jupyter-datascience-cpu-py312-rhel9@sha256:19e62e604a6b74ded1c5df88112e5be44424fb1752df46dc1587447fe024865f
+            volumeMounts:
+              - {name: gitea-ca, mountPath: /etc/pki/week5-gitea, readOnly: true}
+            env:
+              - {name: GIT_SSL_CAINFO, value: /etc/pki/week5-gitea/ca-bundle.crt}
             script: |
               #!/usr/bin/env bash
               set -euo pipefail
@@ -231,7 +247,7 @@ spec:
               EOF
               chmod 0700 /tmp/git-askpass
               export GIT_ASKPASS=/tmp/git-askpass GIT_TERMINAL_PROMPT=0
-              git -c http.sslVerify=false clone "$(params.gitops-url)" \
+              git clone "$(params.gitops-url)" \
                 "$(workspaces.shared.path)/gitops"
               cd "$(workspaces.shared.path)/gitops"
               rm -rf pipelines
@@ -241,7 +257,7 @@ spec:
               git add pipelines
               git diff --cached --quiet && exit 0
               git commit -m "Publish KFP pipeline $(params.commit)"
-              git -c http.sslVerify=false push origin HEAD:main
+              git push origin HEAD:main
     - name: start-kfp-run
       runAfter: [push-gitops]
       params:
@@ -338,10 +354,16 @@ spec:
         workspaces:
           - {name: shared}
           - {name: git-credentials}
+        volumes:
+          - name: gitea-ca
+            configMap: {name: week5-gitea-ca}
         steps:
           - name: promote
             image: registry.redhat.io/rhoai/odh-workbench-jupyter-datascience-cpu-py312-rhel9@sha256:19e62e604a6b74ded1c5df88112e5be44424fb1752df46dc1587447fe024865f
+            volumeMounts:
+              - {name: gitea-ca, mountPath: /etc/pki/week5-gitea, readOnly: true}
             env:
+              - {name: GIT_SSL_CAINFO, value: /etc/pki/week5-gitea/ca-bundle.crt}
               - {name: VERSION_NAME, value: $(params.version-name)}
               - {name: MODEL_URI, value: $(params.model-uri)}
               - {name: MAX_TRAIN_LOSS, value: $(params.max-train-loss)}
@@ -374,7 +396,7 @@ spec:
               EOF
               chmod 0700 /tmp/git-askpass
               export GIT_ASKPASS=/tmp/git-askpass GIT_TERMINAL_PROMPT=0
-              git -c http.sslVerify=false clone "$GITOPS_URL" \
+              git clone "$GITOPS_URL" \
                 "$(workspaces.shared.path)/gitops"
               cd "$(workspaces.shared.path)/gitops"
               FILE="environments/$ENVIRONMENT/inferenceservice.json"
@@ -396,7 +418,7 @@ spec:
               git config user.email week5-llm-promote@example.invalid
               git add "$FILE" "$KUSTOMIZATION"
               git commit -m "Promote ${VERSION_NAME} to ${ENVIRONMENT}"
-              git -c http.sslVerify=false push origin HEAD:main
+              git push origin HEAD:main
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
