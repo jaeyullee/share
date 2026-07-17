@@ -563,7 +563,7 @@ oc get applications.argoproj.io jukebox-serving -n openshift-gitops
 Day15에서 다시 사용할 경우 v1/v2 InferenceService, Route와 Registry metadata를 유지한다. Day10까지만 반복 실습하고 리소스를 비우려면 GitOps Application을 먼저 삭제한 뒤 서빙 리소스를 제거한다.
 
 ```bash
-oc delete application jukebox-serving -n openshift-gitops \
+oc delete applications.argoproj.io jukebox-serving -n openshift-gitops \
   --ignore-not-found
 oc delete secret day10-gitops-repository -n openshift-gitops \
   --ignore-not-found

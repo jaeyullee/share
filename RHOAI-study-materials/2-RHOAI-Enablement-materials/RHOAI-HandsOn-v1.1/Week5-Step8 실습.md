@@ -66,7 +66,7 @@ oc wait --for=condition=Ready \
   isvc/support-assistant-production \
   -n rhoai-llm-production --timeout=600s
 
-oc get application week5-llm-serving-production \
+oc get applications.argoproj.io week5-llm-serving-production \
   -n openshift-gitops
 oc get servingruntime,isvc,pod -n rhoai-llm-production
 ```
@@ -87,7 +87,7 @@ cd /tmp/python3
 export RHOAI_HANDSON_DIR="$PWD"
 curl -sS -H 'Content-Type: application/json' \
   http://127.0.0.1:18091/v1/chat/completions \
-  -d @"$RHOAI_HANDSON_DIR/models/llm-mlops/inference-request.json" | \
+  -d @"$RHOAI_HANDSON_DIR/models/llm-mlops/inference-request-production.json" | \
   jq '{id,model,answer:.choices[0].message.content,usage}'
 ```
 
@@ -105,7 +105,7 @@ git log --oneline -- environments/production
 git revert <PRODUCTION_PROMOTION_COMMIT>
 git push origin main
 
-oc get application week5-llm-serving-production \
+oc get applications.argoproj.io week5-llm-serving-production \
   -n openshift-gitops -w
 ```
 
@@ -133,7 +133,7 @@ Week5 전용 클러스터 리소스를 제거한다. 기존 `jukebox` Model Regi
 oc adm policy remove-scc-from-user privileged \
   -z llm-build -n rhoai-llm-mlops
 
-oc delete application \
+oc delete applications.argoproj.io \
   week5-llm-pipelines \
   week5-llm-serving-staging \
   week5-llm-serving-production \
@@ -169,7 +169,7 @@ S3 산출물과 Gitea 저장소는 재검증과 이력 확인을 위해 기본�
 
 ```bash
 oc get namespace | grep rhoai-llm || true
-oc get application -n openshift-gitops | grep week5-llm || true
+oc get applications.argoproj.io -n openshift-gitops | grep week5-llm || true
 oc get isvc -A | grep support-assistant || true
 oc get pod -A | grep -E 'week5|support-assistant|llm-lora' || true
 ```

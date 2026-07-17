@@ -136,11 +136,12 @@ metadata:
   namespace: <TARGET_NAMESPACE>
   annotations:
     serving.kserve.io/deploymentMode: Standard
-    serving.kserve.io/secretKey: aws-connection-llm-models
+    serving.kserve.io/storageSecretName: aws-connection-llm-models
     mlops.opendatahub.io/model-version: <RUN_ID>
     mlops.opendatahub.io/deployment-stage: <TARGET_STAGE>
 spec:
   predictor:
+    serviceAccountName: support-assistant-kserve
     nodeSelector:
       lab-role: gpu
     model:

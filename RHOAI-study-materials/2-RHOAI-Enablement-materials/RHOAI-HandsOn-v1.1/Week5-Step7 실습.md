@@ -62,12 +62,25 @@ tkn pipelinerun logs -n rhoai-llm-mlops \
   "$PROMOTE_RUN" -f
 ```
 
+`tkn`이 설치되지 않은 경우에는 다음 `oc` 경로를 사용한다. 첫 명령은 `Succeeded=True` 또는 `Succeeded=False`가 될 때까지 감시한다. 종료 후 TaskRun과 해당 Pod의 로그에서 `promotion gate passed`를 확인한다.
+
+```bash
+oc get pipelinerun "$PROMOTE_RUN" -n rhoai-llm-mlops -w
+
+oc get taskrun -n rhoai-llm-mlops \
+  -l tekton.dev/pipelineRun="$PROMOTE_RUN" -o wide
+
+oc logs -n rhoai-llm-mlops \
+  -l tekton.dev/pipelineRun="$PROMOTE_RUN" \
+  --all-containers=true --prefix=true
+```
+
 `promotion gate passed`가 출력되고 GitOps 저장소의 staging `inferenceservice.json`과 `kustomization.yaml`이 commit된다.
 
 ### Argo CD와 KServe 상태
 
 ```bash
-oc get application week5-llm-serving-staging \
+oc get applications.argoproj.io week5-llm-serving-staging \
   -n openshift-gitops -w
 ```
 
@@ -101,7 +114,7 @@ cd /tmp/python3
 export RHOAI_HANDSON_DIR="$PWD"
 curl -sS -H 'Content-Type: application/json' \
   http://127.0.0.1:18090/v1/chat/completions \
-  -d @"$RHOAI_HANDSON_DIR/models/llm-mlops/inference-request.json" | \
+  -d @"$RHOAI_HANDSON_DIR/models/llm-mlops/inference-request-staging.json" | \
   jq '{id,model,answer:.choices[0].message.content,usage}'
 ```
 

@@ -223,7 +223,22 @@ for NS in rhoai-llm-staging rhoai-llm-production; do
     opendatahub.io/dashboard=true --overwrite
   oc annotate secret aws-connection-llm-models -n "$NS" \
     opendatahub.io/connection-type=s3 \
+    serving.kserve.io/s3-endpoint=192.168.20.5:9000 \
+    serving.kserve.io/s3-usehttps='0' \
+    serving.kserve.io/s3-region=us-east-1 \
+    serving.kserve.io/s3-verifyssl='0' \
+    serving.kserve.io/s3-useanoncredential='false' \
     openshift.io/display-name='Week 5 LLM models' --overwrite
+
+  oc apply -f - <<EOF
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: support-assistant-kserve
+  namespace: $NS
+secrets:
+  - name: aws-connection-llm-models
+EOF
 done
 ```
 

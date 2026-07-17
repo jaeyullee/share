@@ -34,7 +34,7 @@ oc get taskrun -n rhoai-llm-mlops \
 `clone-and-validate`의 `commit`, `build-runtime`의 `image-url`과 `image-digest`를 기록한다. digest는 `sha256:`으로 시작해야 하며 KFP compile에는 `image-url@image-digest`가 사용된다.
 
 ```bash
-oc image info --insecure \
+oc image info --insecure -o json \
   192.168.10.50:5010/rhoai-training/llm-lora-runtime:<SHORT_COMMIT> | \
   jq '{name:.name,digest:.digest}'
 ```
@@ -49,7 +49,7 @@ git pull --ff-only
 find pipelines -maxdepth 1 -type f -print
 git log -1 --oneline
 
-oc get application week5-llm-pipelines -n openshift-gitops \
+oc get applications.argoproj.io week5-llm-pipelines -n openshift-gitops \
   -o custom-columns=NAME:.metadata.name,SYNC:.status.sync.status,HEALTH:.status.health.status,REVISION:.status.sync.revision
 ```
 

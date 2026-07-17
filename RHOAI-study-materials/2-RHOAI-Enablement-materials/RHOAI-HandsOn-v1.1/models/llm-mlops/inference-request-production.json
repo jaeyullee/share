@@ -1,5 +1,5 @@
 {
-  "model": "support-assistant",
+  "model": "support-assistant-production",
   "messages": [
     {
       "role": "user",
