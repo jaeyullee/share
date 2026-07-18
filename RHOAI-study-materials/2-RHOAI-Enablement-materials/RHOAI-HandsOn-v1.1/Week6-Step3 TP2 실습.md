@@ -154,15 +154,40 @@ GPU 0과 GPU 1 모두에 vLLM worker process와 GPU memory 사용량이 있어�
 ### 동일 요청 5회 측정
 
 ```bash
+bash <<'BASH'
+set -euo pipefail
+
 oc port-forward -n rhoai-tp-lab \
-  svc/week6-qwen-tp2-predictor 18093:80 \
+  deployment/week6-qwen-tp2-predictor 18093:8080 \
   > /tmp/week6-tp2-port-forward.log 2>&1 &
 TP2_PF_PID=$!
 trap 'kill "$TP2_PF_PID" 2>/dev/null || true' EXIT
-sleep 3
 
-TP2_MODEL=$(curl -fsS http://127.0.0.1:18093/v1/models | \
-  jq -r '.data[0].id')
+TP2_MODELS=
+for _ in $(seq 1 20); do
+  if TP2_MODELS=$(curl --connect-timeout 2 --max-time 5 -fsS \
+    http://127.0.0.1:18093/v1/models 2>/dev/null); then
+    break
+  fi
+
+  if ! kill -0 "$TP2_PF_PID" 2>/dev/null; then
+    cat /tmp/week6-tp2-port-forward.log >&2
+    exit 1
+  fi
+  sleep 1
+done
+
+if [[ -z "$TP2_MODELS" ]]; then
+  cat /tmp/week6-tp2-port-forward.log >&2
+  echo 'ERROR: TP2 vLLM API가 준비되지 않았습니다.' >&2
+  exit 1
+fi
+
+TP2_MODEL=$(jq -r '.data[0].id // empty' <<<"$TP2_MODELS")
+if [[ -z "$TP2_MODEL" ]]; then
+  echo 'ERROR: /v1/models 응답에서 model ID를 찾지 못했습니다.' >&2
+  exit 1
+fi
 
 cat > /tmp/week6-chat-request.json <<EOF
 {"model":"$TP2_MODEL","messages":[{"role":"user","content":"OpenShift AI에서 GPU Pod가 Pending일 때 첫 세 가지 점검 항목을 말해 주세요."}],"max_tokens":64,"temperature":0}
@@ -187,7 +212,10 @@ cat /tmp/week6-tp2-times.tsv
 kill "$TP2_PF_PID" 2>/dev/null || true
 wait "$TP2_PF_PID" 2>/dev/null || true
 trap - EXIT
+BASH
 ```
+
+첫 요청은 CUDA graph, cache와 kernel 준비 때문에 뒤의 요청보다 느릴 수 있다. 비교표에는 첫 요청과 warm 요청 2~5를 구분해 기록한다.
 
 ### PCIe/NCCL 문제 판정
 
