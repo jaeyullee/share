@@ -1,5 +1,66 @@
 # RHOAI 변경 이력 (CHANGELOG)
 
+## 2026-07-19
+
+### 🆕 신규 (23)
+- **Support for customizing OAuth proxy sidecar resource allocation via the DataScienceCluster API** [self-managed 3.5] GA ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes)  
+    근거: Administrators can configure OAuth proxy sidecar resource requests and limits directly in the DataScienceCluster CR under spec.components.kserve.oauthProxy.resources , without changing any component state from Managed to Unmanaged .
+- **Cold-start load time and vRAM metrics in the model catalog** [self-managed 3.5] GA ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes)  
+    근거: The model catalog displays operational metrics for validated models, including cold-start load time, minimum vRAM requirements, and the runtime command used for benchmarking.
+- **Self-service Subscriptions tab for Models-as-a-Service users** [self-managed 3.5] GA ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes)  
+    근거: With this update, you can view your Models-as-a-Service subscription assignments, browse associated models, and check token rate limits from the Subscriptions tab on the API keys page in
+- **MLflow, AutoML, AutoRAG, and OGX enhancements on IBM Power** [self-managed 3.5] GA ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes)  
+    근거: Red Hat OpenShift AI extends support for MLflow, AutoML, AutoRAG, the GenAI playground, milvus-lite , and the OGX ecosystem to the IBM Power architecture.
+- **Configure vLLM runtime arguments using Kubernetes container args field** [self-managed 3.5] GA ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes)  
+    근거: You can configure vLLM runtime arguments using the standard Kubernetes container args field in LLMInferenceService resources.
+- **NeMo Guardrails integration with MCP Gateway for agent tool-call enforcement** [self-managed 3.5] TP ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/technology-preview-features_relnotes)  
+    근거: You can integrate NeMo Guardrails with the MCP Gateway to enforce guardrails on agent tool calls at the gateway layer.
+- **Validated tool-calling configuration for models in the model catalog** [self-managed 3.5] TP ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/technology-preview-features_relnotes)  
+    근거: The model catalog displays validated vLLM deployment arguments for models with confirmed tool- calling support.
+- **Multi-tenancy support in OGX** [self-managed 3.5] TP ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/technology-preview-features_relnotes)  
+    근거: OGX supports multi-tenancy, allowing teams to share infrastructure while isolating data and access.
+- **GPU-accelerated Docling SDK container image for batch document processing** [self-managed 3.5] TP ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/technology-preview-features_relnotes)  
+    근거: Red Hat OpenShift AI provides the docling-sdk-cuda-ubi9 container image for GPU-accelerated document conversion using the Docling SDK 2.88.0 with NVIDIA CUDA 13.0 support.
+- **Docling Serve API container image for on-demand document conversion** [self-managed 3.5] TP ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/technology-preview-features_relnotes)  
+    근거: Red Hat OpenShift AI provides the docling-serve-cuda-ubi9 container image, which offers a REST API for on-demand document conversion, chunking, and GPU-accelerated parsing.
+- **Batch inference with the OpenAI-compatible Batches API in llm-d** [self-managed 3.5] TP ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/technology-preview-features_relnotes)  
+    근거: Distributed Inference with llm-d supports batch inference through the OpenAI-compatible /v1/batches API.
+- **Prompt management with template variables in Gen AI Studio** [self-managed 3.5] TP ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/technology-preview-features_relnotes)  
+    근거: You can save, version, and reuse system instructions as named prompts in Gen AI Studio.
+- **Kueue support in EvalHub for evaluation job scheduling** [self-managed 3.5] TP ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/technology-preview-features_relnotes)  
+    근거: You can route EvalHub evaluation jobs through Red Hat build of Kueue LocalQueues by specifying a queue name when creating an evaluation job.
+- **EvalHub MCP server for AI coding agents** [self-managed 3.5] TP ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/technology-preview-features_relnotes)  
+    근거: The EvalHub Model Context Protocol (MCP) server is available as a Technology Preview.
+- **Thresholds support in evaluation runs in the OpenShift AI dashboard** [self-managed 3.5] TP ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/technology-preview-features_relnotes)  
+    근거: EvalHub introduces threshold configuration in evaluation runs as a Technology Preview.
+- **The inference provider for OGX** [self-managed 3.5] DP ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/developer-preview-features_relnotes)  
+    근거: The remote::anthropic inference provider is available on OGX.
+- **File Processors API on OGX** [self-managed 3.5] DP ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/developer-preview-features_relnotes)  
+    근거: The File Processors API is available on OGX.
+- **The remote::gemini inference provider for OGX** [self-managed 3.5] DP ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/developer-preview-features_relnotes)  
+    근거: The remote::gemini inference provider is available on OGX.
+- **OpenClaw agent starter kit** [self-managed 3.5] DP ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/developer-preview-features_relnotes)  
+    근거: You can deploy and manage OpenClaw, an open-source general-purpose agent, on Red Hat CHAPTER 4.
+- **Claude Code agent starter kit** [self-managed 3.5] DP ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/developer-preview-features_relnotes)  
+    근거: You can deploy and configure the Anthropic Claude Code agent on Red Hat OpenShift AI by using a new agentic starter kit.
+- **Kale JupyterLab extension for notebook-to-pipeline conversion** [self-managed 3.5] DP ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/developer-preview-features_relnotes)  
+    근거: You can use the Kale (Kubeflow Automated pipeLines Engine) JupyterLab extension to convert annotated Jupyter notebooks into AI Pipelines without writing Kubeflow Pipelines SDK code.
+- **End-to-end distributed tracing for llm-d** [self-managed 3.5] DP ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/developer-preview-features_relnotes)  
+    근거: Platform operators can trace distributed inference requests end-to-end across service boundaries by using OpenTelemetry-compatible distributed tracing.
+- **CSV export for model catalog data** [self-managed 3.5] DP ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/developer-preview-features_relnotes)  
+    근거: You can export model catalog metadata to CSV format by using a standalone Python CLI script.
+
+### ⬆️ 승격 (1)
+- **Responses API on OGX** [self-managed 3.5] GA (was TP) — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes)  
+    근거: The Responses API is generally available on OGX.
+
+### 🗑️ 문서에서 제거 (2)
+- **Configure vLLM runtime arguments using Kubernetes container field** [self-managed 3.5] GA (was GA) ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes)  
+    근거: You can configure vLLM runtime arguments using the standard Kubernetes container args field in LLMInferenceService resources.
+- **OGX Responses API parity with OpenAI** [self-managed 3.5] TP (was TP) ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/technology-preview-features_relnotes)  
+    근거: The OGX Responses API in OpenShift AI 3.4 introduces systematic alignment with OpenAI’s Responses API.
+
+
 ## 2026-06-21
 
 ### 🆕 신규 (32)
