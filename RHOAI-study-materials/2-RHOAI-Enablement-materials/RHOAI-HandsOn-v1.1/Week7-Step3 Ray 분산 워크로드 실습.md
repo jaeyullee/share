@@ -19,14 +19,17 @@ oc get kueues.kueue.openshift.io cluster -o json | jq '{
 oc patch dsc default-dsc --type=merge \
   -p '{"spec":{"components":{"ray":{"managementState":"Managed"}}}}'
 
-oc get dsc default-dsc \
-  -o jsonpath='{.status.conditions[?(@.type=="RayReady")]}{"\n"}'
+oc wait dsc/default-dsc --for=condition=RayReady --timeout=300s
+oc wait deployment/kuberay-operator \
+  -n redhat-ods-applications --for=create --timeout=300s
 oc wait deployment/kuberay-operator \
   -n redhat-ods-applications \
   --for=condition=Available --timeout=300s
 
 oc get crd rayjobs.ray.io rayclusters.ray.io
 ```
+
+DSC patch 직후에는 이전 `RayReady=Removed` condition이 잠시 보일 수 있다. 또한 `oc wait --for=condition=Available`은 아직 생성되지 않은 Deployment를 기다리지 않고 `NotFound`로 즉시 종료하므로, 반드시 `--for=create`를 먼저 실행한다. `RayReady=True`, KubeRay Operator `Available=True`, 두 Ray CRD가 모두 존재할 때만 다음 단계로 진행한다.
 
 `RayReady=True`와 KubeRay Operator `Available=True`를 확인한다.
 
@@ -150,7 +153,7 @@ EOF
 Kueue가 Workload quota를 예약하면 RayJob의 `suspend`를 해제하고 RayCluster를 만든다.
 
 ```bash
-oc get rayjob,raycluster,workload -n week7-ray -w
+oc get rayjob,raycluster,workload -n week7-ray 
 ```
 
 다른 셸에서 Pod 배치 노드를 확인한다.
@@ -200,12 +203,27 @@ oc logs deployment/kuberay-operator \
 Ray workload를 먼저 지운 뒤 component를 원래 상태로 되돌린다.
 
 ```bash
-oc delete rayjob week7-ray-demo -n week7-ray --ignore-not-found
-oc delete namespace week7-ray --wait=true
+bash <<'BASH'
+set -euo pipefail
+
+oc delete rayjob week7-ray-demo -n week7-ray --ignore-not-found 2>/dev/null || true
+oc delete namespace week7-ray --wait=true --ignore-not-found
 oc delete clusterqueue week7-ray-cq --ignore-not-found
 oc delete resourceflavor week7-linux --ignore-not-found
 
-RAY_STATE="$(cat /tmp/week7-ray-state-before)"
+if [ ! -s /tmp/week7-ray-state-before ]; then
+  echo 'ERROR: saved Ray management state is missing or empty; do not patch DSC.' >&2
+  exit 1
+fi
+RAY_STATE="$(tr -d '\r\n' < /tmp/week7-ray-state-before)"
+case "$RAY_STATE" in
+  Managed|Removed) ;;
+  *)
+    printf 'ERROR: invalid saved Ray management state: %q\n' "$RAY_STATE" >&2
+    exit 1
+    ;;
+esac
+
 oc patch dsc default-dsc --type=merge \
   -p "$(jq -n --arg state "$RAY_STATE" \
   '{spec:{components:{ray:{managementState:$state}}}}')"
@@ -213,13 +231,14 @@ oc patch dsc default-dsc --type=merge \
 if [ "$RAY_STATE" = "Removed" ]; then
   oc wait --for=delete deployment/kuberay-operator \
     -n redhat-ods-applications --timeout=300s || true
-  oc get rayjob,raycluster -A
+  oc get rayjob,raycluster -A 2>/dev/null || true
   oc delete crd rayjobs.ray.io rayclusters.ray.io \
     --ignore-not-found
 fi
 
 rm -f /tmp/week7-ray-state-before
 unset RAY_STATE
+BASH
 ```
 
 Ray CRD 삭제는 다른 Namespace에 `RayJob`이나 `RayCluster`가 없고 시작 상태가 `Removed`였을 때만 수행한다. DSC를 `Removed`로 되돌려도 CRD는 남을 수 있으므로 시작 상태까지 되돌릴 때 별도로 확인한다.

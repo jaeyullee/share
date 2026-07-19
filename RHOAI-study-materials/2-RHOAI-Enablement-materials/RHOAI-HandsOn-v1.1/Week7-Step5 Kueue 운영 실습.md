@@ -159,7 +159,7 @@ oc patch clusterqueue week7-ops-cq --type=json \
     "value":"2"
   }]'
 
-oc get job,workload,pod -n week7-kueue -w
+oc get job,workload,pod -n week7-kueue
 ```
 
 Kueue가 quota를 예약하면 Job의 suspend를 해제하고 Pod가 `lab-role=cpu` 노드에 생성된다.

@@ -49,7 +49,7 @@ spec:
   sourceNamespace: openshift-marketplace
 EOF
 
-oc get subscription,csv,pod -n openshift-adp -w
+oc get subscription,csv,pod -n openshift-adp
 ```
 
 CSV `Succeeded`와 Operator Pod `Running`을 확인하고 감시를 종료한다.
@@ -260,11 +260,32 @@ oc exec -n week7-dr-lab deployment/week7-dr-writer -- \
 
 ConfigMap 값과 PVC checksum이 원래 값과 같으면 애플리케이션 복구가 성공한 것이다.
 
-OpenShift Pipelines나 RHOAI가 Namespace 생성 직후 자동으로 다시 만든 RoleBinding과 CA ConfigMap, 이미 존재하는 클러스터 범위 리소스는 Restore `warnings`에 기록될 수 있다. `phase=Completed`인지 확인한 뒤 다음 명령으로 경고 대상을 읽고, 실습 대상 ConfigMap·Deployment·PVC와 checksum이 모두 복구됐으면 성공으로 판정한다. 경고 수만 보고 실패로 판단하지 않는다.
+### Restore 경고와 FSB 데이터 복구 판정
+
+`phase=Completed`와 `errors=null`은 Velero Restore 제어 작업의 성공 상태다. FSB/Kopia 데이터와 애플리케이션까지 복구됐다는 최종 판정은 아래 항목을 모두 충족해야 한다.
+
+1. Restore가 `Completed`이고 `errors`가 없다.
+2. `PodVolumeRestore`가 모두 `Completed`다.
+3. `week7-dr-data` PVC가 `Bound`이고 `week7-dr-writer` Deployment rollout이 완료된다.
+4. `week7-dr-config` 값과 `/data/payload.sha256` 검증 결과가 백업 전과 일치한다.
+
+OpenShift Pipelines나 RHOAI가 Namespace 생성 직후 자동으로 다시 만든 RoleBinding과 CA ConfigMap, 이미 존재하는 CSV/SCC 같은 클러스터 범위 리소스는 Restore `warnings`에 기록될 수 있다. 다음 경고는 위 네 가지 합격 조건이 충족된 경우 실패로 판정하지 않는다.
+
+- `v1 Endpoints`, `DeploymentConfig` deprecation 경고
+- `No annotations found ..., using restore spec setting: false`
+- 자동 생성 RoleBinding/CA ConfigMap 또는 이미 설치된 CSV/SCC의 `already exists` 경고
+- FSB/Kopia 시나리오에서 `VolumeGroupSnapshotContent` CRD가 없어 cleanup을 건너뛰었다는 경고
+- 레거시 `rolebindings.authorization.openshift.io` 객체를 찾지 못했다는 경고. 단, 표준 `rbac.authorization.k8s.io` RoleBinding이 존재하고 `week7-dr-writer`가 정상 기동해야 한다.
+
+반대로 `errors`가 있거나, `PodVolumeRestore`가 실패/미완료이거나, PVC가 `Bound`되지 않거나, rollout 또는 checksum 검증이 실패하면 Restore가 `Completed`여도 실패로 판정하고 원인을 조사한다. 경고 수만 보고 성공 또는 실패로 판단하지 않는다.
 
 ```bash
 oc get restore week7-rhoai-app-restore -n openshift-adp \
   -o json | jq '{phase: .status.phase, warnings: .status.warnings, errors: .status.errors}'
+oc get podvolumerestore -n openshift-adp -o wide
+oc get pvc week7-dr-data -n week7-dr-lab
+oc get rolebinding -n week7-dr-lab \
+  -o custom-columns=NAME:.metadata.name,ROLE:.roleRef.name,SUBJECTS:.subjects[*].name
 oc logs -n openshift-adp deployment/velero -c velero \
   --since=10m | grep -i warning | tail -30
 ```

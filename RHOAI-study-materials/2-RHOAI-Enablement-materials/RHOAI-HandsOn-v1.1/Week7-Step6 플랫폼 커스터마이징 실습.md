@@ -25,19 +25,14 @@ oc get odhdashboardconfig odh-dashboard-config \
 기존 Gitea Route를 사내 도구의 예로 사용한다. OdhApplication은 모델 배포가 아니라 Dashboard launcher metadata다.
 
 ```bash
-oc get route gitea -n gitea
+GITEA_HOST="$(oc get route gitea -n gitea -o jsonpath='{.spec.host}')"
+test -n "$GITEA_HOST"
 
-oc apply -f - <<'EOF'
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: week7-gitea-enabled
-  namespace: redhat-ods-applications
-  labels:
-    app.kubernetes.io/part-of: odh-dashboard
-data:
-  enabled: "true"
----
+# Dashboard creates the success flag after the user clicks Enable.
+oc delete configmap week7-gitea-enabled \
+  -n redhat-ods-applications --ignore-not-found
+
+oc apply -f - <<EOF
 apiVersion: dashboard.opendatahub.io/v1
 kind: OdhApplication
 metadata:
@@ -53,7 +48,7 @@ spec:
   category: Self-managed
   description: Internal Git service used by the RHOAI delivery workflow.
   docsLink: https://docs.gitea.com/
-  getStartedLink: https://gitea.apps.sno.ocp422.com/
+  getStartedLink: https://${GITEA_HOST}/
   getStartedMarkDown: |-
     # Internal Git
     Open the internal Git service used by the RHOAI lab.
@@ -69,6 +64,18 @@ EOF
 oc get odhapplication week7-gitea \
   -n redhat-ods-applications -o yaml
 ```
+
+`validationConfigMap` is the Dashboard activation-result ConfigMap. Do not pre-create it with `enabled: "true"`: Dashboard only recognizes `validation_result: "true"` and will not overwrite an existing ConfigMap. The Enable action creates the correct success flag.
+
+After clicking **Enable**, verify the result directly:
+
+```bash
+oc get configmap week7-gitea-enabled \
+  -n redhat-ods-applications \
+  -o jsonpath='{.data.validation_result}{"\n"}'
+```
+
+The expected value is `true`.
 
 RHOAI Dashboard에서 다음을 확인한다.
 
@@ -229,4 +236,3 @@ unset PROJECT_FLAG
 - [RHOAI 3.4 - Managing applications that show in the dashboard](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html-single/managing_openshift_ai/managing_openshift_ai)
 - [RHOAI 3.4 - Customizing the dashboard](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/managing_resources/customizing-the-dashboard)
 - [RHOAI 3.4 - Customizing component deployment resources](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html-single/managing_openshift_ai/managing_openshift_ai)
-
