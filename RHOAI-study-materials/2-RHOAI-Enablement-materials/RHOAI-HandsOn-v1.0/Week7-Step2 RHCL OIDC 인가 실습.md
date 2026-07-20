@@ -2,6 +2,7 @@
 ## week 7 - Step 2 RHBK JWT와 RHCL OIDC 인가
 
 > **기능 상태를 구분한다.** RHCL 1.4의 `AuthPolicy`를 이용한 OIDC 인증·인가는 정식 지원 기능이다. 다만 이 환경에서 사용하는 RHCL 1.4.1 disconnected 설치 절차는 Technology Preview(TP)이며, RHOAI 3.4 MaaS external OIDC도 별도 TP 기능이다. 필수 실습과 선택 실습의 지원 범위를 혼동하지 않는다.
+> [Disconnected installation is a Technology Preview feature only.](https://docs.redhat.com/en/documentation/red_hat_connectivity_link/1.4/html/installing_connectivity_link/rhcl-install-disconnected)
 
 > **사전 활성화:** [Week3 Day14](<Week3-Day14 실습.md>)의 RHCL operand와 MaaS, [Week7 Step 1](<Week7-Step1 RHBK OIDC 실습.md>)의 RHBK `rhoai` realm, `openshift` client, 사용자·그룹과 `groups` mapper가 남아 있어야 한다. Step 1의 `KeycloakRealmImport`는 삭제해도 되지만 `### 원복`은 아직 실행하지 않는다. Step2에서 새 Operator를 설치하지 않는다.
 
