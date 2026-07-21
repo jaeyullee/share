@@ -3,8 +3,7 @@
 
 > 사전 활성화: [Week1 Day1&2 - Queue 기반 Workbench 구성](<Week1-Day1&2-환경구성.md#queue-기반-workbench-구성>)을 먼저 확인한다. GPU Time-Slicing까지 수행하면 [GPU Workbench·서빙·학습 구성](<Week1-Day1&2-환경구성.md#gpu-workbench서빙학습-구성>)도 필요하다.
 
-Red Hat build of Kueue로 CPU/GPU 워크로드의 quota, admission, priority를 관리하고 NVIDIA Time-Slicing을 확인한다.
-
+> Red Hat build of Kueue로 CPU/GPU 워크로드의 quota, admission, priority를 관리하고 NVIDIA Time-Slicing을 확인한다.
 > RHOAI 3.4에서는 embedded Kueue 대신 Red Hat build of Kueue Operator를 사용한다. shared cohort는 RHOAI 3.4 지원 범위에서 제외하므로 이 실습에서도 사용하지 않는다.
 
 Kueue Cohort는 여러 `ClusterQueue`를 같은 quota 공유 그룹으로 묶는 기능이다. 예를 들어 Team A와 Team B에 GPU nominal quota를 각각 2개씩 배정했을 때, Team B가 사용하지 않는 quota를 Team A가 같은 cohort 안에서 빌려 최대 4개까지 admission 받을 수 있다. Team B가 다시 quota를 요구하면 reclaim/preemption 정책에 따라 빌려준 quota를 회수할 수 있다.
