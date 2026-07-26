@@ -1,5 +1,12 @@
 # RHOAI 변경 이력 (CHANGELOG)
 
+## 2026-07-26
+
+### ⚠️ Deprecated (1)
+- **Deprecation of Llama Stack and transition to OGX** [self-managed 2.25] Deprecated — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.25/html/release_notes/support-removals_relnotes)  
+    근거: Previously, Llama Stack was available as a Technology Preview in OpenShift AI 2.25.
+
+
 ## 2026-07-19
 
 ### 🆕 신규 (23)
