@@ -26,7 +26,7 @@
 ## 서빙 매니페스트
 
 - vLLM ServingRuntime + InferenceService: `../manifests/day14-maas-llm/`
-- llm-d / GuideLLM 벤치마크는 GPU 트랙 학습플랜(`RHOAI-학습플랜-GPU.md`) §2 참조.
+- llm-d / GuideLLM 벤치마크는 GPU 트랙 학습플랜(`006-006-RHOAI-학습플랜-GPU.md`) §2 참조.
 
 ## CPU에서 LLM을 꼭 한 번 띄워보려면 (선택, 성능 무의미)
 

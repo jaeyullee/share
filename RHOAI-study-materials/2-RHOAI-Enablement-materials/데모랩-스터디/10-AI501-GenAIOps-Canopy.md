@@ -241,7 +241,7 @@ GenAIOps 배포의 토대. 세 원칙:
 - **CPU 서빙**: 느리지만 **개발·데모·저트래픽엔 충분**. 기밀 제약 시 합리적.
 - **서빙 = 모델을 앱과 분리된 API 엔드포인트로 노출.** RHOAI에선 **KServe가 배포 오케스트레이션**, **vLLM 런타임이 추론**(continuous batching, PagedAttention으로 효율). 결과는 클러스터 내부 OpenAI 호환 엔드포인트(`http://<model>-predictor.<ns>.svc...:8080/v1`).
 - 예: 개발은 Llama 3.2 3B로 하다 온프렘 제약 때문에 **TinyLlama 1.1B(CPU)**로 다운스케일 — 능력 일부를 포기하고 기밀·인프라 제약에 맞추는 실전 판단.
-- ⚠️ **이 장이 우리 non-GPU 학습플랜과 직결** — CPU 서빙 흐름 재현 가능. → [[RHOAI-학습플랜-non-GPU]], [05-vLLM-추론엔진-핵심정리](../../4-etc-AI-materials/read/05-vLLM-추론엔진-핵심정리.md)
+- ⚠️ **이 장이 우리 non-GPU 학습플랜과 직결** — CPU 서빙 흐름 재현 가능. → [[007-RHOAI-학습플랜-non-GPU]], [05-vLLM-추론엔진-핵심정리](../../4-etc-AI-materials/read/05-vLLM-추론엔진-핵심정리.md)
 
 ---
 
@@ -338,7 +338,7 @@ OCP 4.19+ / 오퍼레이터 4종(RHOAI·GitOps·Pipelines·NVIDIA GPU) / GPU 노
 | 관찰성/피드백 | 6 | [04-AI-보안-관찰성-기초](../../4-etc-AI-materials/04-AI-보안-관찰성-기초.md) |
 | 가드레일 | 7 | [04-에이전트-AI-패턴](04-에이전트-AI-패턴.md) |
 | 에이전트/MCP/도구 | 8 | [03-MCP-핵심](03-MCP-핵심.md), [02-Llama-Stack-핵심](02-Llama-Stack-핵심.md), [04-에이전트-AI-패턴](04-에이전트-AI-패턴.md) |
-| 서빙(CPU/GPU, vLLM) | 9 | [05-vLLM-추론엔진-핵심정리](../../4-etc-AI-materials/read/05-vLLM-추론엔진-핵심정리.md), [[RHOAI-학습플랜-non-GPU]] |
+| 서빙(CPU/GPU, vLLM) | 9 | [05-vLLM-추론엔진-핵심정리](../../4-etc-AI-materials/read/05-vLLM-추론엔진-핵심정리.md), [[007-RHOAI-학습플랜-non-GPU]] |
 | 압축/양자화 | 10 | [03-LLM-모델-양자화-압축-핵심정리](../../4-etc-AI-materials/read/03-LLM-모델-양자화-압축-핵심정리.md) |
 | MaaS | 11 | [07-LLMaaS-MaaS-멀티테넌시](07-LLMaaS-MaaS-멀티테넌시.md) |
 | 파인튜닝/LoRA/SDG | 12 | [02-모델-학습-파인튜닝-기초](../../4-etc-AI-materials/read/02-모델-학습-파인튜닝-기초.md) |
