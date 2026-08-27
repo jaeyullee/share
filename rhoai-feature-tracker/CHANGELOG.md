@@ -2,6 +2,33 @@
 
 ## 2026-08-27
 
+### 📌 해석 — 무엇이 진짜 신규인가 (추가 검증)
+
+3.5 릴리즈노트가 **EA2판 → GA판으로 교체**되면서 발생한 변경이다. 자동 분류만으로는 "실제 신규"와 "문서 재편"이 섞이므로 165건 전부를 직전 스냅샷(`2026-08-26T144620`)과 대조했다.
+
+**🆕 신규 105건 → 실제 신규 103건 + rename 2건**
+
+- 105건 전부 직전 카탈로그(2.16·2.25·3.2·3.3·3.4·3.5 EA2판)에 **같은 `feature_id`가 없었다**. 다른 버전에서 넘어온 재등장이 아니다.
+- 설명문 대조에서 기존 항목과 겹친 것은 2건뿐이다:
+  - `OGX servers require installation of the PostgreSQL Operator` ← `OGX servers now require ...` (유사도 0.99)
+  - `The remote::anthropic inference provider for OGX` ← `The inference provider for OGX` (0.78, 이전 근거문이 동일 내용)
+- 나머지 **103건은 3.5 GA판에서 처음 문서화된 내용**이다. 포맷 변경으로 신규처럼 보인 것이 아니다.
+
+**🗑️ 문서에서 제거 58건 → 기능 소멸은 3건뿐**
+
+- **52건**은 3.4 등 **다른 버전 문서에 그대로 존재**한다. 3.5 GA판 목록에서만 빠졌을 뿐 기능이 없어진 게 아니다 (3.4만 25건 · 2.25~3.4 deprecation 15건 · 3.2~3.4 6건 · 3.3~3.4 4건 · 2.25/3.3/3.4 2건).
+- **3건**은 위 rename의 짝이다: `OGX servers now require ...`, `The inference provider for OGX`, `End-to-end distributed tracing for llm-d`(→ `... for Distributed Inference with llm-d`로 통합, 0.75).
+- **실제로 문서에서 이탈한 것은 3건**이다 — 대체 항목을 찾지 못했다:
+  - `Garak evaluation provider available in OGX distribution`
+  - `Configure vLLM runtime arguments using Kubernetes container args field`
+  - `Deprecated SQLite as a production metadata store for OGX`
+
+**⬆️ 승격 2건**은 순수 라이프사이클 변화다 (MaaS External OIDC, EvalHub SDK/CLI — 둘 다 TP → GA).
+
+> **한계**: "문서에 처음 실렸다"와 "제품에 처음 생겼다"는 다르다. 릴리즈노트만으로는 구분할 수 없으므로, 103건이 전부 신규 개발이라고 단정하지 않는다.
+>
+> 아래 목록은 트래커 자동 출력 원본이다. 항목의 `⚠️rename?`는 같은 실행에 REMOVED+NEW가 동시에 나타났다는 자동 플래그이며, 위 검증이 그 판정 결과다.
+
 ### 🆕 신규 (105)
 - **Migration guide using rhai-cli for upgrading from OpenShift AI 2.25.9 and later to 3.5** [self-managed 3.5] GA ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes)  
     근거: A new migration guide, Assess and plan for migration from Red Hat OpenShift AI 2.25.9 (and later) to 3.5 , is now available.
