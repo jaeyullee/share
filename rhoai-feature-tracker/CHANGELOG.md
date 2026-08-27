@@ -2,8 +2,8 @@
 
 ## 2026-08-27
 
-### 🆕 신규 (107)
-- **3.5 GA new features Migration guide using rhai-cli for upgrading from OpenShift AI 2.25.9 and later to 3.5** [self-managed 3.5] GA ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes)  
+### 🆕 신규 (105)
+- **Migration guide using rhai-cli for upgrading from OpenShift AI 2.25.9 and later to 3.5** [self-managed 3.5] GA ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes)  
     근거: A new migration guide, Assess and plan for migration from Red Hat OpenShift AI 2.25.9 (and later) to 3.5 , is now available.
 - **EvalHub general availability for the Red Hat AI evaluation stack** [self-managed 3.5] GA ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes)  
     근거: EvalHub is generally available (GA).
@@ -65,13 +65,9 @@
     근거: ServiceMonitor The TrustyAI Service Operator automatically creates a resource when EvalHub is deployed with metrics enabled.
 - **NeMo Guardrails support on IBM Z** [self-managed 3.5] GA ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes)  
     근거: NeMo Guardrails is supported on IBM Z (s390x).
-- **3.5 EA2 new features Responses API on OGX** [self-managed 3.5] GA ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes)  
-    근거: The Responses API is generally available on OGX.
 - **Safety and Security Insights tab in the Red Hat AI Model Catalog** [self-managed 3.5] GA ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes)  
     근거: The Red Hat AI Model Catalog includes a new Safety and Security Insights tab that displays AI security evaluation results for each model.
-- **3.5 EA1 new features Support for OGX and KubeRay on IBM Power** [self-managed 3.5] GA ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes)  
-    근거: Red Hat OpenShift AI 3.5 EA1 introduces official support for both OGX (which replaces Llama Stack) and KubeRay on the IBM Power architecture.
-- **3.5 GA enhancements Canary rollout support for KServe RawDeployment mode** [self-managed 3.5] GA ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes)  
+- **Canary rollout support for KServe RawDeployment mode** [self-managed 3.5] GA ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes)  
     근거: In OpenShift AI, you can perform canary rollouts for KServe InferenceService deployments in RawDeployment mode.
 - **Observability dashboards installed by default for Distributed Inference with llm-d** [self-managed 3.5] GA ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes)  
     근거: Distributed Inference with llm-d includes observability dashboards installed by default in the ConfigMap OpenShift web console.
@@ -224,11 +220,7 @@
 - **EvalHub client SDK and CLI** [self-managed 3.5] GA (was TP) — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes)  
     근거: OpenShift AI includes the EvalHub client SDK and command-line interface (CLI).
 
-### 🗑️ 문서에서 제거 (60)
-- **Responses API on OGX** [self-managed 3.5] GA (was GA) ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes)  
-    근거: The Responses API is generally available on OGX.
-- **Support for OGX and KubeRay on IBM Power** [self-managed 3.5] GA (was GA) ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes)  
-    근거: Red Hat OpenShift AI 3.4 GA introduces official support for both OGX and KubeRay on the IBM Power architecture.
+### 🗑️ 문서에서 제거 (58)
 - **Support for direct authentication with an OIDC identity provider** [self-managed 3.5] GA (was GA) ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes)  
     근거: Direct authentication with an OpenID Connect (OIDC) identity provider is now available as a GA feature.
 - **Migration guide available for transitioning from vLLM-based InferenceService to LLMInferenceService** [self-managed 3.5] GA (was GA) ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes)  
