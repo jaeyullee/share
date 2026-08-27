@@ -1,0 +1,16 @@
+# 공개 푸시 대상 목록 — 이 파일에 적힌 것만 공개된다 (default-deny)
+#
+# TrueNAS /scripts/rhoai-study-sync.sh 가 이 목록을 읽어 rsync 소스로 쓴다.
+# 규칙: 00-System/rules/public-share-confidentiality.md
+#
+# 기본값은 "비공개"다. 03-Areas/01-AI-공부-및-활용/ 아래 새 폴더나 파일이 생겨도
+# 여기 적히기 전까지는 공개되지 않는다.
+#
+# 한 줄에 항목 하나. 이 area 루트 기준 상대 경로. 주석(#)과 빈 줄은 무시된다.
+
+0-Important
+1-RHOAI-Company-materials
+2-RHOAI-Enablement-materials
+3-RHOAI-Personal-materials
+4-etc-AI-materials
+5-RHOAI-Delivery-Insights
