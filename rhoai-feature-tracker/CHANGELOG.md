@@ -1,5 +1,395 @@
 # RHOAI 변경 이력 (CHANGELOG)
 
+## 2026-09-01
+
+### ⚠️ Deprecated (19)
+- **Deprecated default group creation for model registry** [self-managed 3.4] Deprecated — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/support-removals_relnotes)  
+    근거: Starting with OpenShift AI 3.4, the default group creation performed by the OpenShift AI Operator when a model registry is created is deprecated.
+- **Deprecation of FMS Guardrails Orchestrator** [self-managed 3.5] Deprecated — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes)  
+    근거: In OpenShift AI 3.5, the FMS Guardrails Orchestrator is deprecated and will be removed in a future release.
+- **Deprecated LM-Eval** [self-managed 3.5] Deprecated — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes)  
+    근거: The LM-Eval standalone evaluation service, including the LMEvalJob custom resource and the LM- Eval model evaluation UI, is deprecated and will be removed in a future release.
+- **Deprecation of OGX Evaluation API** [self-managed 3.5] Deprecated — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes)  
+    근거: In OpenShift AI 3.5 EA1, the Evaluation REST API and its associated providers are deprecated and removed from the OGX Operator.
+- **Deprecation of the Safety and Shields APIs from OGX** [self-managed 3.5] Deprecated — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes)  
+    근거: The Safety and Shields APIs and their respective providers have been deprecated in OGX, previously known as Llama Stack, in OpenShift AI 3.5 EA1.
+- **Deprecated default group creation for model registry** [self-managed 3.5] Deprecated — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes)  
+    근거: Starting with OpenShift AI 3.4, the default group creation performed by the OpenShift AI Operator when a model registry is created is deprecated.
+- **Deprecated SQLite as a production metadata store for OGX** [self-managed 3.5] Deprecated — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes)  
+    근거: Starting with OpenShift AI 3.2, SQLite is deprecated for use as a metadata store in production OGX deployments.
+- **Deprecated annotation format for Connection Secrets** [self-managed 3.5] Deprecated (was Deprecated) — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes)  
+    근거: Starting with OpenShift AI 3.0, the opendatahub.io/connection-type-ref annotation format for creating Connection Secrets is deprecated.
+- **Deprecated Kubeflow Training operator v1** [self-managed 3.5] Deprecated (was Deprecated) — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes)  
+    근거: The Kubeflow Training Operator (v1) is deprecated starting OpenShift AI 2.25 and is planned to be removed in a future release.
+- **Deprecated TrustyAI service CRD v1alpha1** [self-managed 3.5] Deprecated (was Deprecated) — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes)  
+    근거: Starting with OpenShift AI 2.25, the v1alpha1 version is deprecated and planned for removal in an v1 upcoming release.
+- **Deprecated KServe Serverless deployment mode** [self-managed 3.5] Deprecated (was Deprecated) — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes)  
+    근거: Starting with OpenShift AI 2.25, The KServe Serverless deployment mode is deprecated.
+- **Deprecated model registry API v1alpha1** [self-managed 3.5] Deprecated (was Deprecated) — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes)  
+    근거: Starting with OpenShift AI 2.24, the model registry API version v1alpha1 is deprecated and will be v1beta1 removed in a future release of OpenShift AI.
+- **Multi-model serving platform (ModelMesh)** [self-managed 3.5] Deprecated (was Deprecated) — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes)  
+    근거: Starting with OpenShift AI version 2.19, the multi-model serving platform based on ModelMesh is deprecated.
+- **Accelerator Profiles and legacy Container Size selector deprecated** [self-managed 3.5] Deprecated (was Deprecated) — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes)  
+    근거: Starting with OpenShift AI 3.0, Accelerator Profiles and the Container Size selector for workbenches are deprecated.
+- **Deprecated OpenVINO Model Server (OVMS) plugin** [self-managed 3.5] Deprecated (was Deprecated) — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes)  
+    근거: The CUDA plugin for the OpenVINO Model Server (OVMS) is now deprecated and will no longer be available in future releases of OpenShift AI.
+- **OpenShift AI dashboard user management moved from OdhDashboardConfig to Auth resource** [self-managed 3.5] Deprecated — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes)  
+    근거: Red Hat OpenShift AI Self-Managed 3.5 Release notes groupsConfig OdhDashboardConfig Previously, cluster administrators used the option in the resource to manage the OpenShift groups (both administrators and non-administrators) that can access the OpenShift AI dashboard.
+- **Deprecated cluster configuration parameters** [self-managed 3.5] Deprecated (was Deprecated) — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes)  
+    근거: When using the CodeFlare SDK to run distributed workloads in Red Hat OpenShift AI, the following parameters in the Ray cluster configuration are now deprecated and should be replaced with the new parameters as indicated.
+- **Deprecated cluster configuration parameters** [self-managed 2.16] Deprecated (was Deprecated) — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/release_notes/support-removals_relnotes)  
+    근거: When using the CodeFlare SDK to run distributed workloads in Red Hat OpenShift AI, the following parameters in the Ray cluster configuration are now deprecated and should be replaced with the new parameters as indicated.
+- **Admin groups restructure** [self-managed 2.16] Deprecated — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/release_notes/support-removals_relnotes)  
+    근거: Currently, cluster administrators can configure OpenShift AI administration access to the dashboard groupsConfig OdhDashboardConfig by using the option in the OpenShift custom resource (CR).
+
+### ❌ Removed (44)
+- **Caikit-NLP component removed** [self-managed 3.3] Removed — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.3/html/release_notes/support-removals_relnotes)  
+    근거: The caikit-nlp component has been formally deprecated and removed from OpenShift AI 3.0.
+- **TGIS component removed** [self-managed 3.3] Removed — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.3/html/release_notes/support-removals_relnotes)  
+    근거: The TGIS component, which was deprecated in OpenShift AI 2.19, has been removed in OpenShift AI 3.0.
+- **AppWrapper Controller removed** [self-managed 3.3] Removed — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.3/html/release_notes/support-removals_relnotes)  
+    근거: The AppWrapper controller has been removed from OpenShift AI as part of the broader CodeFlare Operator removal process.
+- **LAB-tuning feature removed** [self-managed 3.3] Removed — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.3/html/release_notes/support-removals_relnotes)  
+    근거: Red Hat OpenShift AI Self-Managed 3.3 Release notes Starting with OpenShift AI 3.0, the LAB-tuning feature has been removed.
+- **Embedded Kueue component removed** [self-managed 3.3] Removed — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.3/html/release_notes/support-removals_relnotes)  
+    근거: The embedded Kueue component, which was deprecated in OpenShift AI 2.24, has been removed in OpenShift AI 3.0.
+- **Removal of DataSciencePipelinesApplication v1alpha1 API version** [self-managed 3.3] Removed — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.3/html/release_notes/support-removals_relnotes)  
+    근거: The v1alpha1 API version of the DataSciencePipelinesApplication custom resource ( datasciencepipelinesapplications.opendatahub.io/v1alpha1 ) has been removed.
+- **tf2onnx package removed from TensorFlow images** [self-managed 3.4] Removed — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/support-removals_relnotes)  
+    근거: The tf2onnx package has been removed from TensorFlow workbench and runtime images.
+- **Caikit-NLP component removed** [self-managed 3.4] Removed — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/support-removals_relnotes)  
+    근거: caikit-nlp The component has been formally deprecated and removed from OpenShift AI 3.0.
+- **TGIS component removed** [self-managed 3.4] Removed — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/support-removals_relnotes)  
+    근거: The TGIS component, which was deprecated in OpenShift AI 2.19, has been removed in OpenShift AI 3.0.
+- **AppWrapper Controller removed** [self-managed 3.4] Removed — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/support-removals_relnotes)  
+    근거: The AppWrapper controller has been removed from OpenShift AI as part of the broader CodeFlare Red Hat OpenShift AI Self-Managed 3.4 Release notes The AppWrapper controller has been removed from OpenShift AI as part of the broader CodeFlare Operator removal process.
+- **LAB-tuning feature removed** [self-managed 3.4] Removed — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/support-removals_relnotes)  
+    근거: Starting with OpenShift AI 3.0, the LAB-tuning feature has been removed.
+- **Embedded Kueue component removed** [self-managed 3.4] Removed — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/support-removals_relnotes)  
+    근거: The embedded Kueue component, which was deprecated in OpenShift AI 2.24, has been removed in OpenShift AI 3.0.
+- **Removal of DataSciencePipelinesApplication v1alpha1 API version** [self-managed 3.4] Removed — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/support-removals_relnotes)  
+    근거: The v1alpha1 API version of the DataSciencePipelinesApplication custom resource ( datasciencepipelinesapplications.opendatahub.io/v1alpha1 ) has been removed.
+- **RStudio Server and CUDA - RStudio Server workbench images removed** [self-managed 3.5] Removed — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes)  
+    근거: Starting with OpenShift AI 3.5, the RStudio Server and CUDA - RStudio Server workbench images have been removed from Red Hat OpenShift AI due to licensing compliance requirements.
+- **Training images removed for Kubeflow Training Operator v1** [self-managed 3.5] Removed — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes)  
+    근거: The following training runtime images for the Kubeflow Training Operator v1 (deprecated in OpenShift AI 3.4) have been removed:
+- **FIPSEnabled configuration field and separate FIPS binaries removed** [self-managed 3.5] Removed — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes)  
+    근거: The FIPSEnabled field in the DSPO configuration and the separate FIPS binaries launcher-v2-fips and argoexec-fips are removed.
+- **tf2onnx package removed from TensorFlow images** [self-managed 3.5] Removed — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes)  
+    근거: The tf2onnx package has been removed from TensorFlow workbench and runtime images.
+- **Caikit-NLP component removed** [self-managed 3.5] Removed — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes)  
+    근거: caikit-nlp The component has been formally deprecated and removed from OpenShift AI 3.0.
+- **TGIS component removed** [self-managed 3.5] Removed — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes)  
+    근거: The TGIS component, which was deprecated in OpenShift AI 2.19, has been removed in OpenShift AI 3.0.
+- **AppWrapper Controller removed** [self-managed 3.5] Removed — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes)  
+    근거: The AppWrapper controller has been removed from OpenShift AI as part of the broader CodeFlare Operator removal process.
+- **CodeFlare Operator removed** [self-managed 3.5] Removed (was Removed) — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes)  
+    근거: Starting with OpenShift AI 3.0, the CodeFlare Operator has been removed.
+- **LAB-tuning feature removed** [self-managed 3.5] Removed — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes)  
+    근거: Starting with OpenShift AI 3.0, the LAB-tuning feature has been removed.
+- **Embedded Kueue component removed** [self-managed 3.5] Removed — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes)  
+    근거: The embedded Kueue component, which was deprecated in OpenShift AI 2.24, has been removed in OpenShift AI 3.0.
+- **Removal of DataSciencePipelinesApplication v1alpha1 API version** [self-managed 3.5] Removed — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes)  
+    근거: The v1alpha1 API version of the DataSciencePipelinesApplication custom resource datasciencepipelinesapplications.opendatahub.io/v1alpha1 ( ) has been removed.
+- **Microsoft SQL Server command-line tool removal** [self-managed 3.5] Removed (was Removed) — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes)  
+    근거: Starting with OpenShift AI 2.24, the Microsoft SQL Server command-line tools (sqlcmd, bcp) have been removed from workbenches.
+- **Model registry ML Metadata (MLMD) server removal** [self-managed 3.5] Removed (was Removed) — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes)  
+    근거: Starting with OpenShift AI 2.23, the ML Metadata (MLMD) server has been removed from the model registry component.
+- **Embedded subscription channel not used in some versions** [self-managed 3.5] Removed (was Removed) — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes)  
+    근거: For OpenShift AI 2.8 to 2.20 and 2.22 to 3.5, the embedded subscription channel is not used.
+- **Anaconda removal** [self-managed 3.5] Removed (was Removed) — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes)  
+    근거: Starting with OpenShift AI version 2.18, Anaconda is no longer included in OpenShift AI, and Anaconda resources are no longer supported or managed by OpenShift AI.
+- **Pipeline logs for Python scripts running in Elyra pipelines are no longer stored in S3** [self-managed 3.5] Removed (was Removed) — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes)  
+    근거: Logs are no longer stored in S3-compatible storage for Python scripts which are running in Elyra pipelines.
+- **Beta subscription channel no longer used** [self-managed 3.5] Removed (was Removed) — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes)  
+    근거: beta Starting with OpenShift AI 2.5, the subscription channel is no longer used.
+- **HabanaAI workbench image removal** [self-managed 3.5] Removed (was Removed) — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes)  
+    근거: Support for the HabanaAI 1.10 workbench image has been removed.
+- **Anaconda removal** [self-managed 2.16] Removed (was Removed) — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/release_notes/support-removals_relnotes)  
+    근거: In Red Hat OpenShift AI 2.16.2, Anaconda is no longer included in OpenShift AI, and Anaconda resources are no longer supported or managed by OpenShift AI.
+- **Data science pipelines v1 support removed** [self-managed 2.16] Removed — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/release_notes/support-removals_relnotes)  
+    근거: Starting with OpenShift AI 2.16, data science pipelines 1.0 resources are no longer supported or CHAPTER 6.
+- **HabanaAI workbench image removal** [self-managed 2.16] Removed (was Removed) — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/release_notes/support-removals_relnotes)  
+    근거: Support for the HabanaAI 1.10 workbench image has been removed.
+- **Pipeline logs for Python scripts running in Elyra pipelines are no longer stored in S3** [self-managed 2.16] Removed (was Removed) — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/release_notes/support-removals_relnotes)  
+    근거: Logs are no longer stored in S3-compatible storage for Python scripts which are running in Elyra pipelines.
+- **Embedded subscription channel no longer used** [self-managed 2.16] Removed — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/release_notes/support-removals_relnotes)  
+    근거: Starting with OpenShift AI 2.8, the embedded subscription channel is no longer used.
+- **Version 1.2 notebook container images for workbenches are no longer supported** [self-managed 2.16] Removed — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/release_notes/support-removals_relnotes)  
+    근거: When you create a workbench, you specify a notebook container image to use with the workbench.
+- **Beta subscription channel no longer used** [self-managed 2.16] Removed (was Removed) — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/release_notes/support-removals_relnotes)  
+    근거: Starting with OpenShift AI 2.5, the beta subscription channel is no longer used.
+- **Caikit-NLP component removed** [self-managed 3.2] Removed — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.2/html/release_notes/support-removals_relnotes)  
+    근거: The caikit-nlp component has been formally deprecated and removed from OpenShift AI 3.0.
+- **TGIS component removed** [self-managed 3.2] Removed — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.2/html/release_notes/support-removals_relnotes)  
+    근거: The TGIS component, which was deprecated in OpenShift AI 2.19, has been removed in OpenShift AI 3.0.
+- **AppWrapper Controller removed** [self-managed 3.2] Removed — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.2/html/release_notes/support-removals_relnotes)  
+    근거: The AppWrapper controller has been removed from OpenShift AI as part of the broader CodeFlare Operator removal process.
+- **LAB-tuning feature removed** [self-managed 3.2] Removed — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.2/html/release_notes/support-removals_relnotes)  
+    근거: Starting with OpenShift AI 3.0, the LAB-tuning feature has been removed.
+- **Embedded Kueue component removed** [self-managed 3.2] Removed — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.2/html/release_notes/support-removals_relnotes)  
+    근거: The embedded Kueue component, which was deprecated in OpenShift AI 2.24, has been removed in OpenShift AI 3.0.
+- **Removal of DataSciencePipelinesApplication v1alpha1 API version** [self-managed 3.2] Removed — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.2/html/release_notes/support-removals_relnotes)  
+    근거: v1alpha1 DataSciencePipelinesApplication The API version of the custom resource ( datasciencepipelinesapplications.opendatahub.io/v1alpha1 ) has been removed.
+
+
+## 2026-08-31
+
+### 🆕 신규 (172)
+- **Tuning in OpenShift AI** [self-managed 2.16] LA ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/release_notes/limited-availability-features_relnotes)  
+    근거: Tuning in OpenShift AI is available as a Limited Availability feature.
+- **Dashboard** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Dashboard** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Dashboard** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AI Pipelines** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AI Pipelines** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AI Pipelines** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ Argo Workflows** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ Argo Workflows** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ Argo Workflows** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Distributed Inference with llm-d** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Distributed Inference with llm-d** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Distributed Inference with llm-d** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Feature Store (Feast)** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Feature Store (Feast)** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Feature Store (Feast)** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **KServe** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **KServe** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **KServe** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Red Hat AI Inference** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Red Hat AI Inference** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Training Operator v1** [self-managed 3.5] Deprecated (3) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Trainer v2** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Trainer v2** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Trainer v2** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **KubeRay** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **KubeRay** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **KubeRay** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Llama Stack Operator** [self-managed 3.3] TP ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Llama Stack Operator** [self-managed 3.4] TP ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **OGX Operator** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ OGX** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Model as a Service (MaaS)** [self-managed 3.3] TP ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Model as a Service (MaaS)** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Model as a Service (MaaS)** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **MLflow** [self-managed 3.3] TP ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **MLflow** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **MLflow** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **MLServer** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **MLServer** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **MLServer** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Spark Operator** [self-managed 3.4] TP ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Spark Operator** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ Spark** [self-managed 3.4] TP ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ Spark** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **TrustyAI** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **TrustyAI** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **TrustyAI** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ LM-Eval** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ LM-Eval** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ LM-Eval** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ NeMo Guardrails** [self-managed 3.3] TP ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ NeMo Guardrails** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ NeMo Guardrails** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AI Hub** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AI Hub** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AI Hub** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Notebook Controller** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Notebook Controller** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Notebook Controller** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AutoML** [self-managed 3.4] TP ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AutoML** [self-managed 3.5] TP ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AutoRAG** [self-managed 3.4] TP ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AutoRAG** [self-managed 3.5] TP ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **EvalHub** [self-managed 3.5] TP ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Dashboard** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Dashboard** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Dashboard** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AI Pipelines** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AI Pipelines** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AI Pipelines** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ Argo Workflows** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ Argo Workflows** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ Argo Workflows** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Distributed Inference with llm-d** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Distributed Inference with llm-d** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Distributed Inference with llm-d** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Feature Store (Feast)** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Feature Store (Feast)** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Feature Store (Feast)** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **KServe** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **KServe** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **KServe** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Red Hat AI Inference** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Red Hat AI Inference** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Training Operator v1** [self-managed 3.5] Deprecated (3) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **KubeRay** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **KubeRay** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **KubeRay** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Llama Stack Operator** [self-managed 3.3] TP ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Llama Stack Operator** [self-managed 3.4] TP ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **OGX Operator** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ OGX** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Model as a Service (MaaS)** [self-managed 3.3] TP ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Model as a Service (MaaS)** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Model as a Service (MaaS)** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **TrustyAI** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **TrustyAI** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **TrustyAI** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ LM-Eval** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ LM-Eval** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ LM-Eval** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AI Hub** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AI Hub** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AI Hub** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Notebook Controller** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Notebook Controller** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Notebook Controller** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Dashboard** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Dashboard** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Dashboard** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AI Pipelines** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AI Pipelines** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AI Pipelines** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ Argo Workflows** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ Argo Workflows** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ Argo Workflows** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Feature Store (Feast)** [self-managed 3.3] TP ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Feature Store (Feast)** [self-managed 3.4] TP ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Feature Store (Feast)** [self-managed 3.5] TP ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **KServe** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **KServe** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **KServe** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Red Hat AI Inference** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Red Hat AI Inference** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Training Operator v1** [self-managed 3.5] Deprecated (3) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **KubeRay** [self-managed 3.4] TP ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **KubeRay** [self-managed 3.5] TP ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Llama Stack Operator** [self-managed 3.4] TP ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **OGX Operator** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ OGX** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **MLflow** [self-managed 3.5] TP ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **MLServer** [self-managed 3.5] TP ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Spark Operator** [self-managed 3.5] TP ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ Spark** [self-managed 3.5] TP ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **TrustyAI** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **TrustyAI** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **TrustyAI** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ LM-Eval** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ LM-Eval** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ LM-Eval** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ NeMo Guardrails** [self-managed 3.3] TP ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ NeMo Guardrails** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ NeMo Guardrails** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AI Hub** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AI Hub** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AI Hub** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Notebook Controller** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Notebook Controller** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Notebook Controller** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AutoML** [self-managed 3.4] TP ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AutoML** [self-managed 3.5] TP ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Dashboard** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Dashboard** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Dashboard** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **KServe** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **KServe** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **KServe** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Red Hat AI Inference** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Red Hat AI Inference** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **TrustyAI** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **TrustyAI** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **TrustyAI** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **IBM Spyre Operator** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **IBM Spyre Operator** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **IBM Spyre Operator** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AI Hub** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AI Hub** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AI Hub** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Notebook Controller** [self-managed 3.3] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Notebook Controller** [self-managed 3.4] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Notebook Controller** [self-managed 3.5] GA ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+
+### ⚠️ Deprecated (6)
+- **Kubeflow Training Operator v1** [self-managed 3.3] Deprecated — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Training Operator v1** [self-managed 3.4] Deprecated — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Training Operator v1** [self-managed 3.3] Deprecated — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Training Operator v1** [self-managed 3.4] Deprecated — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Training Operator v1** [self-managed 3.3] Deprecated — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Training Operator v1** [self-managed 3.4] Deprecated — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+
+### 🗑️ 문서에서 제거 (69)
+- **Dashboard** [self-managed 3.3] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Dashboard** [self-managed 3.4] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Dashboard** [self-managed 3.5] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AI Pipelines** [self-managed 3.3] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AI Pipelines** [self-managed 3.4] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AI Pipelines** [self-managed 3.5] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ Argo Workflows** [self-managed 3.3] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ Argo Workflows** [self-managed 3.4] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ Argo Workflows** [self-managed 3.5] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Distributed Inference with llm-d** [self-managed 3.3] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Distributed Inference with llm-d** [self-managed 3.4] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Distributed Inference with llm-d** [self-managed 3.5] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Feature Store (Feast)** [self-managed 3.3] TP (was TP) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Feature Store (Feast)** [self-managed 3.4] TP (was TP) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Feature Store (Feast)** [self-managed 3.5] TP (was TP) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **KServe** [self-managed 3.3] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **KServe** [self-managed 3.4] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **KServe** [self-managed 3.5] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Red Hat AI Inference** [self-managed 3.4] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Red Hat AI Inference** [self-managed 3.5] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Training Operator v1** [self-managed 3.3] Deprecated (was Deprecated) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Training Operator v1** [self-managed 3.4] Deprecated (was Deprecated) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Training Operator v1** [self-managed 3.5] Deprecated (3) (was Deprecated (3)) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Trainer v2** [self-managed 3.3] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Trainer v2** [self-managed 3.4] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Trainer v2** [self-managed 3.5] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **KubeRay** [self-managed 3.3] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **KubeRay** [self-managed 3.4] TP (was TP) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **KubeRay** [self-managed 3.5] TP (was TP) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Llama Stack Operator** [self-managed 3.3] TP (was TP) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Llama Stack Operator** [self-managed 3.4] TP (was TP) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **OGX Operator** [self-managed 3.5] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ OGX** [self-managed 3.5] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Model as a Service (MaaS)** [self-managed 3.3] TP (was TP) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Model as a Service (MaaS)** [self-managed 3.4] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Model as a Service (MaaS)** [self-managed 3.5] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **MLflow** [self-managed 3.3] TP (was TP) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **MLflow** [self-managed 3.4] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **MLflow** [self-managed 3.5] TP (was TP) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **MLServer** [self-managed 3.3] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **MLServer** [self-managed 3.4] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **MLServer** [self-managed 3.5] TP (was TP) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Spark Operator** [self-managed 3.4] TP (was TP) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Spark Operator** [self-managed 3.5] TP (was TP) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ Spark** [self-managed 3.4] TP (was TP) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ Spark** [self-managed 3.5] TP (was TP) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **TrustyAI** [self-managed 3.3] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **TrustyAI** [self-managed 3.4] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **TrustyAI** [self-managed 3.5] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ LM-Eval** [self-managed 3.3] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ LM-Eval** [self-managed 3.4] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ LM-Eval** [self-managed 3.5] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ NeMo Guardrails** [self-managed 3.3] TP (was TP) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ NeMo Guardrails** [self-managed 3.4] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ NeMo Guardrails** [self-managed 3.5] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AI Hub** [self-managed 3.3] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AI Hub** [self-managed 3.4] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AI Hub** [self-managed 3.5] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Notebook Controller** [self-managed 3.3] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Notebook Controller** [self-managed 3.4] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Notebook Controller** [self-managed 3.5] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AutoML** [self-managed 3.4] TP (was TP) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AutoML** [self-managed 3.5] TP (was TP) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AutoRAG** [self-managed 3.4] TP (was TP) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **AutoRAG** [self-managed 3.5] TP (was TP) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **EvalHub** [self-managed 3.5] TP (was TP) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **IBM Spyre Operator** [self-managed 3.3] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **IBM Spyre Operator** [self-managed 3.4] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **IBM Spyre Operator** [self-managed 3.5] GA (was GA) ⚠️rename? — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+
+
 ## 2026-08-30
 
 ### 🆕 신규 (171)
