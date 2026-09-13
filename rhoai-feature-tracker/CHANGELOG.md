@@ -1,5 +1,13 @@
 # RHOAI 변경 이력 (CHANGELOG)
 
+## 2026-09-13
+
+### 🆕 신규 (3)
+- **Kubeflow Trainer v2** [self-managed 3.3] GA — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Trainer v2** [self-managed 3.4] GA — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Trainer v2** [self-managed 3.5] GA — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+
+
 ## 2026-09-01
 
 ### ⚠️ Deprecated (19)
