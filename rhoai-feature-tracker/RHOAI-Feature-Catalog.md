@@ -1,6 +1,6 @@
 # RHOAI 기능 카탈로그
 
-📅 **갱신일**: 2026-09-13 · 📄 **출처 기준**: self-managed 2.16, self-managed 2.25, self-managed 3.2, self-managed 3.3, self-managed 3.4, self-managed 3.5
+📅 **갱신일**: 2026-09-20 · 📄 **출처 기준**: self-managed 2.16, self-managed 2.25, self-managed 3.2, self-managed 3.3, self-managed 3.4, self-managed 3.5
 🔗 **출처**: 릴리즈노트(docs.redhat.com) · Supported Configs(access.redhat.com)
 
 기능을 **제공 컴포넌트별로 묶음**. 열=버전, 칸=그 버전 상태(carry-forward, `—`=데이터상 없음). 컴포넌트 행(`▸`)은 x86_64 기준이며 `*`=아키텍처별 상이(부록 참조). `근거`=상태 증명 문장.
@@ -166,7 +166,7 @@
 | 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 3.5 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|---|
 | ▸ 컴포넌트 | — | — | — | — | — | TP | — | — |
-| Automatic MLflow experiment creation in EvalHub | — | — | — | — | DP | DP | The EvalHub service automatically creates an MLflow experiment when you specify experiment.name in the evaluation job request. | [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/developer-preview-features_relnotes) [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/developer-preview-features_relnotes) |
+| Automatic MLflow experiment creation in EvalHub | — | — | — | — | DP | DP | The EvalHub service automatically creates an MLflow experiment when you specify CHAPTER 4. | [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/developer-preview-features_relnotes) [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/developer-preview-features_relnotes) |
 | Deprecated LM-Eval | — | — | — | — | — | Deprecated | The LM-Eval standalone evaluation service, including the LMEvalJob custom resource and the LM- Eval model evaluation UI, is deprecated and will be removed in a future release. | [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes) |
 | EvalCard generation for evaluation runs | — | — | — | — | — | GA | In OpenShift AI, you can generate standardized Evaluation Cards (EvalCards) for every evaluation run in EvalHub. | [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes) |
 | EvalHub client SDK and CLI | — | — | — | — | TP | GA | OpenShift AI includes the EvalHub client SDK and command-line interface (CLI). | [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/technology-preview-features_relnotes) [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes) |
@@ -290,8 +290,8 @@
 | 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 3.5 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|---|
 | ▸ 컴포넌트 | — | — | — | TP | TP | — | — | — |
-| Agent deploy and runtime management | — | — | — | — | DP | DP | You can manage the runtime concerns of deployed agents using the AgentRuntime custom resource. | [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/developer-preview-features_relnotes) [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/developer-preview-features_relnotes) |
-| AgentCard support for post-deployment agent discovery | — | — | — | — | DP | DP | You can discover deployed agents and their capabilities through the AgentCard custom resource. | [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/developer-preview-features_relnotes) [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/developer-preview-features_relnotes) |
+| Agent deploy and runtime management | — | — | — | — | DP | DP | NOTE The Kagenti capabilities described in this entry were introduced as Developer Preview features in OpenShift AI 3.4. | [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/developer-preview-features_relnotes) [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/developer-preview-features_relnotes) |
+| AgentCard support for post-deployment agent discovery | — | — | — | — | DP | DP | NOTE The Kagenti capabilities described in this entry were introduced as Developer Preview features in OpenShift AI 3.4. | [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/developer-preview-features_relnotes) [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/developer-preview-features_relnotes) |
 | AWS Security Token Service (STS) authentication for AWS Bedrock | — | — | — | — | — | TP | You can use AWS Security Token Service (STS) authentication with the AWS Bedrock inference provider. | [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/technology-preview-features_relnotes) |
 | Compatibility of Llama Stack remote providers and SDK with MCP HTTP streaming protocol | — | — | DP | DP | DP | DP | This feature is available as a Developer Preview. | [3.2](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.2/html/release_notes/developer-preview-features_relnotes) [3.3](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.3/html/release_notes/developer-preview-features_relnotes) [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/developer-preview-features_relnotes) |
 | Compatibility of OGX remote providers and SDK with MCP HTTP streaming protocol | — | — | — | — | — | DP | This feature is available as a Developer Preview. | [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/developer-preview-features_relnotes) |
@@ -442,7 +442,7 @@
 
 | 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 3.5 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|---|
-| ▸ 컴포넌트 | — | — | — | — | — | GA | — | — |
+| ▸ 컴포넌트 | — | — | — | — | — | GA (4) | — | — |
 | Deprecation of OGX Evaluation API | — | — | — | — | — | Deprecated | In OpenShift AI 3.5 EA1, the Evaluation REST API and its associated providers are deprecated and removed from the OGX Operator. | [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes) |
 | Renaming of Llama Stack to OGX | — | — | — | — | — | TP | Starting in OpenShift AI 3.5 EA1, Llama Stack and its associated variables and configurations are renamed to OGX. | [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/technology-preview-features_relnotes) |
 | The OGX Operator available on multi-architecture clusters | — | — | — | — | — | TP | The OGX Operator is deployable on multi-architecture clusters in OpenShift AI version 3.3 and is available by default. | [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/technology-preview-features_relnotes) |
@@ -571,7 +571,7 @@
 | ↳ Argo Workflows | — | — | — | GA | GA | GA |
 | ↳ LM-Eval | — | — | — | GA | GA | GA |
 | ↳ NeMo Guardrails | — | — | — | TP | GA | GA |
-| ↳ OGX | — | — | — | — | — | GA |
+| ↳ OGX | — | — | — | — | — | GA (4) |
 | ↳ Spark | — | — | — | — | TP | GA* |
 
 ## 부록: 컴포넌트 × 아키텍처 (현재 self-managed 3.5)
@@ -595,13 +595,13 @@
 | MLflow | — | TP | — | GA |
 | MLServer | — | TP | — | GA |
 | Model as a Service (MaaS) | GA | — | — | GA |
-| OGX Operator | GA | GA | — | GA |
+| OGX Operator | GA (4) | GA (4) | — | GA (4) |
 | Red Hat AI Inference | GA | GA | GA | GA |
 | Spark Operator | — | TP | — | GA |
 | TrustyAI | GA | GA | GA | GA |
 | ↳ Argo Workflows | GA | GA | — | GA |
 | ↳ LM-Eval | GA | GA | — | GA |
 | ↳ NeMo Guardrails | — | GA | — | GA |
-| ↳ OGX | GA | GA | — | GA |
+| ↳ OGX | GA (4) | GA (4) | — | GA (4) |
 | ↳ Spark | — | TP | — | GA |
 

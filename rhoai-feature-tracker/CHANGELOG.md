@@ -1,5 +1,16 @@
 # RHOAI 변경 이력 (CHANGELOG)
 
+## 2026-09-20
+
+### 🔄 변경 (6)
+- **OGX Operator** [self-managed 3.5] GA (4) (was GA) — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ OGX** [self-managed 3.5] GA (4) (was GA) — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **OGX Operator** [self-managed 3.5] GA (4) (was GA) — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ OGX** [self-managed 3.5] GA (4) (was GA) — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **OGX Operator** [self-managed 3.5] GA (4) (was GA) — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ OGX** [self-managed 3.5] GA (4) (was GA) — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+
+
 ## 2026-09-13
 
 ### 🆕 신규 (3)
