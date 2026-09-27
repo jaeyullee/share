@@ -413,9 +413,9 @@ component,self-managed,Kubeflow Notebook Controller,Kubeflow Notebook Controller
 component,self-managed,Kubeflow Notebook Controller,Kubeflow Notebook Controller,x86_64,,,,GA,GA,GA,,,,https://access.redhat.com/articles/rhoai-supported-configs-3.x
 component,self-managed,Kubeflow Trainer v2,Kubeflow Trainer v2,aarch64,,,,GA,GA,GA,,Kubeflow Trainer,,https://access.redhat.com/articles/rhoai-supported-configs-3.x
 component,self-managed,Kubeflow Trainer v2,Kubeflow Trainer v2,x86_64,,,,GA,GA,GA,,Kubeflow Trainer,,https://access.redhat.com/articles/rhoai-supported-configs-3.x
-component,self-managed,Kubeflow Training Operator v1,Kubeflow Training Operator v1,aarch64,,,,Deprecated,Deprecated,Deprecated (3),,,,https://access.redhat.com/articles/rhoai-supported-configs-3.x
-component,self-managed,Kubeflow Training Operator v1,Kubeflow Training Operator v1,ppc64le,,,,Deprecated,Deprecated,Deprecated (3),,,,https://access.redhat.com/articles/rhoai-supported-configs-3.x
-component,self-managed,Kubeflow Training Operator v1,Kubeflow Training Operator v1,x86_64,,,,Deprecated,Deprecated,Deprecated (3),,,,https://access.redhat.com/articles/rhoai-supported-configs-3.x
+component,self-managed,Kubeflow Training Operator v1,Kubeflow Training Operator v1,aarch64,,,,Deprecated,Deprecated,Deprecated,,,,https://access.redhat.com/articles/rhoai-supported-configs-3.x
+component,self-managed,Kubeflow Training Operator v1,Kubeflow Training Operator v1,ppc64le,,,,Deprecated,Deprecated,Deprecated,,,,https://access.redhat.com/articles/rhoai-supported-configs-3.x
+component,self-managed,Kubeflow Training Operator v1,Kubeflow Training Operator v1,x86_64,,,,Deprecated,Deprecated,Deprecated,,,,https://access.redhat.com/articles/rhoai-supported-configs-3.x
 component,self-managed,KubeRay,KubeRay,aarch64,,,,GA,GA,GA,,,,https://access.redhat.com/articles/rhoai-supported-configs-3.x
 component,self-managed,KubeRay,KubeRay,ppc64le,,,,—,TP,TP,,,,https://access.redhat.com/articles/rhoai-supported-configs-3.x
 component,self-managed,KubeRay,KubeRay,x86_64,,,,GA,GA,GA,,,,https://access.redhat.com/articles/rhoai-supported-configs-3.x
@@ -428,9 +428,9 @@ component,self-managed,MLServer,MLServer,ppc64le,,,,—,—,TP,,,,https://access
 component,self-managed,MLServer,MLServer,x86_64,,,,GA,GA,GA,,,,https://access.redhat.com/articles/rhoai-supported-configs-3.x
 component,self-managed,Model as a Service (MaaS),Model as a Service (MaaS),aarch64,,,,TP,GA,GA,,,,https://access.redhat.com/articles/rhoai-supported-configs-3.x
 component,self-managed,Model as a Service (MaaS),Model as a Service (MaaS),x86_64,,,,TP,GA,GA,,,,https://access.redhat.com/articles/rhoai-supported-configs-3.x
-component,self-managed,OGX Operator,OGX Operator,aarch64,,,,—,—,GA (4),,,,https://access.redhat.com/articles/rhoai-supported-configs-3.x
-component,self-managed,OGX Operator,OGX Operator,ppc64le,,,,—,—,GA (4),,,,https://access.redhat.com/articles/rhoai-supported-configs-3.x
-component,self-managed,OGX Operator,OGX Operator,x86_64,,,,—,—,GA (4),,,,https://access.redhat.com/articles/rhoai-supported-configs-3.x
+component,self-managed,OGX Operator,OGX Operator,aarch64,,,,—,—,GA,,,,https://access.redhat.com/articles/rhoai-supported-configs-3.x
+component,self-managed,OGX Operator,OGX Operator,ppc64le,,,,—,—,GA,,,,https://access.redhat.com/articles/rhoai-supported-configs-3.x
+component,self-managed,OGX Operator,OGX Operator,x86_64,,,,—,—,GA,,,,https://access.redhat.com/articles/rhoai-supported-configs-3.x
 component,self-managed,Red Hat AI Inference,Red Hat AI Inference,aarch64,,,,—,GA,GA,,vLLM,,https://access.redhat.com/articles/rhoai-supported-configs-3.x
 component,self-managed,Red Hat AI Inference,Red Hat AI Inference,ppc64le,,,,—,GA,GA,,vLLM,,https://access.redhat.com/articles/rhoai-supported-configs-3.x
 component,self-managed,Red Hat AI Inference,Red Hat AI Inference,s390x,,,,—,GA,GA,,vLLM,,https://access.redhat.com/articles/rhoai-supported-configs-3.x
@@ -449,8 +449,8 @@ component,self-managed,↳ LM-Eval,↳ LM-Eval,ppc64le,,,,GA,GA,GA,,,,https://ac
 component,self-managed,↳ LM-Eval,↳ LM-Eval,x86_64,,,,GA,GA,GA,,,,https://access.redhat.com/articles/rhoai-supported-configs-3.x
 component,self-managed,↳ NeMo Guardrails,↳ NeMo Guardrails,ppc64le,,,,TP,GA,GA,,,,https://access.redhat.com/articles/rhoai-supported-configs-3.x
 component,self-managed,↳ NeMo Guardrails,↳ NeMo Guardrails,x86_64,,,,TP,GA,GA,,,,https://access.redhat.com/articles/rhoai-supported-configs-3.x
-component,self-managed,↳ OGX,↳ OGX,aarch64,,,,—,—,GA (4),,,,https://access.redhat.com/articles/rhoai-supported-configs-3.x
-component,self-managed,↳ OGX,↳ OGX,ppc64le,,,,—,—,GA (4),,,,https://access.redhat.com/articles/rhoai-supported-configs-3.x
-component,self-managed,↳ OGX,↳ OGX,x86_64,,,,—,—,GA (4),,,,https://access.redhat.com/articles/rhoai-supported-configs-3.x
+component,self-managed,↳ OGX,↳ OGX,aarch64,,,,—,—,GA,,,,https://access.redhat.com/articles/rhoai-supported-configs-3.x
+component,self-managed,↳ OGX,↳ OGX,ppc64le,,,,—,—,GA,,,,https://access.redhat.com/articles/rhoai-supported-configs-3.x
+component,self-managed,↳ OGX,↳ OGX,x86_64,,,,—,—,GA,,,,https://access.redhat.com/articles/rhoai-supported-configs-3.x
 component,self-managed,↳ Spark,↳ Spark,ppc64le,,,,—,—,TP,,,,https://access.redhat.com/articles/rhoai-supported-configs-3.x
 component,self-managed,↳ Spark,↳ Spark,x86_64,,,,—,TP,GA,,,,https://access.redhat.com/articles/rhoai-supported-configs-3.x

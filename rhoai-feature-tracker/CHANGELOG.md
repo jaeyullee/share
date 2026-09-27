@@ -2,6 +2,22 @@
 
 ## 2026-09-27
 
+### ⚠️ Deprecated (3)
+- **Kubeflow Training Operator v1** [self-managed 3.5] Deprecated (was Deprecated (3)) — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Training Operator v1** [self-managed 3.5] Deprecated (was Deprecated (3)) — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **Kubeflow Training Operator v1** [self-managed 3.5] Deprecated (was Deprecated (3)) — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+
+### 🔄 변경 (6)
+- **OGX Operator** [self-managed 3.5] GA (was GA (4)) — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ OGX** [self-managed 3.5] GA (was GA (4)) — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **OGX Operator** [self-managed 3.5] GA (was GA (4)) — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ OGX** [self-managed 3.5] GA (was GA (4)) — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **OGX Operator** [self-managed 3.5] GA (was GA (4)) — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+- **↳ OGX** [self-managed 3.5] GA (was GA (4)) — [문서](https://access.redhat.com/articles/rhoai-supported-configs-3.x)
+
+
+## 2026-09-27
+
 ### 🆕 신규 (2)
 - **Red Hat OpenShift AI Operator Upgrade Gates** [self-managed 3.5] GA ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes)  
     근거: During an upgrade to OpenShift AI 3.5, the Red Hat OpenShift AI operator runs upgrade gate checks before it updates platform components.

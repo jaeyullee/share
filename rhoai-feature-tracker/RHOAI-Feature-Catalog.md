@@ -248,7 +248,7 @@
 
 | 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 3.5 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|---|
-| ▸ 컴포넌트 | — | — | — | Deprecated | Deprecated | Deprecated (3) | — | — |
+| ▸ 컴포넌트 | — | — | — | Deprecated | Deprecated | Deprecated | — | — |
 | Code Interpreter flow for synthetic Python code generation | — | — | — | — | — | GA | In OpenShift AI, SDG Hub includes a Code Interpreter flow for synthetic Python code generation. | [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes) |
 | Deprecated Kubeflow Training operator v1 | — | Deprecated | Deprecated | Deprecated | Deprecated | Deprecated | The Kubeflow Training Operator (v1) is deprecated starting OpenShift AI 2.25 and is planned to be removed in a future release. | [2.25](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.25/html/release_notes/support-removals_relnotes) [3.2](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.2/html/release_notes/support-removals_relnotes) [3.3](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.3/html/release_notes/support-removals_relnotes) [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/support-removals_relnotes) [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes) |
 | Kubeflow Trainer v2 | — | — | TP | GA | GA | GA | Kubeflow Trainer v2 is now available as a Technology Preview feature in OpenShift AI 3.2. | [3.2](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.2/html/release_notes/technology-preview-features_relnotes) [3.3](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.3/html/release_notes/new-features-and-enhancements_relnotes) [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/technology-preview-features_relnotes) |
@@ -442,7 +442,7 @@
 
 | 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 3.5 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|---|
-| ▸ 컴포넌트 | — | — | — | — | — | GA (4) | — | — |
+| ▸ 컴포넌트 | — | — | — | — | — | GA | — | — |
 | Deprecation of OGX Evaluation API | — | — | — | — | — | Deprecated | In OpenShift AI 3.5 EA1, the Evaluation REST API and its associated providers are deprecated and removed from the OGX Operator. | [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes) |
 | Renaming of Llama Stack to OGX | — | — | — | — | — | TP | Starting in OpenShift AI 3.5 EA1, Llama Stack and its associated variables and configurations are renamed to OGX. | [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/technology-preview-features_relnotes) |
 | The OGX Operator available on multi-architecture clusters | — | — | — | — | — | TP | The OGX Operator is deployable on multi-architecture clusters in OpenShift AI version 3.3 and is available by default. | [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/technology-preview-features_relnotes) |
@@ -572,7 +572,7 @@
 | ↳ Argo Workflows | — | — | — | GA | GA | GA |
 | ↳ LM-Eval | — | — | — | GA | GA | GA |
 | ↳ NeMo Guardrails | — | — | — | TP | GA | GA |
-| ↳ OGX | — | — | — | — | — | GA (4) |
+| ↳ OGX | — | — | — | — | — | GA |
 | ↳ Spark | — | — | — | — | TP | GA* |
 
 ## 부록: 컴포넌트 × 아키텍처 (현재 self-managed 3.5)
@@ -591,18 +591,18 @@
 | KServe | GA | GA | GA | GA |
 | Kubeflow Notebook Controller | GA | GA | GA | GA |
 | Kubeflow Trainer v2 | GA | — | — | GA |
-| Kubeflow Training Operator v1 | Deprecated (3) | Deprecated (3) | — | Deprecated (3) |
+| Kubeflow Training Operator v1 | Deprecated | Deprecated | — | Deprecated |
 | KubeRay | GA | TP | — | GA |
 | MLflow | — | TP | — | GA |
 | MLServer | — | TP | — | GA |
 | Model as a Service (MaaS) | GA | — | — | GA |
-| OGX Operator | GA (4) | GA (4) | — | GA (4) |
+| OGX Operator | GA | GA | — | GA |
 | Red Hat AI Inference | GA | GA | GA | GA |
 | Spark Operator | — | TP | — | GA |
 | TrustyAI | GA | GA | GA | GA |
 | ↳ Argo Workflows | GA | GA | — | GA |
 | ↳ LM-Eval | GA | GA | — | GA |
 | ↳ NeMo Guardrails | — | GA | — | GA |
-| ↳ OGX | GA (4) | GA (4) | — | GA (4) |
+| ↳ OGX | GA | GA | — | GA |
 | ↳ Spark | — | TP | — | GA |
 
