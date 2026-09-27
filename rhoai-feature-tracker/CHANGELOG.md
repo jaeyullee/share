@@ -1,5 +1,18 @@
 # RHOAI 변경 이력 (CHANGELOG)
 
+## 2026-09-27
+
+### 🆕 신규 (2)
+- **Red Hat OpenShift AI Operator Upgrade Gates** [self-managed 3.5] GA ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes)  
+    근거: During an upgrade to OpenShift AI 3.5, the Red Hat OpenShift AI operator runs upgrade gate checks before it updates platform components.
+- **SparkApplication batch engine for Feast Feature Store** [self-managed 3.5] GA ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes)  
+    근거: Feast Feature Store supports a SparkApplication batch engine.
+
+### 🗑️ 문서에서 제거 (1)
+- **batch engine for Feast Feature Store** [self-managed 3.5] GA (was GA) ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes)  
+    근거: SparkApplication Feast Feature Store supports a batch engine.
+
+
 ## 2026-09-20
 
 ### 🔄 변경 (6)
