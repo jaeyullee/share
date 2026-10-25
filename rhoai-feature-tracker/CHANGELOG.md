@@ -1,5 +1,12 @@
 # RHOAI 변경 이력 (CHANGELOG)
 
+## 2026-10-25
+
+### ⚠️ Deprecated (1)
+- **Deprecated Gaudi vLLM** [self-managed 2.25] Deprecated — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.25/html/release_notes/support-removals_relnotes)  
+    근거: Starting with OpenShift AI 2.25.12, the vLLM Gaudi serving runtime has been removed from the Model vllm-gaudi-runtime ServingRuntime Serving path.
+
+
 ## 2026-09-27
 
 ### ⚠️ Deprecated (3)
