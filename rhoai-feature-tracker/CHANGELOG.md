@@ -1,5 +1,88 @@
 # RHOAI 변경 이력 (CHANGELOG)
 
+## 2026-11-26
+
+### 🆕 신규 (17)
+- **MLflow** [self-managed 3.4] GA — [문서](https://access.redhat.com/kb/rhoai-supported-configs)
+- **MLflow** [self-managed 3.5] GA — [문서](https://access.redhat.com/kb/rhoai-supported-configs)
+- **MLServer** [self-managed 3.4] GA — [문서](https://access.redhat.com/kb/rhoai-supported-configs)
+- **MLServer** [self-managed 3.5] GA — [문서](https://access.redhat.com/kb/rhoai-supported-configs)
+- **Spark Operator** [self-managed 3.4] TP — [문서](https://access.redhat.com/kb/rhoai-supported-configs)
+- **Spark Operator** [self-managed 3.5] GA — [문서](https://access.redhat.com/kb/rhoai-supported-configs)
+- **↳ Spark** [self-managed 3.4] TP — [문서](https://access.redhat.com/kb/rhoai-supported-configs)
+- **↳ Spark** [self-managed 3.5] GA — [문서](https://access.redhat.com/kb/rhoai-supported-configs)
+- **↳ EvalHub** [self-managed 3.5] GA — [문서](https://access.redhat.com/kb/rhoai-supported-configs)
+- **↳ NeMo Guardrails** [self-managed 3.5] GA — [문서](https://access.redhat.com/kb/rhoai-supported-configs)
+- **AutoML** [self-managed 3.4] TP — [문서](https://access.redhat.com/kb/rhoai-supported-configs)
+- **AutoML** [self-managed 3.5] TP — [문서](https://access.redhat.com/kb/rhoai-supported-configs)
+- **AutoRAG** [self-managed 3.4] TP — [문서](https://access.redhat.com/kb/rhoai-supported-configs)
+- **AutoRAG** [self-managed 3.5] TP — [문서](https://access.redhat.com/kb/rhoai-supported-configs)
+- **↳ EvalHub** [self-managed 3.5] GA — [문서](https://access.redhat.com/kb/rhoai-supported-configs)
+- **↳ EvalHub** [self-managed 3.5] GA — [문서](https://access.redhat.com/kb/rhoai-supported-configs)
+- **↳ NeMo Guardrails** [self-managed 3.5] GA — [문서](https://access.redhat.com/kb/rhoai-supported-configs)
+
+### ⬆️ 승격 (1)
+- **↳ EvalHub** [self-managed 3.5] GA (was TP) — [문서](https://access.redhat.com/kb/rhoai-supported-configs)
+
+### ⚠️ Deprecated (3)
+- **↳ LM-Eval** [self-managed 3.5] Deprecated (was GA) — [문서](https://access.redhat.com/kb/rhoai-supported-configs)
+- **↳ LM-Eval** [self-managed 3.5] Deprecated (was GA) — [문서](https://access.redhat.com/kb/rhoai-supported-configs)
+- **↳ LM-Eval** [self-managed 3.5] Deprecated (was GA) — [문서](https://access.redhat.com/kb/rhoai-supported-configs)
+
+
+## 2026-11-16
+
+> 🔧 **아래 19건은 제품 변경이 아니라 추출기 교체에 따른 교정이다.** 이날 추출 경로를
+> 릴리즈노트 PDF(폰트·글자크기 기반)에서 HTML(문서 구조 기반)로 바꿨다 —
+> `docs.redhat.com`의 `/pdf/`가 403으로 완전히 닫혀 11-08 이후 수집이 전면 실패하고
+> 있었다. 11-01 캐시 PDF와 **이름 단위로 전수 대조**해 19건 전부의 출처를 확인했다.
+> **실제 문서 변경은 0건이다.**
+>
+> | 변경 | 건수 | 정체 |
+> |---|---|---|
+> | 🆕 신규 1 · ⚠️ Deprecated 4 | 5 | **깨진 제목 복원.** PDF에서 코드 폰트 낱말이 탈락해 `…moved from **OdhDashboardConfig** to **Auth** resource`가 `…moved from to` + `resource` 두 조각으로, `…Kubernetes container **args** field`가 `args` 없이 들어가 있었다 |
+> | 🗑️ 문서에서 제거 14 | 14 | **허위 레코드 정리.** 불릿(`<li>`) 텍스트를 기능 제목으로 오인 5건 · 2.16 날짜묶음 제목(`Functionality removed in … (March 2025)`) 3건 · 위 깨진 조각 5건 · 기타 1건(근거가 `AI RHOAI OAI ML Machine Learning CHAPTER 2.`였다) |
+>
+> 상세·검증 절차 → `03-Areas/06-RedHat-기능-추적/LOG.md` 2026-11-16
+
+### 🆕 신규 (1)
+- **Configure vLLM runtime arguments using Kubernetes container args field** [self-managed 3.4] GA ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/new-features-and-enhancements_relnotes)  
+    근거: You can configure vLLM runtime arguments using the standard Kubernetes container args field in LLMInferenceService resources.
+
+### ⚠️ Deprecated (4)
+- **OpenShift AI dashboard user management moved from OdhDashboardConfig to Auth resource** [self-managed 3.3] Deprecated (was Deprecated) — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.3/html/release_notes/support-removals_relnotes)  
+    근거: Previously, cluster administrators used the groupsConfig option in the OdhDashboardConfig resource to manage the OpenShift groups (both administrators and non-administrators) that can access the OpenShift AI dashboard.
+- **OpenShift AI dashboard user management moved from OdhDashboardConfig to Auth resource** [self-managed 3.4] Deprecated (was Deprecated) — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/support-removals_relnotes)  
+    근거: Previously, cluster administrators used the groupsConfig option in the OdhDashboardConfig resource to manage the OpenShift groups (both administrators and non-administrators) that can access the OpenShift AI dashboard.
+- **OpenShift AI dashboard user management moved from OdhDashboardConfig to Auth resource** [self-managed 2.25] Deprecated (was Deprecated) — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.25/html/release_notes/support-removals_relnotes)  
+    근거: Previously, cluster administrators used the groupsConfig option in the OdhDashboardConfig resource to manage the OpenShift groups (both administrators and non-administrators) that can access the OpenShift AI dashboard.
+- **OpenShift AI dashboard user management moved from OdhDashboardConfig to Auth resource** [self-managed 3.2] Deprecated (was Deprecated) — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.2/html/release_notes/support-removals_relnotes)  
+    근거: Previously, cluster administrators used the groupsConfig option in the OdhDashboardConfig resource to manage the OpenShift groups (both administrators and non-administrators) that can access the OpenShift AI dashboard.
+
+### 🗑️ 문서에서 제거 (14)
+- **OpenShift AI dashboard user management moved from to** [self-managed 3.3] Deprecated (was Deprecated) ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.3/html/release_notes/support-removals_relnotes)
+- **Configure vLLM runtime arguments using Kubernetes container field** [self-managed 3.4] GA (was GA) ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/new-features-and-enhancements_relnotes)  
+    근거: You can configure vLLM runtime arguments using the standard Kubernetes container args field in LLMInferenceService resources.
+- **OpenShift AI dashboard user management moved from to** [self-managed 3.4] Deprecated (was Deprecated) ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/support-removals_relnotes)
+- **ROCm-compatible KFTO cluster image** [self-managed 2.16] GA (was GA) ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/release_notes/new-features-and-enhancements_relnotes)  
+    근거: A new ROCm-compatible KFTO cluster image, quay.io/modh/training:py311-rocm61- torch241 , is tested and verified.
+- **ROCm-compatible Ray cluster images** [self-managed 2.16] GA (was GA) ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/release_notes/new-features-and-enhancements_relnotes)  
+    근거: quay.io/modh/ray:2.35.0-py39-rocm61 The ROCm-compatible Ray cluster images and quay.io/modh/ray:2.35.0-py311-rocm61 , previously available as a Developer Preview feature, are tested and verified.
+- **CUDA-compatible KFTO image** [self-managed 2.16] GA (was GA) ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/release_notes/new-features-and-enhancements_relnotes)  
+    근거: The CUDA-compatible KFTO cluster image, previously available as a Developer Preview feature, is tested and verified.
+- **Filter by keyword search field:** [self-managed 2.16] GA (was GA) ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/release_notes/new-features-and-enhancements_relnotes)  
+    근거: AI RHOAI OAI ML Machine Learning CHAPTER 2.
+- **Functionality removed in Red Hat OpenShift AI 2.16.2 (March 2025)** [self-managed 2.16] Removed (was Removed) ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/release_notes/support-removals_relnotes)
+- **Functionality removed in Red Hat OpenShift AI 2.16.0 (December 2024)** [self-managed 2.16] Removed (was Removed) ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/release_notes/support-removals_relnotes)
+- **Functionality removed in earlier releases** [self-managed 2.16] Removed (was Removed) ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/release_notes/support-removals_relnotes)
+- **OpenShift AI dashboard user management moved from to** [self-managed 2.25] Deprecated (was Deprecated) ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.25/html/release_notes/support-removals_relnotes)
+- **Auto-select the best runtime for your model based on model type, model format, and** [self-managed 3.2] GA (was GA) ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.2/html/release_notes/new-features-and-enhancements_relnotes)  
+    근거: This option automatically selects a serving runtime if there is exactly one match.
+- **Distributed inference with llm-d runtime. Select from a list of serving runtimes, including custom ones : This option displays all** [self-managed 3.2] GA (was GA) ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.2/html/release_notes/new-features-and-enhancements_relnotes)  
+    근거: global and project-scoped serving runtime templates available to you.
+- **OpenShift AI dashboard user management moved from to** [self-managed 3.2] Deprecated (was Deprecated) ⚠️rename? — [문서](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.2/html/release_notes/support-removals_relnotes)
+
+
 ## 2026-10-25
 
 ### ⚠️ Deprecated (1)
