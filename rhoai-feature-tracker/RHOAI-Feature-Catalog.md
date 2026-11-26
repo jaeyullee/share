@@ -8,7 +8,7 @@
 ## AI Hub
 > 🔗 원천 오픈소스: [Open Data Hub](https://opendatahub.io)
 
-| 항목 | 2.16 | 2.25 | 3.2 | 3.3 (보존) | 3.4 | 3.5 | 근거 | 출처 |
+| 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 3.5 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|---|
 | ▸ 컴포넌트 | — | — | — | GA | GA | GA | — | — |
 | Additional fields added to Model Deployments for AI Available Assets integration | — | — | DP | DP | DP | DP | This feature is available as a Developer Preview. | [3.2](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.2/html/release_notes/developer-preview-features_relnotes) [3.3](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.3/html/release_notes/developer-preview-features_relnotes) [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/developer-preview-features_relnotes) [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/developer-preview-features_relnotes) |
@@ -22,7 +22,7 @@
 
 ## AI Pipelines
 
-| 항목 | 2.16 | 2.25 | 3.2 | 3.3 (보존) | 3.4 | 3.5 | 근거 | 출처 |
+| 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 3.5 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|---|
 | ▸ 컴포넌트 | — | — | — | GA | GA | GA | — | — |
 | Kale JupyterLab extension for notebook-to-pipeline conversion | — | — | — | — | — | DP | You can use the Kale (Kubeflow Automated pipeLines Engine) JupyterLab extension to convert annotated Jupyter notebooks into AI Pipelines without writing Kubeflow Pipelines SDK code | [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/developer-preview-features_relnotes) |
@@ -30,7 +30,7 @@
 
 ## AutoRAG
 
-| 항목 | 2.16 | 2.25 | 3.2 | 3.3 (보존) | 3.4 | 3.5 | 근거 | 출처 |
+| 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 3.5 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|---|
 | ▸ 컴포넌트 | — | — | — | — | TP | TP | — | — |
 | AutoRAG visual pipeline representation for experimentation | — | — | — | — | — | TP | The AutoRAG user interface includes a visual pipeline representation of the experimentation process. | [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/technology-preview-features_relnotes) |
@@ -42,7 +42,7 @@
 ## Dashboard
 > 🔗 원천 오픈소스: [Open Data Hub Dashboard](https://github.com/opendatahub-io/odh-dashboard)
 
-| 항목 | 2.16 | 2.25 | 3.2 | 3.3 (보존) | 3.4 | 3.5 | 근거 | 출처 |
+| 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 3.5 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|---|
 | ▸ 컴포넌트 | — | — | — | GA | GA | GA | — | — |
 | Admin groups restructure | Deprecated | Deprecated | — | — | — | — | ⚠️2.x 문서에만 언급 — 3.x deprecated 여부 직접 확인 필요. Currently, cluster administrators can configure OpenShift AI administration access to the dashboard by using the groupsConfig option in  | [2.16](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/release_notes/support-removals_relnotes) |
@@ -93,7 +93,7 @@
 
 ## Data science pipelines
 
-| 항목 | 2.16 | 2.25 | 3.2 | 3.3 (보존) | 3.4 | 3.5 | 근거 | 출처 |
+| 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 3.5 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|---|
 | Adversarial vulnerability scanning for Red Hat-validated models | — | — | — | — | — | GA | New models added to the Red Hat AI validated models catalog now undergo automated adversarial vulnerability scanning as part of the validation process. | [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes) |
 | Automated generation of tool-calling evaluation data for custom MCP servers | — | — | — | — | — | GA | You can automatically generate tool-calling evaluation benchmark data from custom Model Context Protocol (MCP) servers. | [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes) |
@@ -115,7 +115,7 @@
 ## Distributed Inference with llm-d
 > 🔗 원천 오픈소스: [llm-d](https://llm-d.ai)
 
-| 항목 | 2.16 | 2.25 | 3.2 | 3.3 (보존) | 3.4 | 3.5 | 근거 | 출처 |
+| 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 3.5 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|---|
 | ▸ 컴포넌트 | — | — | — | GA | GA | GA | — | — |
 | API surface full-stack passthrough for tool calling in Distributed Inference with llm-d | — | — | — | — | — | TP | Tool calling parameters pass through the full Distributed Inference with llm-d serving stack without modification. | [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/technology-preview-features_relnotes) |
@@ -161,7 +161,7 @@
 
 ## Feature Store
 
-| 항목 | 2.16 | 2.25 | 3.2 | 3.3 (보존) | 3.4 | 3.5 | 근거 | 출처 |
+| 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 3.5 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|---|
 | ▸ 컴포넌트 | — | — | — | GA* | GA* | GA* | — | — |
 | Feature Store includes a web-based UI | — | GA | — | — | — | — | ⚠️2.x 문서에만 언급 — 3.x deprecated 여부 직접 확인 필요. The Feature Store component now includes a web-based user interface (UI). | [2.25](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.25/html/release_notes/new-features-and-enhancements_relnotes) |
@@ -171,7 +171,7 @@
 ## IBM Spyre Operator
 > 🔗 원천 오픈소스: [vLLM Spyre](https://github.com/vllm-project/vllm-spyre)
 
-| 항목 | 2.16 | 2.25 | 3.2 | 3.3 (보존) | 3.4 | 3.5 | 근거 | 출처 |
+| 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 3.5 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|---|
 | ▸ 컴포넌트 | — | — | — | GA | GA | GA | — | — |
 | IBM Spyre AI Accelerator model serving support on x86 platforms | — | TP | — | TP | TP | TP | Model serving with the IBM Spyre AI Accelerator is available as a Technology Preview feature for x86 platforms. | [2.25](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.25/html/release_notes/technology-preview-features_relnotes) [3.3](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.3/html/release_notes/technology-preview-features_relnotes) [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/technology-preview-features_relnotes) [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/technology-preview-features_relnotes) |
@@ -180,7 +180,7 @@
 ## KServe
 > 🔗 원천 오픈소스: [KServe](https://kserve.github.io/website/)
 
-| 항목 | 2.16 | 2.25 | 3.2 | 3.3 (보존) | 3.4 | 3.5 | 근거 | 출처 |
+| 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 3.5 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|---|
 | ▸ 컴포넌트 | — | — | — | GA | GA | GA | — | — |
 | Caikit Standalone ServingRuntime for KServe | — | Deprecated | — | — | — | — | ⚠️2.x 문서에만 언급 — 3.x deprecated 여부 직접 확인 필요. Starting with OpenShift AI 2.25, the Caikit Standalone ServingRuntime for KServe is deprecated and will be removed in a future release o | [2.25](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.25/html/release_notes/support-removals_relnotes) |
@@ -212,7 +212,7 @@
 ## Kubeflow Trainer v2
 > 🔗 원천 오픈소스: [Kubeflow Trainer](https://www.kubeflow.org/docs/components/trainer/)
 
-| 항목 | 2.16 | 2.25 | 3.2 | 3.3 (보존) | 3.4 | 3.5 | 근거 | 출처 |
+| 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 3.5 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|---|
 | ▸ 컴포넌트 | — | — | — | GA | GA | GA | — | — |
 | Deprecated LAB-tuning | — | Deprecated | — | — | — | — | ⚠️2.x 문서에만 언급 — 3.x deprecated 여부 직접 확인 필요. Starting with OpenShift AI 2.25, the LAB-tuning feature is deprecated. | [2.25](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.25/html/release_notes/support-removals_relnotes) |
@@ -225,7 +225,7 @@
 
 ## Kubeflow Training Operator v1
 
-| 항목 | 2.16 | 2.25 | 3.2 | 3.3 (보존) | 3.4 | 3.5 | 근거 | 출처 |
+| 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 3.5 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|---|
 | ▸ 컴포넌트 | — | — | — | Deprecated | Deprecated | Deprecated | — | — |
 | Code Interpreter flow for synthetic Python code generation | — | — | — | — | — | GA | In OpenShift AI, SDG Hub includes a Code Interpreter flow for synthetic Python code generation. | [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes) |
@@ -237,7 +237,7 @@
 
 ## Kuberay
 
-| 항목 | 2.16 | 2.25 | 3.2 | 3.3 (보존) | 3.4 | 3.5 | 근거 | 출처 |
+| 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 3.5 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|---|
 | ▸ 컴포넌트 | — | — | — | GA | GA* | GA* | — | — |
 | Autoscaling support for Ray distributed workloads | — | — | — | — | — | TP | You can enable cluster autoscaling for your Ray distributed workloads. | [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/technology-preview-features_relnotes) |
@@ -248,7 +248,7 @@
 
 ## KubeRay
 
-| 항목 | 2.16 | 2.25 | 3.2 | 3.3 (보존) | 3.4 | 3.5 | 근거 | 출처 |
+| 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 3.5 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|---|
 | ▸ 컴포넌트 | — | — | — | GA | GA* | GA* | — | — |
 | CodeFlare Operator removed | — | — | Removed | — | — | — | Starting with OpenShift AI 3.0, the CodeFlare Operator has been removed. | [3.2](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.2/html/release_notes/support-removals_relnotes) [3.3](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.3/html/release_notes/support-removals_relnotes) [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/support-removals_relnotes) [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes) |
@@ -258,7 +258,7 @@
 
 ## Kueue
 
-| 항목 | 2.16 | 2.25 | 3.2 | 3.3 (보존) | 3.4 | 3.5 | 근거 | 출처 |
+| 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 3.5 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|---|
 | Ability to self-manage ClusterQueues and LocalQueues | — | — | — | — | — | GA | In OpenShift AI, you can self-manage ClusterQueue and LocalQueue resources for your data science projects. | [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes) |
 | Support for AppWrapper in Kueue | DP | DP | — | — | — | — | ⚠️2.x 문서에만 언급 — 3.x deprecated 여부 직접 확인 필요. AppWrapper support in Kueue is available as a Developer Preview feature. | [2.16](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/release_notes/developer-preview-features_relnotes) [2.25](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.25/html/release_notes/developer-preview-features_relnotes) |
@@ -266,7 +266,7 @@
 ## Llama Stack Operator
 > 🔗 원천 오픈소스: [Llama Stack](https://github.com/meta-llama/llama-stack)
 
-| 항목 | 2.16 | 2.25 | 3.2 | 3.3 (보존) | 3.4 | 3.5 | 근거 | 출처 |
+| 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 3.5 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|---|
 | ▸ 컴포넌트 | — | — | — | TP | TP | — | — | — |
 | Agent deploy and runtime management | — | — | — | — | DP | DP | Note The Kagenti capabilities described in this entry were introduced as Developer Preview features in OpenShift AI 3.4. | [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/developer-preview-features_relnotes) [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/developer-preview-features_relnotes) |
@@ -332,7 +332,7 @@
 
 ## LMEval
 
-| 항목 | 2.16 | 2.25 | 3.2 | 3.3 (보존) | 3.4 | 3.5 | 근거 | 출처 |
+| 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 3.5 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|---|
 | Core Evaluation Stack control plane | — | — | — | — | DP | DP | The Evaluation Stack control plane provides an API REST routing and orchestration layer for AI evaluation, benchmarking, and profiling backends on OpenShift AI. | [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/developer-preview-features_relnotes) [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/developer-preview-features_relnotes) |
 | Deprecated LM-Eval | — | — | — | — | — | Deprecated | The LM-Eval standalone evaluation service, including the LMEvalJob custom resource and the LM-Eval model evaluation UI, is deprecated and will be removed in a future release. | [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes) |
@@ -347,7 +347,7 @@
 
 ## MaaS
 
-| 항목 | 2.16 | 2.25 | 3.2 | 3.3 (보존) | 3.4 | 3.5 | 근거 | 출처 |
+| 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 3.5 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|---|
 | AI Available Assets integration with Model-as-a-Service (MaaS) | — | — | DP | DP | DP | DP | This feature is available as a Developer Preview. | [3.2](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.2/html/release_notes/developer-preview-features_relnotes) [3.3](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.3/html/release_notes/developer-preview-features_relnotes) [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/developer-preview-features_relnotes) [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/developer-preview-features_relnotes) |
 | External metering for per-user token usage and cost tracking | — | — | — | — | — | DP | In OpenShift AI, an external metering IPP plugin and standalone metering service are available as a Developer Preview feature. | [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/developer-preview-features_relnotes) |
@@ -367,7 +367,7 @@
 ## MLflow
 > 🔗 원천 오픈소스: [MLflow](https://mlflow.org)
 
-| 항목 | 2.16 | 2.25 | 3.2 | 3.3 (보존) | 3.4 | 3.5 | 근거 | 출처 |
+| 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 3.5 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|---|
 | ▸ 컴포넌트 | — | — | — | TP | GA | GA* | — | — |
 | Automatic MLflow experiment creation in EvalHub | — | — | — | — | DP | DP | The EvalHub service automatically creates an MLflow experiment when you specify experiment.name in the evaluation job request. | [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/developer-preview-features_relnotes) [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/developer-preview-features_relnotes) |
@@ -384,7 +384,7 @@
 
 ## MLServer
 
-| 항목 | 2.16 | 2.25 | 3.2 | 3.3 (보존) | 3.4 | 3.5 | 근거 | 출처 |
+| 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 3.5 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|---|
 | ▸ 컴포넌트 | — | — | — | GA | GA | GA* | — | — |
 | GPU-accelerated runtime for predictive machine learning | — | — | — | — | — | GA | A new MLServer GPU container image and corresponding cluster serving runtime ( mlserver-onnx-gpu ) are available to support NVIDIA GPU-accelerated inference for predictive machine  | [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes) |
@@ -393,14 +393,14 @@
 
 ## Model as a Service (MaaS)
 
-| 항목 | 2.16 | 2.25 | 3.2 | 3.3 (보존) | 3.4 | 3.5 | 근거 | 출처 |
+| 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 3.5 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|---|
 | ▸ 컴포넌트 | — | — | — | TP | GA | GA | — | — |
 | Automated Red Teaming | — | — | — | — | — | GA | Automated Red Teaming is generally available (GA). | [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes) |
 
 ## Model Catalog
 
-| 항목 | 2.16 | 2.25 | 3.2 | 3.3 (보존) | 3.4 | 3.5 | 근거 | 출처 |
+| 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 3.5 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|---|
 | Cold-start load time and vRAM metrics in the model catalog | — | — | — | — | — | GA | The model catalog displays operational metrics for validated models, including cold-start load time, minimum vRAM requirements, and the runtime command used for benchmarking. | [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes) |
 | CSV export for model catalog data | — | — | — | — | — | DP | You can export model catalog metadata to CSV format by using a standalone Python CLI script. | [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/developer-preview-features_relnotes) |
@@ -414,7 +414,7 @@
 
 ## Model Registry
 
-| 항목 | 2.16 | 2.25 | 3.2 | 3.3 (보존) | 3.4 | 3.5 | 근거 | 출처 |
+| 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 3.5 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|---|
 | Artifact signing and verification for model registry | — | — | — | — | TP | TP | This Technology Preview feature enables you to sign artifacts to establish authenticity and verify signatures to confirm integrity. | [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/technology-preview-features_relnotes) [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/technology-preview-features_relnotes) |
 | Create ability to sign and verify AI Artifacts in Registry | — | — | — | — | TP | TP | For more information about signing and verifying models in the Model Registry see https://github.com/kubeflow/model-registry/tree/main/clients/python#signing-and-verifying-models . | [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/technology-preview-features_relnotes) [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/technology-preview-features_relnotes) |
@@ -429,7 +429,7 @@
 
 ## OGX Operator
 
-| 항목 | 2.16 | 2.25 | 3.2 | 3.3 (보존) | 3.4 | 3.5 | 근거 | 출처 |
+| 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 3.5 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|---|
 | ▸ 컴포넌트 | — | — | — | — | — | GA | — | — |
 | Deprecation of OGX Evaluation API | — | — | — | — | — | Deprecated | In OpenShift AI 3.5 EA1, the Evaluation REST API and its associated providers are deprecated and removed from the OGX Operator. | [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes) |
@@ -440,14 +440,14 @@
 ## Red Hat AI Inference
 > 🔗 원천 오픈소스: [vLLM](https://github.com/vllm-project/vllm)
 
-| 항목 | 2.16 | 2.25 | 3.2 | 3.3 (보존) | 3.4 | 3.5 | 근거 | 출처 |
+| 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 3.5 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|---|
 | ▸ 컴포넌트 | — | — | — | — | GA | GA | — | — |
 | Support for deploying Red Hat AI Inference fast release container images as a custom serving runtime | — | — | — | — | — | GA | You can deploy Red Hat AI Inference fast release container images as custom serving runtimes on your existing Red Hat OpenShift AI installation without upgrading Red Hat OpenShift  | [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes) |
 
 ## Spark Operator
 
-| 항목 | 2.16 | 2.25 | 3.2 | 3.3 (보존) | 3.4 | 3.5 | 근거 | 출처 |
+| 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 3.5 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|---|
 | ▸ 컴포넌트 | — | — | — | — | TP | GA* | — | — |
 | Interactive Spark job management in workbenches | — | — | — | — | — | TP | You can interactively manage and execute PySpark workloads directly from your workbenches using the Kube-native Spark Operator (KSO). | [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/technology-preview-features_relnotes) |
@@ -459,7 +459,7 @@
 ## TrustyAI
 > 🔗 원천 오픈소스: [TrustyAI](https://trustyai.org)
 
-| 항목 | 2.16 | 2.25 | 3.2 | 3.3 (보존) | 3.4 | 3.5 | 근거 | 출처 |
+| 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 3.5 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|---|
 | ▸ 컴포넌트 | — | — | — | GA | GA | GA | — | — |
 | Automatic Prometheus monitoring integration for EvalHub on OpenShift | — | — | — | — | — | GA | The TrustyAI Service Operator automatically creates a ServiceMonitor resource when EvalHub is deployed with metrics enabled. | [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/new-features-and-enhancements_relnotes) |
@@ -485,7 +485,7 @@
 
 ## Workbenches
 
-| 항목 | 2.16 | 2.25 | 3.2 | 3.3 (보존) | 3.4 | 3.5 | 근거 | 출처 |
+| 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 3.5 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|---|
 | Accelerator Profiles and legacy Container Size selector deprecated | — | — | Deprecated | Deprecated | Deprecated | Deprecated | Starting with OpenShift AI 3.0, Accelerator Profiles and the Container Size selector for workbenches are deprecated. | [3.2](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.2/html/release_notes/support-removals_relnotes) [3.3](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.3/html/release_notes/support-removals_relnotes) [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/support-removals_relnotes) [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes) |
 | Anaconda removal | Removed | — | — | — | — | — | Starting with OpenShift AI version 2.18, Anaconda is no longer included in OpenShift AI, and Anaconda resources are no longer supported or managed by OpenShift AI. | [2.16](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/release_notes/support-removals_relnotes) [2.25](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.25/html/release_notes/support-removals_relnotes) [3.2](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.2/html/release_notes/support-removals_relnotes) [3.3](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.3/html/release_notes/support-removals_relnotes) [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/support-removals_relnotes) [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes) |
@@ -521,7 +521,7 @@
 
 ## (미분류 기능)
 
-| 항목 | 2.16 | 2.25 | 3.2 | 3.3 (보존) | 3.4 | 3.5 | 근거 | 출처 |
+| 항목 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 3.5 | 근거 | 출처 |
 |---|---|---|---|---|---|---|---|---|
 | AppWrapper Controller removed | — | — | Removed | — | — | — | The AppWrapper controller has been removed from OpenShift AI as part of the broader CodeFlare Operator removal process. | [3.2](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.2/html/release_notes/support-removals_relnotes) [3.3](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.3/html/release_notes/support-removals_relnotes) [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/support-removals_relnotes) [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes) |
 | Beta subscription channel no longer used | Removed | — | — | — | — | — | Starting with OpenShift AI 2.5, the beta subscription channel is no longer used. | [2.16](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/release_notes/support-removals_relnotes) [2.25](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.25/html/release_notes/support-removals_relnotes) [3.2](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.2/html/release_notes/support-removals_relnotes) [3.3](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.3/html/release_notes/support-removals_relnotes) [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/release_notes/support-removals_relnotes) [3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/support-removals_relnotes) |
@@ -551,7 +551,7 @@
 
 ## 기타 컴포넌트 (직접 매핑된 기능 없음)
 
-| 컴포넌트 | 2.16 | 2.25 | 3.2 | 3.3 (보존) | 3.4 | 3.5 |
+| 컴포넌트 | 2.16 | 2.25 | 3.2 | 3.3 | 3.4 | 3.5 |
 |---|---|---|---|---|---|---|
 | AutoML | — | — | — | — | TP | TP |
 | Kubeflow Notebook Controller | — | — | — | GA | GA | GA |
